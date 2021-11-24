@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\States">
+      <UniqueIdentifier>{16aa46be-6416-4d0f-bc4d-f9d77b747374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{1573124b-4cf8-42ee-99d9-6866d4114415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Scene">
+      <UniqueIdentifier>{908d1049-b47c-4957-aa34-d57c7bf7ca4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\GUI">
+      <UniqueIdentifier>{a98df76c-9f28-4322-95e6-09ea04ce462e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources">
+      <UniqueIdentifier>{b174659a-ef87-43be-b3c7-5a2450d7c178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{e898724e-4b2d-4828-b101-f2fd06d732df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helper">
+      <UniqueIdentifier>{30553823-1b8d-4176-845e-b4df10d38033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{2ee3a154-e2c8-4e7d-87d3-e74df4850113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helper">
+      <UniqueIdentifier>{aff8a86a-e343-4078-9b3e-ec66c78017cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{ed61ed53-4896-457a-bc11-34536ccfa679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States">
+      <UniqueIdentifier>{ec0ccb01-195f-4cc9-8cb9-bae815e4194a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\GUI">
+      <UniqueIdentifier>{151b788e-cc46-4603-ad5d-0664e3b1003f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Scene">
+      <UniqueIdentifier>{8bc722b2-6ede-4f80-b91a-05c7350e7fdf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Class Code\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Command.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\CommandQueue.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Player.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\MenuState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\PauseState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\GameState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\StateStack.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\State.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\TitleState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Utility.cpp">
+      <Filter>Source Files\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Button.cpp">
+      <Filter>Source Files\Objects\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Component.cpp">
+      <Filter>Source Files\Objects\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Container.cpp">
+      <Filter>Source Files\Objects\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Label.cpp">
+      <Filter>Source Files\Objects\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\SceneNode.cpp">
+      <Filter>Source Files\Objects\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\SpriteNode.cpp">
+      <Filter>Source Files\Objects\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Aircraft.cpp">
+      <Filter>Source Files\Objects\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Entity.cpp">
+      <Filter>Source Files\Objects\Scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Class Code\Application.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\World.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\GameState.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\MenuState.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\PauseState.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\StateStack.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\State.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\StateID.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\TitleState.hpp">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Button.hpp">
+      <Filter>Header Files\Objects\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Aircraft.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\AircraftType.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Entity.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Fonts.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Container.hpp">
+      <Filter>Header Files\Objects\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Category.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Command.hpp">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\CommandQueue.hpp">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Component.hpp">
+      <Filter>Header Files\Objects\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Label.hpp">
+      <Filter>Header Files\Objects\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Layers.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\PlayerAction.hpp">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\ResourceIdentifiers.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\ResourceHolder.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Textures.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\SceneNode.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\SpriteNode.hpp">
+      <Filter>Header Files\Objects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Utility.hpp">
+      <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Player.hpp">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
