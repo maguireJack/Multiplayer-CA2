@@ -1,6 +1,8 @@
 #pragma once
 enum class Textures
 {
+	kPlayer1Tank,
+	kPlayer2Tank,
 	kEagle,
 	kRaptor,
 	kAvenger,

@@ -43,209 +43,248 @@
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{ec0ccb01-195f-4cc9-8cb9-bae815e4194a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\States\Objects">
+    <Filter Include="Header Files\Objects\Scene\Class">
+      <UniqueIdentifier>{54172d54-fc28-4f84-9f0d-7a88ff792512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Scene\Class\Aircraft">
+      <UniqueIdentifier>{fea2f434-0e0d-4381-851d-9f7957a67a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Scene\Class\Pickup">
+      <UniqueIdentifier>{48c5c5ef-f2c5-44ff-91ff-ac64599838dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Scene\Class\Projectile">
+      <UniqueIdentifier>{02243756-4b30-4d1c-8775-d8e4b10bbf93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{ed61ed53-4896-457a-bc11-34536ccfa679}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\States\Objects\GUI">
+    <Filter Include="Source Files\Objects\GUI">
       <UniqueIdentifier>{151b788e-cc46-4603-ad5d-0664e3b1003f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\States\Objects\Scene">
+    <Filter Include="Source Files\Objects\Scene">
       <UniqueIdentifier>{8bc722b2-6ede-4f80-b91a-05c7350e7fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Scene\Class">
+      <UniqueIdentifier>{dbd530f4-b976-4b09-9716-3cb2af00074e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Scene\Mine">
+      <UniqueIdentifier>{69db2811-eb43-4f46-852e-bc4eded86901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Scene\Mine\Tank">
+      <UniqueIdentifier>{5a6e3bb5-7a01-46e4-a5ec-70fe16937318}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Class Code\Application.cpp">
+    <ClCompile Include="Arena.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\Main.cpp">
+    <ClCompile Include="Tank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\World.cpp">
+    <ClCompile Include="Aircraft.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\Command.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\CommandQueue.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Player.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\MenuState.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\PauseState.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\GameState.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\StateStack.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\TitleState.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Utility.cpp">
-      <Filter>Source Files\Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Button.cpp">
-      <Filter>Source Files\States\Objects\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Component.cpp">
-      <Filter>Source Files\States\Objects\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Container.cpp">
-      <Filter>Source Files\States\Objects\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Label.cpp">
-      <Filter>Source Files\States\Objects\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\SceneNode.cpp">
-      <Filter>Source Files\States\Objects\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\SpriteNode.cpp">
-      <Filter>Source Files\States\Objects\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Aircraft.cpp">
-      <Filter>Source Files\States\Objects\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\Entity.cpp">
-      <Filter>Source Files\States\Objects\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Class Code\DataTables.cpp">
+    <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\GameOverState.cpp">
+    <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\Pickup.cpp">
+    <ClCompile Include="Command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\Projectile.cpp">
+    <ClCompile Include="CommandQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\SettingsState.cpp">
+    <ClCompile Include="Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class Code\TextNode.cpp">
+    <ClCompile Include="Container.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Class Code\Application.hpp">
+    <ClInclude Include="Aircraft.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\World.hpp">
+    <ClInclude Include="AircraftType.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\GameState.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\MenuState.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\PauseState.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\StateStack.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\State.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\StateID.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\TitleState.hpp">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Button.hpp">
-      <Filter>Header Files\Objects\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Aircraft.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\AircraftType.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Entity.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Fonts.hpp">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Container.hpp">
-      <Filter>Header Files\Objects\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Category.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Command.hpp">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\CommandQueue.hpp">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Component.hpp">
-      <Filter>Header Files\Objects\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Label.hpp">
-      <Filter>Header Files\Objects\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Layers.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\PlayerAction.hpp">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\ResourceIdentifiers.hpp">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\ResourceHolder.hpp">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Textures.hpp">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\SceneNode.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\SpriteNode.hpp">
-      <Filter>Header Files\Objects\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Utility.hpp">
-      <Filter>Header Files\Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\Player.hpp">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Class Code\DataTables.hpp">
+    <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\GameOverState.hpp">
+    <ClInclude Include="Arena.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\Pickup.hpp">
+    <ClInclude Include="Button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\PickupType.hpp">
+    <ClInclude Include="Category.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\Projectile.hpp">
+    <ClInclude Include="Command.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\ProjectileType.hpp">
+    <ClInclude Include="CommandQueue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\SettingsState.hpp">
+    <ClInclude Include="Component.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Class Code\TextNode.hpp">
+    <ClInclude Include="Constants.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Container.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTables.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Layers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PickupType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceHolder.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceIdentifiers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneNode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteNode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="State.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateID.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateStack.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TankType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextNode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,6 +14,7 @@
 #include <array>
 
 #include "CommandQueue.hpp"
+#include "Tank.hpp"
 
 //Foward
 namespace sf
@@ -38,12 +39,8 @@ private:
 
 	sf::FloatRect GetViewBounds() const;
 	sf::FloatRect GetBattlefieldBounds() const;
-	void SpawnEnemies();
-	void AddEnemy(AircraftType type, float relX, float relY);
-	void AddEnemies();
 	void GuideMissiles();
 	void HandleCollisions();
-	void DestroyEntitiesOutsideView();
 
 private:
 	struct SpawnPoint
@@ -70,7 +67,8 @@ private:
 	sf::FloatRect m_world_bounds;
 	sf::Vector2f m_spawn_position;
 	float m_scrollspeed;
-	Aircraft* m_player_aircraft;
+	Tank* m_player_1_tank;
+	Tank* m_player_2_tank;
 	std::vector<SpawnPoint> m_enemy_spawn_points;
 	std::vector<Aircraft*>	m_active_enemies;
 };

@@ -1,19 +1,21 @@
 #include "Player.hpp"
-#include "Aircraft.hpp"
 #include <algorithm>
+#include "Tank.hpp"
 
-struct AircraftMover
+struct TankMover
 {
-	AircraftMover(float vx, float vy) : velocity(vx, vy)
+	TankMover(float vx, float vy, Utility::Direction direction) : velocity(vx, vy), dir(direction)
 	{
 		
 	}
 
-	void operator()(Aircraft& aircraft, sf::Time) const
+	void operator()(Tank& tank, sf::Time) const
 	{
-		aircraft.Accelerate(velocity * aircraft.GetMaxSpeed());
+		tank.FaceDirection(dir);
+		tank.Accelerate(velocity * tank.GetMaxSpeed());
 	}
 
+	Utility::Direction dir;
 	sf::Vector2f velocity;
 };
 
@@ -95,21 +97,15 @@ void Player::InitialiseActions()
 {
 	const float player_speed = 200.f;
 
-	m_action_binding[PlayerAction::kMoveLeft].action = DerivedAction<Aircraft>(AircraftMover(-1, 0.f));
-	m_action_binding[PlayerAction::kMoveRight].action = DerivedAction<Aircraft>(AircraftMover(+1, 0.f));
-	m_action_binding[PlayerAction::kMoveUp].action = DerivedAction<Aircraft>(AircraftMover(0.f, -1));
-	m_action_binding[PlayerAction::kMoveDown].action = DerivedAction<Aircraft>(AircraftMover(0, 1));
+	m_action_binding[PlayerAction::kMoveLeft].action = DerivedAction<Tank>(TankMover(-1, 0.f, Utility::Left));
+	m_action_binding[PlayerAction::kMoveRight].action = DerivedAction<Tank>(TankMover(+1, 0.f, Utility::Right));
+	m_action_binding[PlayerAction::kMoveUp].action = DerivedAction<Tank>(TankMover(0.f, -1, Utility::Up));
+	m_action_binding[PlayerAction::kMoveDown].action = DerivedAction<Tank>(TankMover(0, 1, Utility::Down));
 
-	m_action_binding[PlayerAction::kFire].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
+	m_action_binding[PlayerAction::kFire].action = DerivedAction<Tank>([](Tank& a, sf::Time
 		)
 	{
 		a.Fire();
-	});
-
-	m_action_binding[PlayerAction::kLaunchMissile].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
-		)
-	{
-		a.LaunchMissile();
 	});
 }
 

@@ -2,6 +2,6 @@
 enum class Layers
 {
 	kBackground,
-	kAir,
+	kBattlefield,
 	kLayerCount
 };

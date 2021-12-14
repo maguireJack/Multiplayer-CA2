@@ -14,7 +14,7 @@
 
 namespace
 {
-	const std::vector<AircraftData> Table = InitializeAircraftData();
+	const std::vector<AircraftData> Table/* = InitializeAircraftData()*/;
 }
 
 
