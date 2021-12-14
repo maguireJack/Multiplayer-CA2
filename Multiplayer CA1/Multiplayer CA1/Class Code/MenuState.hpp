@@ -3,8 +3,7 @@
 #include "Container.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
-
-#include "Container.hpp"
+#include <SFML/Graphics/Text.hpp>
 
 class MenuState : public State
 {

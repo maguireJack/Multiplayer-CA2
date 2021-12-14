@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "Button.hpp"
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"
 #include "Button.hpp"

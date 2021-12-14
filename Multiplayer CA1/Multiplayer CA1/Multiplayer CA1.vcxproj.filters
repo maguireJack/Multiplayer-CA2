@@ -40,16 +40,16 @@
     <Filter Include="Source Files\Helper">
       <UniqueIdentifier>{aff8a86a-e343-4078-9b3e-ec66c78017cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Objects">
-      <UniqueIdentifier>{ed61ed53-4896-457a-bc11-34536ccfa679}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{ec0ccb01-195f-4cc9-8cb9-bae815e4194a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Objects\GUI">
+    <Filter Include="Source Files\States\Objects">
+      <UniqueIdentifier>{ed61ed53-4896-457a-bc11-34536ccfa679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Objects\GUI">
       <UniqueIdentifier>{151b788e-cc46-4603-ad5d-0664e3b1003f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Objects\Scene">
+    <Filter Include="Source Files\States\Objects\Scene">
       <UniqueIdentifier>{8bc722b2-6ede-4f80-b91a-05c7350e7fdf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -94,28 +94,46 @@
       <Filter>Source Files\Helper</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\Button.cpp">
-      <Filter>Source Files\Objects\GUI</Filter>
+      <Filter>Source Files\States\Objects\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\Component.cpp">
-      <Filter>Source Files\Objects\GUI</Filter>
+      <Filter>Source Files\States\Objects\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\Container.cpp">
-      <Filter>Source Files\Objects\GUI</Filter>
+      <Filter>Source Files\States\Objects\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\Label.cpp">
-      <Filter>Source Files\Objects\GUI</Filter>
+      <Filter>Source Files\States\Objects\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\SceneNode.cpp">
-      <Filter>Source Files\Objects\Scene</Filter>
+      <Filter>Source Files\States\Objects\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\SpriteNode.cpp">
-      <Filter>Source Files\Objects\Scene</Filter>
+      <Filter>Source Files\States\Objects\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\Aircraft.cpp">
-      <Filter>Source Files\Objects\Scene</Filter>
+      <Filter>Source Files\States\Objects\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Class Code\Entity.cpp">
-      <Filter>Source Files\Objects\Scene</Filter>
+      <Filter>Source Files\States\Objects\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\DataTables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\GameOverState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Pickup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\Projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\SettingsState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class Code\TextNode.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +223,30 @@
     </ClInclude>
     <ClInclude Include="Class Code\Player.hpp">
       <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\DataTables.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\GameOverState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Pickup.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\PickupType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\Projectile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\ProjectileType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\SettingsState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Class Code\TextNode.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
