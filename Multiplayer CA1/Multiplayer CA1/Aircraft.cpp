@@ -163,8 +163,6 @@ void Aircraft::UpdateMovementPattern(sf::Time dt)
 		m_travelled_distance += GetMaxSpeed() * dt.asSeconds();
 
 	}
-
-
 }
 
 float Aircraft::GetMaxSpeed() const

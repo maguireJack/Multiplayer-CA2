@@ -33,7 +33,7 @@ Player::Player()
 	m_key_binding[sf::Keyboard::Right] = PlayerAction::kPlayer2MoveRight;
 	m_key_binding[sf::Keyboard::Up] = PlayerAction::kPlayer2MoveUp;
 	m_key_binding[sf::Keyboard::Down] = PlayerAction::kPlayer2MoveDown;
-	m_key_binding[sf::Keyboard::Num0] = PlayerAction::kPlayer2Fire;
+	m_key_binding[sf::Keyboard::Numpad0] = PlayerAction::kPlayer2Fire;
 
 	//Set initial action bindings
 	InitialiseActions();
