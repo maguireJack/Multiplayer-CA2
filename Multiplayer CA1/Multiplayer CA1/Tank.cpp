@@ -51,11 +51,15 @@ void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureH
 {
 	std::cout << "Creating projectile " << static_cast<int>(type) << std::endl;
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
-	sf::Vector2f offset(0, 0);
-	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
+	sf::Vector2f offset = GetWorldTransform().transformPoint(5.f,-1.f);
+	offset -= getPosition();
+	sf::Vector2f velocity(
+		std::cosf(Utility::ToRadians(getRotation())) * projectile->GetMaxSpeed(), 
+		std::sinf(Utility::ToRadians(getRotation())) * projectile->GetMaxSpeed());
 	
 	projectile->setPosition(GetWorldPosition() + offset);
 	projectile->SetVelocity(velocity);
+	projectile->setRotation(getRotation() + 90);
 	node.AttachChild(std::move(projectile));
 }
 
