@@ -19,6 +19,8 @@ public:
 	void Repair(int health);
 	void FaceDirection(Utility::Direction dir);
 
+	sf::FloatRect GetBoundingRect() const override;
+
 protected:
 	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 private:

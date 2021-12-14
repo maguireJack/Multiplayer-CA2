@@ -12,6 +12,8 @@ namespace Category
 		kAlliedAircraft = 1 << 2,
 		kEnemyAircraft = 1 << 3,
 		kPickup = 1 << 4,
+		kPlayer1Projectile = 1 << 5,
+		kPlayer2Projectile = 1 << 6,
 		kAlliedProjectile = 1 << 5,
 		kEnemyProjectile = 1 << 6,
 

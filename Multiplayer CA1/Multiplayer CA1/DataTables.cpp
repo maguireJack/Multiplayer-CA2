@@ -25,13 +25,13 @@ std::vector<ProjectileData> InitializeProjectileData()
 {
 	std::vector<ProjectileData> data(static_cast<int>(ProjectileType::kProjectileCount));
 
-	data[static_cast<int>(ProjectileType::kAlliedBullet)].m_damage = 10;
-	data[static_cast<int>(ProjectileType::kAlliedBullet)].m_speed = 300;
-	data[static_cast<int>(ProjectileType::kAlliedBullet)].m_texture = Textures::kBullet;
+	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_damage = 10;
+	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_speed = 300;
+	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_texture = Textures::kBullet;
 
-	data[static_cast<int>(ProjectileType::kEnemyBullet)].m_damage = 10;
-	data[static_cast<int>(ProjectileType::kEnemyBullet)].m_speed = 300;
-	data[static_cast<int>(ProjectileType::kEnemyBullet)].m_texture = Textures::kBullet;
+	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_damage = 10;
+	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_speed = 300;
+	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_texture = Textures::kBullet;
 
 	data[static_cast<int>(ProjectileType::kMissile)].m_damage = 200;
 	data[static_cast<int>(ProjectileType::kMissile)].m_speed = 150.f;

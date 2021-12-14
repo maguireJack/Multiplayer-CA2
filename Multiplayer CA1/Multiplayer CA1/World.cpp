@@ -245,6 +245,16 @@ void World::HandleCollisions()
 			projectile.Destroy();
 		}
 
+		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kPlayer2Projectile) || MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kPlayer1Projectile))
+		{
+			auto& tank = static_cast<Tank&>(*pair.first);
+			auto& projectile = static_cast<Projectile&>(*pair.second);
+			//Apply the projectile damage to the plane
+			tank.Damage(projectile.GetDamage());
+			projectile.Destroy();
+			std::cout << "Hit player";
+		}
+
 
 	}
 }

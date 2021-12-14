@@ -33,16 +33,15 @@ bool Projectile::IsGuided() const
 
 unsigned int Projectile::GetCategory() const
 {
-	if (m_type == ProjectileType::kEnemyBullet)
-		return static_cast<int>(Category::kEnemyProjectile);
+	if (m_type == ProjectileType::kPlayer1Bullet)
+		return static_cast<int>(Category::kPlayer1Projectile);
 	else
-		return static_cast<int>(Category::kAlliedProjectile);
+		return static_cast<int>(Category::kPlayer2Projectile);
 }
 
-//Axis aligned bounding box
-sf::FloatRect Projectile::GetBoundingRect()
+sf::FloatRect Projectile::GetBoundingRect() const
 {
-	return GetWorldTransform().transformRect((m_sprite.getGlobalBounds()));
+	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
 }
 
 float Projectile::GetMaxSpeed() const

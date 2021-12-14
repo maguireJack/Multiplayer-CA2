@@ -26,7 +26,7 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
 	{
-		CreateProjectile(node, ProjectileType::kAlliedBullet, textures);
+		CreateProjectile(node, GetCategory() == Category::kPlayer1Tank ? ProjectileType::kPlayer1Bullet : ProjectileType::kPlayer2Bullet, textures);
 	};
 	m_fire_command.category = static_cast<int>(Category::Type::kScene);
 }
@@ -90,6 +90,11 @@ void Tank::FaceDirection(Utility::Direction dir)
 		setRotation(90.f);
 		break;
 	}
+}
+
+sf::FloatRect Tank::GetBoundingRect() const
+{
+	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
 }
 
 void Tank::UpdateCurrent(sf::Time dt, CommandQueue& commands)
