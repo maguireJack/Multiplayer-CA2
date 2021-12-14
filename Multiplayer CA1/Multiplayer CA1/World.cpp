@@ -17,19 +17,21 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 	, m_scenegraph()
 	, m_scene_layers()
 	, m_world_bounds(0.f, 0.f, m_camera.getSize().x, m_camera.getSize().y)
-	, m_spawn_position(m_camera.getSize().x/2.f, m_camera.getSize().y /2.f)
+	, m_world_center(m_camera.getSize().x / 2.f, m_camera.getSize().y / 2.f)
+	, m_spawn_offset(m_camera.getSize().x / 4.f, m_camera.getSize().y / 4.f)
 	, m_scrollspeed(-50.f)
 	, m_player_1_tank(nullptr)
 {
 	LoadTextures();
 	BuildScene();
 	std::cout << m_camera.getSize().x << m_camera.getSize().y << std::endl;
-	m_camera.setCenter(m_spawn_position);
+	m_camera.setCenter(m_world_center);
 }
 
 void World::Update(sf::Time dt)
 {
-	m_player_1_tank->SetVelocity(0.f, 0.f);
+	m_player_1_tank->SetVelocity(0, 0);
+	m_player_2_tank->SetVelocity(0, 0);
 
 	//Forward commands to the scenegraph until the command queue is empty
 	while(!m_command_queue.IsEmpty())
@@ -37,7 +39,8 @@ void World::Update(sf::Time dt)
 		m_scenegraph.OnCommand(m_command_queue.Pop(), dt);
 	}
 
-	AdaptPlayerVelocity();
+	AdaptPlayerVelocity(m_player_1_tank);
+	AdaptPlayerVelocity(m_player_2_tank);
 
 	HandleCollisions();
 	//Remove all destroyed entities
@@ -45,7 +48,8 @@ void World::Update(sf::Time dt)
 
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
-	AdaptPlayerPosition();
+	AdaptPlayerPosition(m_player_1_tank);
+	AdaptPlayerPosition(m_player_2_tank);
 }
 
 void World::Draw()
@@ -89,8 +93,14 @@ void World::BuildScene()
 	//Add player 1 tank
 	std::unique_ptr<Tank> p1tank(new Tank(TankType::kPlayer1Tank, m_textures));
 	m_player_1_tank = p1tank.get();
-	m_player_1_tank->setPosition(m_spawn_position);
+	m_player_1_tank->setPosition(m_world_center - m_spawn_offset);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(p1tank));
+
+	//Add plyaer 2 tank
+	std::unique_ptr<Tank> p2tank(new Tank(TankType::kPlayer2Tank, m_textures));
+	m_player_2_tank = p2tank.get();
+	m_player_2_tank->setPosition(m_world_center + m_spawn_offset);
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(p2tank));
 }
 
 CommandQueue& World::getCommandQueue()
@@ -98,27 +108,27 @@ CommandQueue& World::getCommandQueue()
 	return m_command_queue;
 }
 
-void World::AdaptPlayerPosition()
+void World::AdaptPlayerPosition(Tank* player)
 {
 	//Keep the player on the screen
 	sf::FloatRect view_bounds(m_camera.getCenter() - m_camera.getSize() / 2.f, m_camera.getSize());
 	const float border_distance = 40.f;
-	sf::Vector2f position = m_player_1_tank->GetWorldPosition();
+	sf::Vector2f position = player->GetWorldPosition();
 	position.x = std::max(position.x, view_bounds.left + border_distance);
 	position.x = std::min(position.x, view_bounds.left + view_bounds.width - border_distance);
 	position.y = std::max(position.y, view_bounds.top + border_distance);
 	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
-	m_player_1_tank->setPosition(position);
+	player->setPosition(position);
 
 }
 
-void World::AdaptPlayerVelocity()
+void World::AdaptPlayerVelocity(Tank* player)
 {
-	sf::Vector2f velocity = m_player_1_tank->GetVelocity();
+	sf::Vector2f velocity = player->GetVelocity();
 	//if moving diagonally then reduce velocity
 	if (velocity.x != 0.f && velocity.y != 0.f)
 	{
-		m_player_1_tank->SetVelocity(velocity / std::sqrt(2.f));
+		player->SetVelocity(velocity / std::sqrt(2.f));
 	}
 }
 

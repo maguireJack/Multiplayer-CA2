@@ -13,9 +13,12 @@ namespace
 Tank::Tank(TankType type, const TextureHolder& textures)
 : Entity(Table[static_cast<int>(type)].m_hitpoints)
 , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+, m_type(type)
 {
 	setScale(5, 5);
 	Utility::CentreOrigin(m_sprite);
+	if (type == TankType::kPlayer1Tank) FaceDirection(Utility::Down);
+	else FaceDirection(Utility::Up);
 }
 
 unsigned Tank::GetCategory() const

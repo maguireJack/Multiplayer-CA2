@@ -34,8 +34,8 @@ public:
 private:
 	void LoadTextures();
 	void BuildScene();
-	void AdaptPlayerPosition();
-	void AdaptPlayerVelocity();
+	void AdaptPlayerPosition(Tank* player);
+	void AdaptPlayerVelocity(Tank* player);
 
 	sf::FloatRect GetViewBounds() const;
 	sf::FloatRect GetBattlefieldBounds() const;
@@ -65,7 +65,8 @@ private:
 	CommandQueue m_command_queue;
 
 	sf::FloatRect m_world_bounds;
-	sf::Vector2f m_spawn_position;
+	sf::Vector2f m_spawn_offset;
+	sf::Vector2f m_world_center;
 	float m_scrollspeed;
 	Tank* m_player_1_tank;
 	Tank* m_player_2_tank;

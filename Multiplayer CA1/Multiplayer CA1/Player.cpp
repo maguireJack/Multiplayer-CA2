@@ -22,21 +22,21 @@ struct TankMover
 Player::Player()
 {
 	//Set initial key bindings
-	m_key_binding[sf::Keyboard::A] = PlayerAction::kMoveLeft;
-	m_key_binding[sf::Keyboard::D] = PlayerAction::kMoveRight;
-	m_key_binding[sf::Keyboard::W] = PlayerAction::kMoveUp;
-	m_key_binding[sf::Keyboard::S] = PlayerAction::kMoveDown;
-	m_key_binding[sf::Keyboard::Space] = PlayerAction::kFire;
-	m_key_binding[sf::Keyboard::M] = PlayerAction::kLaunchMissile;
+	int playerActionsCount = 5;
+	m_key_binding[sf::Keyboard::A] = PlayerAction::kPlayer1MoveLeft;
+	m_key_binding[sf::Keyboard::D] = PlayerAction::kPlayer1MoveRight;
+	m_key_binding[sf::Keyboard::W] = PlayerAction::kPlayer1MoveUp;
+	m_key_binding[sf::Keyboard::S] = PlayerAction::kPlayer1MoveDown;
+	m_key_binding[sf::Keyboard::F] = PlayerAction::kPlayer1Fire;
+
+	m_key_binding[sf::Keyboard::Left] = PlayerAction::kPlayer2MoveLeft;
+	m_key_binding[sf::Keyboard::Right] = PlayerAction::kPlayer2MoveRight;
+	m_key_binding[sf::Keyboard::Up] = PlayerAction::kPlayer2MoveUp;
+	m_key_binding[sf::Keyboard::Down] = PlayerAction::kPlayer2MoveDown;
+	m_key_binding[sf::Keyboard::Num0] = PlayerAction::kPlayer2Fire;
 
 	//Set initial action bindings
 	InitialiseActions();
-
-	//Assign all categories to the player's aircraft
-	for(auto& pair : m_action_binding)
-	{
-		pair.second.category = Category::kPlayerAircraft;
-	}
 }
 
 
@@ -97,27 +97,53 @@ void Player::InitialiseActions()
 {
 	const float player_speed = 200.f;
 
-	m_action_binding[PlayerAction::kMoveLeft].action = DerivedAction<Tank>(TankMover(-1, 0.f, Utility::Left));
-	m_action_binding[PlayerAction::kMoveRight].action = DerivedAction<Tank>(TankMover(+1, 0.f, Utility::Right));
-	m_action_binding[PlayerAction::kMoveUp].action = DerivedAction<Tank>(TankMover(0.f, -1, Utility::Up));
-	m_action_binding[PlayerAction::kMoveDown].action = DerivedAction<Tank>(TankMover(0, 1, Utility::Down));
-
-	m_action_binding[PlayerAction::kFire].action = DerivedAction<Tank>([](Tank& a, sf::Time
+	auto moveLeft = DerivedAction<Tank>(TankMover(-1, 0.f, Utility::Left));
+	auto moveRight = DerivedAction<Tank>(TankMover(+1, 0.f, Utility::Right));
+	auto moveUp = DerivedAction<Tank>(TankMover(0, -1.f, Utility::Up));
+	auto moveDown = DerivedAction<Tank>(TankMover(0, 1.f, Utility::Down));
+	auto fire = DerivedAction<Tank>([](Tank& a, sf::Time
 		)
-	{
-		a.Fire();
-	});
+		{
+			a.Fire();
+		});
+
+	m_action_binding[PlayerAction::kPlayer1MoveLeft].action = moveLeft;
+	m_action_binding[PlayerAction::kPlayer1MoveRight].action = moveRight;
+	m_action_binding[PlayerAction::kPlayer1MoveUp].action = moveUp;
+	m_action_binding[PlayerAction::kPlayer1MoveDown].action = moveDown;
+	m_action_binding[PlayerAction::kPlayer1Fire].action = fire;
+	m_action_binding[PlayerAction::kPlayer1MoveLeft].category = Category::kPlayer1Tank;
+	m_action_binding[PlayerAction::kPlayer1MoveRight].category = Category::kPlayer1Tank;
+	m_action_binding[PlayerAction::kPlayer1MoveUp].category = Category::kPlayer1Tank;
+	m_action_binding[PlayerAction::kPlayer1MoveDown].category = Category::kPlayer1Tank;
+	m_action_binding[PlayerAction::kPlayer1Fire].category = Category::kPlayer1Tank;
+
+	m_action_binding[PlayerAction::kPlayer2MoveLeft].action = moveLeft;
+	m_action_binding[PlayerAction::kPlayer2MoveRight].action = moveRight;
+	m_action_binding[PlayerAction::kPlayer2MoveUp].action = moveUp;
+	m_action_binding[PlayerAction::kPlayer2MoveDown].action = moveDown;
+	m_action_binding[PlayerAction::kPlayer2Fire].action = fire;
+	m_action_binding[PlayerAction::kPlayer2MoveLeft].category = Category::kPlayer2Tank;
+	m_action_binding[PlayerAction::kPlayer2MoveRight].category = Category::kPlayer2Tank;
+	m_action_binding[PlayerAction::kPlayer2MoveUp].category = Category::kPlayer2Tank;
+	m_action_binding[PlayerAction::kPlayer2MoveDown].category = Category::kPlayer2Tank;
+	m_action_binding[PlayerAction::kPlayer2Fire].category = Category::kPlayer2Tank;
 }
 
 bool Player::IsRealtimeAction(PlayerAction action)
 {
 	switch(action)
 	{
-	case PlayerAction::kMoveLeft:
-	case PlayerAction::kMoveRight:
-	case PlayerAction::kMoveUp:
-	case PlayerAction::kMoveDown:
-	case PlayerAction::kFire:
+	case PlayerAction::kPlayer1MoveLeft:
+	case PlayerAction::kPlayer1MoveRight:
+	case PlayerAction::kPlayer1MoveUp:
+	case PlayerAction::kPlayer1MoveDown:
+	case PlayerAction::kPlayer1Fire:
+	case PlayerAction::kPlayer2MoveLeft:
+	case PlayerAction::kPlayer2MoveRight:
+	case PlayerAction::kPlayer2MoveUp:
+	case PlayerAction::kPlayer2MoveDown:
+	case PlayerAction::kPlayer2Fire:
 		return true;
 	default:
 		return false;

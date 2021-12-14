@@ -13,12 +13,11 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 	m_background_sprite.setTexture(context.textures->Get(Textures::kTitleScreen));
 
 	// Build key binding buttons and labels
-	AddButtonLabel(PlayerAction::kMoveLeft, 300.f, "Move Left", context);
-	AddButtonLabel(PlayerAction::kMoveRight, 350.f, "Move Right", context);
-	AddButtonLabel(PlayerAction::kMoveUp, 400.f, "Move Up", context);
-	AddButtonLabel(PlayerAction::kMoveDown, 450.f, "Move Down", context);
-	AddButtonLabel(PlayerAction::kFire, 500.f, "Fire", context);
-	AddButtonLabel(PlayerAction::kLaunchMissile, 550.f, "Missile", context);
+	AddButtonLabel(PlayerAction::kPlayer1MoveLeft, 300.f, "Move Left", context);
+	AddButtonLabel(PlayerAction::kPlayer1MoveRight, 350.f, "Move Right", context);
+	AddButtonLabel(PlayerAction::kPlayer1MoveUp, 400.f, "Move Up", context);
+	AddButtonLabel(PlayerAction::kPlayer1MoveDown, 450.f, "Move Down", context);
+	AddButtonLabel(PlayerAction::kPlayer1Fire, 500.f, "Fire", context);
 
 	UpdateLabels();
 
