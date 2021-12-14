@@ -20,6 +20,7 @@ public:
 	void FaceDirection(Utility::Direction dir);
 
 	sf::FloatRect GetBoundingRect() const override;
+	void ResetToLastPos();
 
 protected:
 	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -35,5 +36,6 @@ private:
 
 	bool m_is_firing;
 	sf::Time m_fire_countdown;
+	sf::Vector2f m_last_pos;
 };
 

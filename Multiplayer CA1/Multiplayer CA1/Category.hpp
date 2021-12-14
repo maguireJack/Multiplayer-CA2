@@ -16,7 +16,11 @@ namespace Category
 		kPlayer2Projectile = 1 << 6,
 		kAlliedProjectile = 1 << 5,
 		kEnemyProjectile = 1 << 6,
+		kFloorTile = 1 << 7,
+		kWallTile = 1 << 8,
+		kDestroyableTile = 1 << 9,
 
+		kTile = kFloorTile | kWallTile | kDestroyableTile,
 		kTank = kPlayer1Tank | kPlayer2Tank,
 		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
 		kProjectile = kAlliedProjectile | kEnemyProjectile,

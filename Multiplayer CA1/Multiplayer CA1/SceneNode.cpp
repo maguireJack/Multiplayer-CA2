@@ -8,7 +8,7 @@
 
 #include "Utility.hpp"
 
-SceneNode::SceneNode(Category::Type category):m_children(), m_parent(nullptr), m_default_category(category)
+SceneNode::SceneNode(bool collidable, Category::Type category):m_children(), m_parent(nullptr), m_category(category), is_collidable(collidable)
 {
 }
 
@@ -67,7 +67,7 @@ void SceneNode::UpdateChildren(sf::Time dt, CommandQueue& commands)
 void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	//Apply transform of the current node
-	states.transform *= getTransform();
+  	states.transform *= getTransform();
 
 	//Draw the node and children with changed transform
 	DrawCurrent(target, states);
@@ -106,7 +106,7 @@ void SceneNode::OnCommand(const Command& command, sf::Time dt)
 
 unsigned int SceneNode::GetCategory() const
 {
-	return static_cast<int>(m_default_category);
+	return static_cast<int>(m_category);
 }
 
 float distance(const SceneNode& lhs, const SceneNode& rhs)
@@ -149,7 +149,8 @@ void SceneNode::CheckNodeCollision(SceneNode& node, std::set<Pair>& collision_pa
 
 void SceneNode::CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collision_pairs)
 {
-	CheckNodeCollision(scene_graph, collision_pairs);
+	if(scene_graph.is_collidable)
+		CheckNodeCollision(scene_graph, collision_pairs);
 	for(Ptr& child : scene_graph.m_children)
 	{
 		CheckSceneCollision(*child, collision_pairs);

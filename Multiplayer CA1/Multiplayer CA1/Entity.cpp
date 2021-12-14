@@ -1,7 +1,8 @@
 #include "Entity.hpp"
 
 Entity::Entity(int hitpoints)
-	: m_hitpoints(hitpoints)
+: SceneNode(true)
+, m_hitpoints(hitpoints)
 {
 }
 

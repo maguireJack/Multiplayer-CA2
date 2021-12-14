@@ -18,7 +18,7 @@ public:
 	typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 public:
-	explicit SceneNode(Category::Type category = Category::kNone);
+	explicit SceneNode(bool collidable = false, Category::Type category = Category::kNone);
 	void AttachChild(Ptr child);
 	Ptr DetachChild(const SceneNode& node);
 
@@ -33,7 +33,6 @@ public:
 
 	void CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collision_pairs);
 	void RemoveWrecks();
-
 
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands);
@@ -50,11 +49,12 @@ private:
 	bool IsMarkedForRemoval() const;
 	
 	void CheckNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs);
-	
 
+protected:
+	bool is_collidable;
+	Category::Type m_category;
 private:
 	std::vector<Ptr> m_children;
 	SceneNode* m_parent;
-	Category::Type m_default_category;
 };
 float distance(const SceneNode& lhs, const SceneNode& rhs);

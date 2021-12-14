@@ -16,16 +16,16 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 	, m_fonts(font)
 	, m_scenegraph()
 	, m_scene_layers()
-	, m_world_bounds(0.f, 0.f, m_camera.getSize().x, m_camera.getSize().y)
-	, m_world_center(m_camera.getSize().x / 2.f, m_camera.getSize().y / 2.f)
-	, m_spawn_offset(m_camera.getSize().x / 4.f, m_camera.getSize().y / 4.f)
+	, m_world_bounds(0.f, 0.f, 900, 600)
+	, m_world_center(m_world_bounds.width / 2.f, m_world_bounds.height / 2.f)
+	, m_spawn_offset(370, -175)
 	, m_scrollspeed(-50.f)
 	, m_player_1_tank(nullptr)
 {
 	LoadTextures();
 	BuildScene();
 	std::cout << m_camera.getSize().x << m_camera.getSize().y << std::endl;
-	m_camera.setCenter(m_world_center);
+	m_camera.setCenter(450,400);
 }
 
 void World::Update(sf::Time dt)
@@ -62,7 +62,7 @@ void World::LoadTextures()
 {
 	m_textures.Load(Textures::kPlayer1Tank, "Media/Textures/Tanx.png", sf::IntRect(1,12,10,10));
 	m_textures.Load(Textures::kPlayer2Tank, "Media/Textures/Tanx.png", sf::IntRect(1,23,10,10));
-	m_textures.Load(Textures::kDesert, "Media/Textures/Desert.png");
+	m_textures.Load(Textures::kDesert, "Media/Textures/Tanx.png", sf::IntRect(88, 44, 10, 10));
 
 	m_textures.Load(Textures::kBullet, "Media/Textures/Bullet.png");
 	m_textures.Load(Textures::kMissile, "Media/Textures/Missile.png");
@@ -74,7 +74,7 @@ void World::BuildScene()
 	for (std::size_t i = 0; i < static_cast<int>(Layers::kLayerCount); ++i)
 	{
 		Category::Type category = (i == static_cast<int>(Layers::kBattlefield)) ? Category::Type::kScene : Category::Type::kNone;
-		SceneNode::Ptr layer(new SceneNode(category));
+		SceneNode::Ptr layer(new SceneNode(false, category));
 		m_scene_layers[i] = layer.get();
 		m_scenegraph.AttachChild(std::move(layer));
 	}
@@ -89,6 +89,10 @@ void World::BuildScene()
 	std::unique_ptr<SpriteNode> background_sprite(new SpriteNode(texture, textureRect));
 	background_sprite->setPosition(m_world_bounds.left, m_world_bounds.top);
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(background_sprite));
+
+	//Load the map
+	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16));
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
 
 	//Add player 1 tank
 	std::unique_ptr<Tank> p1tank(new Tank(TankType::kPlayer1Tank, m_textures));
@@ -111,15 +115,14 @@ CommandQueue& World::getCommandQueue()
 void World::AdaptPlayerPosition(Tank* player)
 {
 	//Keep the player on the screen
-	sf::FloatRect view_bounds(m_camera.getCenter() - m_camera.getSize() / 2.f, m_camera.getSize());
+	/*sf::FloatRect view_bounds(m_camera.getCenter() - m_camera.getSize() / 2.f, m_camera.getSize());
 	const float border_distance = 40.f;
 	sf::Vector2f position = player->GetWorldPosition();
 	position.x = std::max(position.x, view_bounds.left + border_distance);
 	position.x = std::min(position.x, view_bounds.left + view_bounds.width - border_distance);
 	position.y = std::max(position.y, view_bounds.top + border_distance);
 	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
-	player->setPosition(position);
-
+	player->setPosition(position);*/
 }
 
 void World::AdaptPlayerVelocity(Tank* player)
@@ -252,9 +255,19 @@ void World::HandleCollisions()
 			//Apply the projectile damage to the plane
 			tank.Damage(projectile.GetDamage());
 			projectile.Destroy();
-			std::cout << "Hit player";
 		}
 
+		else if (MatchesCategories(pair, Category::Type::kPlayer1Projectile, Category::Type::kTile) || MatchesCategories(pair, Category::Type::kPlayer2Projectile, Category::Type::kTile))
+		{
+			auto& projectile = static_cast<Projectile&>(*pair.first);
+			projectile.Destroy();
+		}
+
+		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kTile) || MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kTile))
+		{
+			auto& tank = static_cast<Tank&>(*pair.first);
+			tank.ResetToLastPos();
+		}
 
 	}
 }

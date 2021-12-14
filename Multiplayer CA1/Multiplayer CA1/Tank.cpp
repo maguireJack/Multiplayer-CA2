@@ -49,15 +49,14 @@ void Tank::Fire()
 
 void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures) const
 {
-	std::cout << "Creating projectile " << static_cast<int>(type) << std::endl;
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset = GetWorldTransform().transformPoint(5.f,-1.f);
-	offset -= getPosition();
+	offset -= GetWorldPosition();
 	sf::Vector2f velocity(
 		std::cosf(Utility::ToRadians(getRotation())) * projectile->GetMaxSpeed(), 
 		std::sinf(Utility::ToRadians(getRotation())) * projectile->GetMaxSpeed());
 	
-	projectile->setPosition(GetWorldPosition() + offset);
+	projectile->setPosition(getPosition() + offset);
 	projectile->SetVelocity(velocity);
 	projectile->setRotation(getRotation() + 90);
 	node.AttachChild(std::move(projectile));
@@ -97,8 +96,14 @@ sf::FloatRect Tank::GetBoundingRect() const
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
 }
 
+void Tank::ResetToLastPos()
+{
+	setPosition(m_last_pos);
+}
+
 void Tank::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
+	m_last_pos = getPosition();
 	Entity::UpdateCurrent(dt, commands);
 	if(m_is_firing)
 	{

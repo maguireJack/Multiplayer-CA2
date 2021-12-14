@@ -14,6 +14,7 @@
 #include <array>
 
 #include "CommandQueue.hpp"
+#include "Map.hpp"
 #include "Tank.hpp"
 
 //Foward
@@ -61,8 +62,11 @@ private:
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
 	SceneNode m_scenegraph;
+	//std::vector<SceneNode> m_collision_entities;
 	std::array<SceneNode*, static_cast<int>(Layers::kLayerCount)> m_scene_layers;
 	CommandQueue m_command_queue;
+
+	Map* map;
 
 	sf::FloatRect m_world_bounds;
 	sf::Vector2f m_spawn_offset;

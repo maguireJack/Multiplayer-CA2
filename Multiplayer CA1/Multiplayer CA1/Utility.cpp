@@ -4,11 +4,22 @@
 #include <cassert>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
-
-
 #include <cmath>
+#include <string>
+#include <sstream>
+#include <vector>
 
-
+//Taken from https://stackoverflow.com/questions/9435385/split-a-string-using-c11
+std::vector<std::string> Utility::Split(const std::string& s, char delim) {
+	std::stringstream ss(s);
+	std::string item;
+	std::vector<std::string> elems;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+		// elems.push_back(std::move(item)); // if C++11 (based on comment from @mchiasson)
+	}
+	return elems;
+}
 
 //TODO should we just implement for base class - sf::Transformable?
 void Utility::CentreOrigin(sf::Sprite& sprite)
