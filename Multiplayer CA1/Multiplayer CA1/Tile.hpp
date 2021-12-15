@@ -7,7 +7,7 @@
 class Tile : public Entity
 {
 public:
-	Tile(sf::Texture* texture, Category::Type tileCategory);
+	Tile(sf::Texture& texture, Category::Type tileCategory);
 	unsigned GetCategory() const override;
 	sf::FloatRect GetBoundingRect() const override;
 private:

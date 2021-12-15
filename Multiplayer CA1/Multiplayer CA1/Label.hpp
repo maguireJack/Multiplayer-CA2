@@ -11,14 +11,15 @@ namespace GUI
 	public:
 		typedef std::shared_ptr<Label> Ptr;
 	public:
-		Label(const std::string& text, const FontHolder& fonts);
+		Label(const std::string& text, const FontHolder& fonts, int characterSize = 16);
 		virtual bool IsSelectable() const override;
 		void SetText(const std::string& text);
 		void HandleEvent(const sf::Event& event) override;
 
 	private:
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	private:
+
+	protected:
 		sf::Text m_text;
 	};
 }

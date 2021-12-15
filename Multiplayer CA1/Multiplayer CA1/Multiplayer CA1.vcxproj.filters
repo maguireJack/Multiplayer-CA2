@@ -165,10 +165,10 @@
     <ClCompile Include="Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
+    <ClCompile Include="Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
+    <ClCompile Include="BoundLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -299,10 +299,10 @@
     <ClInclude Include="Map.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Block.hpp">
+    <ClInclude Include="Tile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.hpp">
+    <ClInclude Include="BoundLabel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

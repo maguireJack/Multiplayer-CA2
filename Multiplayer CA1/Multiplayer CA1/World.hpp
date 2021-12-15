@@ -32,6 +32,9 @@ public:
 	void Draw();
 	CommandQueue& getCommandQueue();
 
+	const Tank* const  GetPlayer1() const;
+	const Tank* const GetPlayer2() const;
+
 private:
 	void LoadTextures();
 	void BuildScene();

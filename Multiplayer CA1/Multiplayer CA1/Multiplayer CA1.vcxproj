@@ -154,7 +154,7 @@
     <ClCompile Include="Arena.cpp" />
     <ClCompile Include="Aircraft.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BoundLabel.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
@@ -189,7 +189,7 @@
     <ClInclude Include="AircraftType.hpp" />
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Arena.hpp" />
-    <ClInclude Include="Block.hpp" />
+    <ClInclude Include="BoundLabel.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Category.hpp" />
     <ClInclude Include="Command.hpp" />

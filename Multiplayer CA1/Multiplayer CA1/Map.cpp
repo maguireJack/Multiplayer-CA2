@@ -22,8 +22,6 @@ void Map::LoadLayer(std::string path, std::string layer, std::string textureAtla
 	int xPos = 0;
 	int yPos = 0;
 
-	std::map<int, sf::Texture*> texturemap;
-
 	while (std::getline(file, line))
 	{
 		for (auto value : Utility::Split(line, ','))
@@ -31,9 +29,9 @@ void Map::LoadLayer(std::string path, std::string layer, std::string textureAtla
 			int elem = std::stoi(value);
 			if (elem != -1)
 			{
-				if (texturemap[elem] == nullptr)
-					texturemap[elem] = LoadTextureAt(textureAtlas, elem, tilesX);
-				std::unique_ptr<Tile> tile(new Tile(texturemap[elem], tileCategory));
+				if (texture_map.find(elem) == texture_map.end())
+					LoadTextureAt(texture_map[elem], textureAtlas, elem, tilesX);
+				std::unique_ptr<Tile> tile(new Tile(texture_map[elem], tileCategory));
 				tile->setPosition(xPos, yPos);
 				AttachChild(std::move(tile));
 			}
@@ -46,16 +44,13 @@ void Map::LoadLayer(std::string path, std::string layer, std::string textureAtla
 	file.close();
 }
 
-sf::Texture* Map::LoadTextureAt(std::string texture, int index, int tilesX)
+void Map::LoadTextureAt(sf::Texture& texture, std::string texture_string, int index, int tilesX)
 {
 	int x = index % tilesX;
 	int y = index / tilesX;
 
-	sf::Texture* tex = new sf::Texture();
-	if(!tex->loadFromFile(texture, sf::IntRect((x+1) + x*10, y+1 + y*10, 10,10)))
+	if(!texture.loadFromFile(texture_string, sf::IntRect((x+1) + x*10, y+1 + y*10, 10,10)))
 	{
 		std::cout << "TEXTURE WAS NOT FOUND IN MAP.CPP";
 	}
-
-	return tex;
 }

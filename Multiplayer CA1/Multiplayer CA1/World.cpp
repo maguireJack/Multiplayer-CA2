@@ -112,6 +112,16 @@ CommandQueue& World::getCommandQueue()
 	return m_command_queue;
 }
 
+const Tank* const World::GetPlayer1() const
+{
+	return m_player_1_tank;
+}
+
+const Tank* const World::GetPlayer2() const
+{
+	return m_player_2_tank;
+}
+
 void World::AdaptPlayerPosition(Tank* player)
 {
 	//Keep the player on the screen
@@ -221,31 +231,13 @@ void World::HandleCollisions()
 	m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
 	for(SceneNode::Pair pair : collision_pairs)
 	{
-		if(MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kEnemyAircraft))
-		{
-			auto& player = static_cast<Aircraft&>(*pair.first);
-			auto& enemy = static_cast<Aircraft&>(*pair.second);
-			//Collision
-			player.Damage(enemy.GetHitPoints());
-			enemy.Destroy();
-		}
-
-		else if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kPickup))
+		if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kPickup))
 		{
 			auto& player = static_cast<Tank&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
 			//Apply the pickup effect
 			pickup.Apply(player);
 			pickup.Destroy();
-		}
-
-		else if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kEnemyProjectile) || MatchesCategories(pair, Category::Type::kEnemyAircraft, Category::Type::kAlliedProjectile))
-		{
-			auto& aircraft = static_cast<Aircraft&>(*pair.first);
-			auto& projectile = static_cast<Projectile&>(*pair.second);
-			//Apply the projectile damage to the plane
-			aircraft.Damage(projectile.GetDamage());
-			projectile.Destroy();
 		}
 
 		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kPlayer2Projectile) || MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kPlayer1Projectile))
