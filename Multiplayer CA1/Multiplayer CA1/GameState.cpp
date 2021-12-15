@@ -25,6 +25,11 @@ bool GameState::Update(sf::Time dt)
 	CommandQueue& commands = m_world.getCommandQueue();
 	m_player.HandleRealtimeInput(commands);
 	UpdateLabels();
+	if(m_world.IsGameOver())
+	{
+		m_player.m_winner = m_world.GetWinner();
+		RequestStackPush(StateID::kGameOver);
+	}
 	return true;
 }
 

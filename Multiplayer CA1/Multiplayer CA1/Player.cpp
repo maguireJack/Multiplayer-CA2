@@ -19,7 +19,7 @@ struct TankMover
 	sf::Vector2f velocity;
 };
 
-Player::Player()
+Player::Player() : m_winner(Category::kNone)
 {
 	//Set initial key bindings
 	int playerActionsCount = 5;

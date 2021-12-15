@@ -35,6 +35,9 @@ public:
 	const Tank* const  GetPlayer1() const;
 	const Tank* const GetPlayer2() const;
 
+	bool IsGameOver() const;
+	Category::Type GetWinner() const;
+
 private:
 	void LoadTextures();
 	void BuildScene();
@@ -79,5 +82,7 @@ private:
 	Tank* m_player_2_tank;
 	std::vector<SpawnPoint> m_enemy_spawn_points;
 	std::vector<Aircraft*>	m_active_enemies;
+	bool m_game_over;
+	Category::Type m_winner;
 };
 

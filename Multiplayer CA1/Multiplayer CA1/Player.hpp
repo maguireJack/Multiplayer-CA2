@@ -19,6 +19,9 @@ private:
 	void InitialiseActions();
 	static bool IsRealtimeAction(PlayerAction action);
 
+public:
+	Category::Type m_winner;
+
 private:
 	std::map<sf::Keyboard::Key, PlayerAction> m_key_binding;
 	std::map<PlayerAction, Command> m_action_binding;

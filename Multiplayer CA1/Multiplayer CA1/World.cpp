@@ -21,6 +21,9 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 	, m_spawn_offset(370, -175)
 	, m_scrollspeed(-50.f)
 	, m_player_1_tank(nullptr)
+	, m_player_2_tank(nullptr)
+	, m_game_over(false)
+	, m_winner(Category::kNone)
 {
 	LoadTextures();
 	BuildScene();
@@ -120,6 +123,16 @@ const Tank* const World::GetPlayer1() const
 const Tank* const World::GetPlayer2() const
 {
 	return m_player_2_tank;
+}
+
+bool World::IsGameOver() const
+{
+	return m_game_over;
+}
+
+Category::Type World::GetWinner() const
+{
+	return m_winner;
 }
 
 void World::AdaptPlayerPosition(Tank* player)
@@ -247,6 +260,10 @@ void World::HandleCollisions()
 			//Apply the projectile damage to the plane
 			tank.Damage(projectile.GetDamage());
 			projectile.Destroy();
+			if (tank.IsDestroyed()) {
+				m_game_over = true;
+				m_winner = static_cast<Category::Type>(m_winner | tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank);
+			}
 		}
 
 		else if (MatchesCategories(pair, Category::Type::kPlayer1Projectile, Category::Type::kTile) || MatchesCategories(pair, Category::Type::kPlayer2Projectile, Category::Type::kTile))
