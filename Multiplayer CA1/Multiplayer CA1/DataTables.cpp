@@ -47,17 +47,11 @@ std::vector<PickupData> InitializePickupData()
 	std::vector<PickupData> data(static_cast<int>(PickupType::kPickupCount));
 
 	data[static_cast<int>(PickupType::kHealthRefill)].m_texture = Textures::kHealthRefill;
-	data[static_cast<int>(PickupType::kHealthRefill)].m_action = [](Tank& t) {t.Repair(25); };
-	/*
-	data[static_cast<int>(PickupType::kMissileRefill)].m_texture = Textures::kMissileRefill;
-	data[static_cast<int>(PickupType::kMissileRefill)].m_action = std::bind(&Aircraft::CollectMissiles, std::placeholders::_1, 3);
-
-	data[static_cast<int>(PickupType::kFireSpread)].m_texture = Textures::kFireSpread;
-	data[static_cast<int>(PickupType::kFireSpread)].m_action = std::bind(&Aircraft::IncreaseSpread, std::placeholders::_1);
-
-	data[static_cast<int>(PickupType::kFireRate)].m_texture = Textures::kFireRate;
-	data[static_cast<int>(PickupType::kFireRate)].m_action = std::bind(&Aircraft::IncreaseFireRate, std::placeholders::_1);
-	*/
+	data[static_cast<int>(PickupType::kHealthRefill)].m_action = [](Tank& t) { t.Repair(50); };
+	
+	data[static_cast<int>(PickupType::kAmmoRefill)].m_texture = Textures::kAmmoRefill;
+	data[static_cast<int>(PickupType::kAmmoRefill)].m_action = [](Tank& t) { t.ReplenishAmmo(); };
+	
 	return data;
 }
 

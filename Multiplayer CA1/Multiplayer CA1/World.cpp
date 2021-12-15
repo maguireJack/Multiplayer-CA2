@@ -5,6 +5,7 @@
 
 #include "Pickup.hpp"
 #include "Projectile.hpp"
+#include "SpawnerManager.hpp"
 #include "Tank.hpp"
 
 World::World(sf::RenderWindow& window, FontHolder& font)
@@ -61,7 +62,10 @@ void World::LoadTextures()
 {
 	m_textures.Load(Textures::kPlayer1Tank, "Media/Textures/Tanx.png", sf::IntRect(1,12,10,10));
 	m_textures.Load(Textures::kPlayer2Tank, "Media/Textures/Tanx.png", sf::IntRect(1,23,10,10));
-	m_textures.Load(Textures::kDesert, "Media/Textures/Tanx.png", sf::IntRect(88, 44, 10, 10));
+	m_textures.Load(Textures::kBackground, "Media/Textures/Tanx.png", sf::IntRect(88, 44, 10, 10));
+
+	m_textures.Load(Textures::kHealthRefill, "Media/Textures/HealthRefill.png");
+	m_textures.Load(Textures::kAmmoRefill, "Media/Textures/FireRate.png");
 
 	m_textures.Load(Textures::kBullet, "Media/Textures/Bullet.png");
 	m_textures.Load(Textures::kMissile, "Media/Textures/Missile.png");
@@ -79,7 +83,7 @@ void World::BuildScene()
 	}
 
 	//Prepare the background
-	sf::Texture& texture = m_textures.Get(Textures::kDesert);
+	sf::Texture& texture = m_textures.Get(Textures::kBackground);
 	sf::IntRect textureRect(m_world_bounds);
 	//Tile the texture to cover our world
 	texture.setRepeated(true);
@@ -104,6 +108,10 @@ void World::BuildScene()
 	m_player_2_tank = p2tank.get();
 	m_player_2_tank->setPosition(m_world_center + m_spawn_offset);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(p2tank));
+
+	std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.1f));
+	spawner_manager->setPosition(m_world_center);
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 }
 
 CommandQueue& World::getCommandQueue()
@@ -200,7 +208,7 @@ void World::HandleCollisions()
 			projectile.Destroy();
 			if (tank.IsDestroyed()) {
 				m_game_over = true;
-				m_winner = static_cast<Category::Type>(m_winner | tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank);
+				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank));
 			}
 		}
 

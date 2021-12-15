@@ -34,6 +34,11 @@ public:
 	void CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collision_pairs);
 	void RemoveWrecks();
 
+protected:
+	void ClearChildren();
+	SceneNode* GetChild(int index);
+	int ChildCount() const;
+
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands);
 	void UpdateChildren(sf::Time dt, CommandQueue& commands);

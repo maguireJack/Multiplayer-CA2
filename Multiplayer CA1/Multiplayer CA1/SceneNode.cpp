@@ -30,6 +30,21 @@ SceneNode::Ptr SceneNode::DetachChild(const SceneNode& node)
 	return result;
 }
 
+void SceneNode::ClearChildren()
+{
+	std::for_each(m_children.begin(), m_children.end(), [&](Ptr& p) { delete p.get(); });
+}
+
+SceneNode* SceneNode::GetChild(int index)
+{
+	return m_children[index].get();
+}
+
+int SceneNode::ChildCount() const
+{
+	return m_children.size();
+}
+
 void SceneNode::Update(sf::Time dt, CommandQueue& commands)
 {
 	UpdateCurrent(dt, commands);

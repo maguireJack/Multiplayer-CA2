@@ -97,6 +97,11 @@ int Tank::GetAmmo() const
 	return m_ammo;
 }
 
+void Tank::ReplenishAmmo()
+{
+	m_ammo = Table[static_cast<int>(m_type)].m_ammo;
+}
+
 sf::FloatRect Tank::GetBoundingRect() const
 {
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());

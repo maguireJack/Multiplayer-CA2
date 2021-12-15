@@ -19,6 +19,7 @@ public:
 	void Repair(int health);
 	void FaceDirection(Utility::Direction dir);
 	int GetAmmo() const;
+	void ReplenishAmmo();
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
