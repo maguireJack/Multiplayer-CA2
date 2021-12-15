@@ -190,7 +190,7 @@ void World::HandleCollisions()
 	m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
 	for(SceneNode::Pair pair : collision_pairs)
 	{
-		if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kPickup))
+		if (MatchesCategories(pair, Category::Type::kTank, Category::Type::kPickup))
 		{
 			auto& player = static_cast<Tank&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
