@@ -18,6 +18,7 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 , m_type(type)
 , m_fire_interval(Table[static_cast<int>(type)].m_fire_interval)
+, m_ammo(Table[static_cast<int>(type)].m_ammo)
 {
 	setScale(5, 5);
 	Utility::CentreOrigin(m_sprite);
@@ -91,6 +92,11 @@ void Tank::FaceDirection(Utility::Direction dir)
 	}
 }
 
+int Tank::GetAmmo() const
+{
+	return m_ammo;
+}
+
 sf::FloatRect Tank::GetBoundingRect() const
 {
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
@@ -109,6 +115,7 @@ void Tank::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	{
 		if (m_fire_cooldown.asSeconds() <= 0.f) {
 			commands.Push(m_fire_command);
+			m_ammo--;
 			m_fire_cooldown = m_fire_interval;
 		}
 		m_is_firing = false;

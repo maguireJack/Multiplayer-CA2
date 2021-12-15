@@ -7,6 +7,8 @@ GameState::GameState(StateStack& stack, Context context)
 : State(stack, context)
 , m_world(*context.window, *context.fonts)
 , m_player(*context.player)
+, m_gui_area(0,600, 900, 200)
+, m_gui_center(m_gui_area.left + m_gui_area.width/2.f, m_gui_area.top+ m_gui_area.height/2.f)
 {
 	BindGui(*context.fonts);
 }
@@ -49,17 +51,31 @@ bool GameState::HandleEvent(const sf::Event& event)
 
 void GameState::BindGui(const FontHolder& fonts)
 {
-	m_container.setPosition(0, 600);
-	CreateLabel(fonts, "P1Health", sf::Vector2f(0, 0), 30, "P1 Health:", [this]
+	sf::Vector2f offset(-300, -60);
+	m_container.setPosition(m_gui_center);
+	CreatePlayerLabels(fonts, offset, 30, "Health:", [this](const Tank * const tank)
+	{
+		return [tank] { return std::to_string(tank->GetHitPoints()); };
+	});
+	offset += sf::Vector2f(0, 60);
+	CreatePlayerLabels(fonts, offset, 30, "Ammo:", [this](const Tank* const tank)
 		{
-			return std::to_string(m_world.GetPlayer1()->GetHitPoints());
+			return [tank] { return std::to_string(tank->GetAmmo()); };
 		});
 }
 
-void GameState::CreateLabel(const FontHolder& fonts, std::string key, sf::Vector2f position, int text_size,
+void GameState::CreatePlayerLabels(const FontHolder& fonts, sf::Vector2f offset, int text_size,
+                                  std::string prefix, std::function<std::function<std::string()>(const Tank* const t)> func_factory)
+{
+	CreateLabel(fonts, sf::Color::Blue, offset, text_size, "P1 " + prefix, func_factory(m_world.GetPlayer1()));
+	CreateLabel(fonts, sf::Color::Green, sf::Vector2f(-offset.x, offset.y), text_size, "P2 " + prefix, func_factory(m_world.GetPlayer2()));
+}
+
+void GameState::CreateLabel(const FontHolder& fonts, sf::Color text_color, sf::Vector2f position, int text_size,
                             std::string prefix, std::function<std::string()> update_action)
 {
-	GUI::BoundLabel::Ptr bound_label(new GUI::BoundLabel(fonts, text_size, prefix, update_action));
+	GUI::BoundLabel::Ptr bound_label(new GUI::BoundLabel(fonts, text_size, prefix, update_action, text_color));
+	bound_label->CentreText();
 	bound_label->setPosition(position);
 	m_container.Pack(bound_label);
 	m_bound_labels.emplace_back(bound_label);

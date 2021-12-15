@@ -9,11 +9,13 @@ std::vector<TankData> InitializeTankData()
 	std::vector<TankData> data(static_cast<int>(TankType::kTankTypeCount));
 
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_hitpoints = 100;
+	data[static_cast<int>(TankType::kPlayer1Tank)].m_ammo = 10;
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_speed = 200.f;
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_fire_interval = sf::seconds(1);
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_texture = Textures::kPlayer1Tank;
 
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_hitpoints = 100;
+	data[static_cast<int>(TankType::kPlayer2Tank)].m_ammo = 10;
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_speed = 200.f;
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_fire_interval = sf::seconds(1);
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_texture = Textures::kPlayer2Tank;
@@ -25,12 +27,12 @@ std::vector<ProjectileData> InitializeProjectileData()
 {
 	std::vector<ProjectileData> data(static_cast<int>(ProjectileType::kProjectileCount));
 
-	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_damage = 10;
-	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_speed = 300;
+	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_damage = 20;
+	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_speed = 400;
 	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_texture = Textures::kBullet;
 
-	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_damage = 10;
-	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_speed = 300;
+	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_damage = 20;
+	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_speed = 400;
 	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_texture = Textures::kBullet;
 
 	data[static_cast<int>(ProjectileType::kMissile)].m_damage = 200;

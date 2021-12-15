@@ -33,6 +33,7 @@ struct TankData
 	float m_speed;
 	Textures m_texture;
 	sf::Time m_fire_interval;
+	int m_ammo;
 };
 
 struct ProjectileData

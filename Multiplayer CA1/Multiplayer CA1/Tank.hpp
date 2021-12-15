@@ -18,6 +18,7 @@ public:
 	float GetMaxSpeed();
 	void Repair(int health);
 	void FaceDirection(Utility::Direction dir);
+	int GetAmmo() const;
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
@@ -33,9 +34,10 @@ private:
 	sf::Time m_fire_cooldown;
 	sf::Time m_fire_interval;
 	Command m_fire_command;
-
+	int m_ammo;
 	bool m_is_firing;
 	sf::Time m_fire_countdown;
+
 	sf::Vector2f m_last_pos;
 };
 

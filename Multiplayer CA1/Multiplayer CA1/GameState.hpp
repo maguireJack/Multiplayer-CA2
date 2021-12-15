@@ -15,12 +15,17 @@ public:
 
 private:
 	void BindGui(const FontHolder& fonts);
-	void CreateLabel(const FontHolder& fonts, std::string key, sf::Vector2f position, int text_size, std::string prefix, std::function<std::string()> update_action);
+	void CreatePlayerLabels(const FontHolder& fonts, sf::Vector2f offset, int text_size,
+	                       std::string prefix, std::function<std::function<std::string()>(const Tank* const t)> func_factory);
+	void CreateLabel(const FontHolder& fonts, sf::Color text_color, sf::Vector2f position, int text_size, std::string prefix, std::function<std::string()> update_action);
 
 private:
 	World m_world;
 	GUI::Container m_container;
 	std::vector<GUI::BoundLabel::Ptr> m_bound_labels;
 	Player& m_player;
+
+	sf::FloatRect m_gui_area;
+	sf::Vector2f m_gui_center;
 };
 

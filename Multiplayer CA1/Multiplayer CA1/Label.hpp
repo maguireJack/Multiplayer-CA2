@@ -15,6 +15,7 @@ namespace GUI
 		virtual bool IsSelectable() const override;
 		void SetText(const std::string& text);
 		void HandleEvent(const sf::Event& event) override;
+		void CentreText();
 
 	private:
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

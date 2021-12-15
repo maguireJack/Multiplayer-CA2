@@ -4,6 +4,8 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include "Utility.hpp"
+
 namespace GUI
 {
 	Label::Label(const std::string& text, const FontHolder& fonts, int characterSize)
@@ -23,6 +25,11 @@ namespace GUI
 
 	void Label::HandleEvent(const sf::Event& event)
 	{
+	}
+
+	void Label::CentreText()
+	{
+		Utility::CentreOrigin(m_text);
 	}
 
 	void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
