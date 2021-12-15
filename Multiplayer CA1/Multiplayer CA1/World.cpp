@@ -2,12 +2,10 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
-#include <limits>
 
 #include "Pickup.hpp"
 #include "Projectile.hpp"
 #include "Tank.hpp"
-#include "Utility.hpp"
 
 World::World(sf::RenderWindow& window, FontHolder& font)
 	: m_window(window)
@@ -46,13 +44,11 @@ void World::Update(sf::Time dt)
 	AdaptPlayerVelocity(m_player_2_tank);
 
 	HandleCollisions();
-	//Remove all destroyed entities
+
 	m_scenegraph.RemoveWrecks();
 
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
-	AdaptPlayerPosition(m_player_1_tank);
-	AdaptPlayerPosition(m_player_2_tank);
 }
 
 void World::Draw()
@@ -135,19 +131,6 @@ Category::Type World::GetWinner() const
 	return m_winner;
 }
 
-void World::AdaptPlayerPosition(Tank* player)
-{
-	//Keep the player on the screen
-	/*sf::FloatRect view_bounds(m_camera.getCenter() - m_camera.getSize() / 2.f, m_camera.getSize());
-	const float border_distance = 40.f;
-	sf::Vector2f position = player->GetWorldPosition();
-	position.x = std::max(position.x, view_bounds.left + border_distance);
-	position.x = std::min(position.x, view_bounds.left + view_bounds.width - border_distance);
-	position.y = std::max(position.y, view_bounds.top + border_distance);
-	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
-	player->setPosition(position);*/
-}
-
 void World::AdaptPlayerVelocity(Tank* player)
 {
 	sf::Vector2f velocity = player->GetVelocity();
@@ -171,51 +154,6 @@ sf::FloatRect World::GetBattlefieldBounds() const
 	bounds.height += 100.f;
 
 	return bounds;
-}
-
-void World::GuideMissiles()
-{
-	// Setup command that stores all enemies in mActiveEnemies
-	Command enemyCollector;
-	enemyCollector.category = Category::kEnemyAircraft;
-	enemyCollector.action = DerivedAction<Aircraft>([this](Aircraft& enemy, sf::Time)
-	{
-		if (!enemy.IsDestroyed())
-			m_active_enemies.push_back(&enemy);
-	});
-
-	// Setup command that guides all missiles to the enemy which is currently closest to the player
-	Command missileGuider;
-	missileGuider.category = Category::kAlliedProjectile;
-	missileGuider.action = DerivedAction<Projectile>([this](Projectile& missile, sf::Time)
-	{
-		// Ignore unguided bullets
-		if (!missile.IsGuided())
-			return;
-
-		float minDistance = std::numeric_limits<float>::max();
-		Aircraft* closestEnemy = nullptr;
-
-		// Find closest enemy
-		for(Aircraft * enemy :  m_active_enemies)
-		{
-			float enemyDistance = distance(missile, *enemy);
-
-			if (enemyDistance < minDistance)
-			{
-				closestEnemy = enemy;
-				minDistance = enemyDistance;
-			}
-		}
-
-		if (closestEnemy)
-			missile.GuideTowards(closestEnemy->GetWorldPosition());
-	});
-
-	// Push commands, reset active enemies
-	m_command_queue.Push(enemyCollector);
-	m_command_queue.Push(missileGuider);
-	m_active_enemies.clear();
 }
 
 bool MatchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)

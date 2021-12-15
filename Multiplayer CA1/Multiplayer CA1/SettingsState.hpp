@@ -25,7 +25,7 @@ public:
 
 private:
 	void UpdateLabels();
-	void AddButtonLabel(PlayerAction action, float y, const std::string& text, Context context);
+	void AddButtonLabel(PlayerAction action, float x, float y, const std::string& text, Context context);
 
 
 private:

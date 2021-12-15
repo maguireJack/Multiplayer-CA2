@@ -41,12 +41,10 @@ public:
 private:
 	void LoadTextures();
 	void BuildScene();
-	void AdaptPlayerPosition(Tank* player);
 	void AdaptPlayerVelocity(Tank* player);
 
 	sf::FloatRect GetViewBounds() const;
 	sf::FloatRect GetBattlefieldBounds() const;
-	void GuideMissiles();
 	void HandleCollisions();
 
 private:
@@ -68,7 +66,6 @@ private:
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
 	SceneNode m_scenegraph;
-	//std::vector<SceneNode> m_collision_entities;
 	std::array<SceneNode*, static_cast<int>(Layers::kLayerCount)> m_scene_layers;
 	CommandQueue m_command_queue;
 
@@ -80,8 +77,6 @@ private:
 	float m_scrollspeed;
 	Tank* m_player_1_tank;
 	Tank* m_player_2_tank;
-	std::vector<SpawnPoint> m_enemy_spawn_points;
-	std::vector<Aircraft*>	m_active_enemies;
 	bool m_game_over;
 	Category::Type m_winner;
 };
