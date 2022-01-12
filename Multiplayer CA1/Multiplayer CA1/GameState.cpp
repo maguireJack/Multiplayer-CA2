@@ -10,6 +10,8 @@ GameState::GameState(StateStack& stack, Context context)
 , m_gui_area(0,600, 900, 200)
 , m_gui_center(m_gui_area.left + m_gui_area.width/2.f, m_gui_area.top+ m_gui_area.height/2.f)
 {
+	// Play game theme
+	context.music->Play(MusicThemes::kGameplayTheme);
 	BindGui(*context.fonts);
 }
 

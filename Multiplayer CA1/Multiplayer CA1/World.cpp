@@ -7,6 +7,7 @@
 #include "Projectile.hpp"
 #include "SpawnerManager.hpp"
 #include "Tank.hpp"
+#include "Tile.hpp"
 
 World::World(sf::RenderWindow& window, FontHolder& font)
 	: m_window(window)
@@ -212,6 +213,14 @@ void World::HandleCollisions()
 			}
 		}
 
+		else if (MatchesCategories(pair, Category::Type::kDestroyableTile, Category::Type::kProjectile))
+		{
+			auto& tile = static_cast<Tile&>(*pair.first);
+			auto& projectile = static_cast<Projectile&>(*pair.second);
+			tile.Damage(1);
+			projectile.Destroy();
+		}
+
 		else if (MatchesCategories(pair, Category::Type::kPlayer1Projectile, Category::Type::kTile) || MatchesCategories(pair, Category::Type::kPlayer2Projectile, Category::Type::kTile))
 		{
 			auto& projectile = static_cast<Projectile&>(*pair.first);
@@ -223,6 +232,5 @@ void World::HandleCollisions()
 			auto& tank = static_cast<Tank&>(*pair.first);
 			tank.ResetToLastPos();
 		}
-
 	}
 }

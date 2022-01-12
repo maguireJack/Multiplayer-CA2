@@ -1,4 +1,6 @@
 #include "DataTables.hpp"
+
+#include "ParticleType.hpp"
 #include "PickupType.hpp"
 #include "ProjectileType.hpp"
 #include "Tank.hpp"
@@ -52,6 +54,19 @@ std::vector<PickupData> InitializePickupData()
 	data[static_cast<int>(PickupType::kAmmoRefill)].m_texture = Textures::kAmmoRefill;
 	data[static_cast<int>(PickupType::kAmmoRefill)].m_action = [](Tank& t) { t.ReplenishAmmo(); };
 	
+	return data;
+}
+
+std::vector<ParticleData> InitializeParticleData()
+{
+	std::vector<ParticleData> data(static_cast<int>(ParticleType::kParticleCount));
+
+	data[static_cast<int>(ParticleType::kPropellant)].m_color = sf::Color(255, 255, 50);
+	data[static_cast<int>(ParticleType::kPropellant)].m_lifetime = sf::seconds(0.6f);
+
+	data[static_cast<int>(ParticleType::kSmoke)].m_color = sf::Color(50, 50, 50);
+	data[static_cast<int>(ParticleType::kSmoke)].m_lifetime = sf::seconds(4.f);
+
 	return data;
 }
 

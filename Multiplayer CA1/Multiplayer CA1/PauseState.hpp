@@ -8,6 +8,7 @@ class PauseState : public State
 {
 public:
 	PauseState(StateStack& stack, Context context);
+	~PauseState() override;
 
 	virtual void		Draw();
 	virtual bool		Update(sf::Time dt);

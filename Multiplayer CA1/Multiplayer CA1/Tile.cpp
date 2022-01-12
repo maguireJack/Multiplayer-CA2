@@ -3,7 +3,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 Tile::Tile(sf::Texture& texture, Category::Type tileCategory)
-	: Entity(tileCategory == Category::kDestroyableTile ? 10 : 1)
+	: Entity(tileCategory == Category::kDestroyableTile ? 5 : 1)
 	  , m_sprite(texture)
 {
 	m_category = tileCategory;

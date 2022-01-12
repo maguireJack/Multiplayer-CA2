@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <vector>
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Time.hpp>
 
 #include "ResourceIdentifiers.hpp"
@@ -49,8 +50,13 @@ struct PickupData
 	Textures m_texture;
 };
 
+struct ParticleData
+{
+	sf::Color						m_color;
+	sf::Time						m_lifetime;
+};
+
 std::vector<TankData> InitializeTankData();
 std::vector<ProjectileData> InitializeProjectileData();
 std::vector<PickupData> InitializePickupData();
-
-
+std::vector<ParticleData> InitializeParticleData();

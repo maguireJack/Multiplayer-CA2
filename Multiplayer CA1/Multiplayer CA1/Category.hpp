@@ -19,10 +19,12 @@ namespace Category
 		kFloorTile = 1 << 7,
 		kWallTile = 1 << 8,
 		kDestroyableTile = 1 << 9,
+		kParticleSystem = 1 << 10,
+		kSoundEffect = 1 << 11,
 
 		kTile = kFloorTile | kWallTile | kDestroyableTile,
 		kTank = kPlayer1Tank | kPlayer2Tank,
 		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
-		kProjectile = kAlliedProjectile | kEnemyProjectile,
+		kProjectile = kPlayer1Projectile | kPlayer2Projectile,
 	};
 }

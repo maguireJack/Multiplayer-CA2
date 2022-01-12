@@ -11,6 +11,7 @@
 MenuState::MenuState(StateStack& stack, Context context)
 : State(stack, context)
 {
+	context.music->Play(MusicThemes::kMenuTheme);
 	sf::Texture& texture = context.textures->Get(Textures::kTitleScreen);
 
 	m_background_sprite.setTexture(texture);
