@@ -18,12 +18,15 @@ namespace
 
 SoundPlayer::SoundPlayer()
 {
-	m_sound_buffers.Load(SoundEffect::kAlliedGunfire, "Media/Sounds/Gunfire.wav");
-	m_sound_buffers.Load(SoundEffect::kEnemyGunfire, "Media/Sounds/Gunfire.wav");
+	m_sound_buffers.Load(SoundEffect::kPlayer1Fire, "Media/Sounds/Gunfire.wav");
+	m_sound_buffers.Load(SoundEffect::kPlayer2Fire, "Media/Sounds/Gunfire.wav");
 	m_sound_buffers.Load(SoundEffect::kExplosion1, "Media/Sounds/Explosion.wav");
 	m_sound_buffers.Load(SoundEffect::kExplosion2, "Media/Sounds/Explosion.wav");
-	m_sound_buffers.Load(SoundEffect::kHit, "Media/Sounds/Hit.wav");
+	m_sound_buffers.Load(SoundEffect::kPlayer1Hit, "Media/Sounds/Hit.wav");
+	m_sound_buffers.Load(SoundEffect::kPlayer2Hit, "Media/Sounds/Hit.wav");
 	m_sound_buffers.Load(SoundEffect::kCollectPickup, "Media/Sounds/CollectPickup.wav");
+	m_sound_buffers.Load(SoundEffect::kRepair, "Media/Sounds/Repair.wav");
+	m_sound_buffers.Load(SoundEffect::kRestock, "Media/Sounds/Restock.wav");
 	m_sound_buffers.Load(SoundEffect::kButton, "Media/Sounds/Button.wav");
 
 	// Listener points towards the screen (default in SFML)

@@ -7,6 +7,7 @@
 #include "Projectile.hpp"
 #include "ProjectileType.hpp"
 #include "ResourceHolder.hpp"
+#include "SoundNode.hpp"
 
 namespace
 {
@@ -32,9 +33,14 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	m_fire_command.category = static_cast<int>(Category::Type::kScene);
 }
 
+bool Tank::IsPlayer1Tank() const
+{
+	return m_type == TankType::kPlayer1Tank;
+}
+
 unsigned Tank::GetCategory() const
 {
-	return m_type == TankType::kPlayer1Tank ? Category::kPlayer1Tank : Category::kPlayer2Tank;
+	return IsPlayer1Tank() ? Category::kPlayer1Tank : Category::kPlayer2Tank;
 }
 
 void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
@@ -45,7 +51,9 @@ void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 //Tank will not keep firing when held down
 void Tank::Fire()
 {
-	m_is_firing = true;
+	if (m_ammo > 0) {
+		m_actions = m_actions | Firing;
+	}
 }
 
 void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures) const
@@ -71,6 +79,18 @@ float Tank::GetMaxSpeed()
 void Tank::Repair(int health)
 {
 	Entity::Repair(health);
+	m_actions = m_actions | TankActions::Repair;
+}
+
+void Tank::Damage(unsigned points)
+{
+	Entity::Damage(points);
+	m_actions = m_actions | Hit;
+}
+
+void Tank::Destroy()
+{
+	Entity::Destroy();
 }
 
 void Tank::FaceDirection(Utility::Direction dir)
@@ -100,6 +120,17 @@ int Tank::GetAmmo() const
 void Tank::ReplenishAmmo()
 {
 	m_ammo = Table[static_cast<int>(m_type)].m_ammo;
+	m_actions = m_actions | Restock;
+}
+
+bool Tank::IsExploding()
+{
+	return Entity::IsDestroyed() && !m_destroy_sound_played;
+}
+
+bool Tank::IsDestroyed() const
+{
+	return Entity::IsDestroyed() && m_destroy_sound_played;
 }
 
 sf::FloatRect Tank::GetBoundingRect() const
@@ -116,14 +147,52 @@ void Tank::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	m_last_pos = getPosition();
 	Entity::UpdateCurrent(dt, commands);
-	if(m_is_firing)
+	if(m_actions & Firing)
 	{
-		if (m_fire_cooldown.asSeconds() <= 0.f) {
+		if (m_fire_cooldown.asSeconds() <= 0.f && m_ammo > 0) {
+			PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Fire : SoundEffect::kPlayer2Fire);
 			commands.Push(m_fire_command);
 			m_ammo--;
 			m_fire_cooldown = m_fire_interval;
 		}
-		m_is_firing = false;
+	}
+	if(m_actions & Hit)
+	{
+		PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Hit : SoundEffect::kPlayer2Hit);
+	}
+	if (m_actions & Restock)
+	{
+		PlaySound(commands, SoundEffect::kRestock);
+	}
+	if (m_actions & TankActions::Repair)
+	{
+		PlaySound(commands, SoundEffect::kRepair);
+	}
+
+	m_actions = 0;
+
+	if(IsDestroyed() && !m_destroy_sound_played)
+	{
+		PlaySound(commands, SoundEffect::kExplosion1);
 	}
 	if (m_fire_cooldown.asSeconds() > 0.f) m_fire_cooldown -= dt;
+}
+
+
+void Tank::PlaySound(CommandQueue& commands, SoundEffect effect, bool global)
+{
+	sf::Vector2f world_position = GetWorldPosition();
+
+	Command command;
+	command.category = Category::kSoundEffect;
+	command.action = DerivedAction<SoundNode>(
+		[effect, world_position, global](SoundNode& node, sf::Time)
+		{
+			if (global)
+				node.PlaySound(effect);
+			else
+				node.PlaySound(effect, world_position);
+		});
+
+	commands.Push(command);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "CommandQueue.hpp"
 #include "SceneNode.hpp"
+#include "SoundEffect.hpp"
 
 class Entity : public SceneNode
 {
@@ -14,8 +15,8 @@ public:
 
 	int GetHitPoints() const;
 	void Repair(unsigned int points);
-	void Damage(unsigned int points);
-	void Destroy();
+	virtual void Damage(unsigned int points);
+	virtual void Destroy();
 	virtual bool IsDestroyed() const override;
 
 protected:

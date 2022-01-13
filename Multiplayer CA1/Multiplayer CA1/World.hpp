@@ -15,6 +15,7 @@
 
 #include "CommandQueue.hpp"
 #include "Map.hpp"
+#include "SoundPlayer.hpp"
 #include "Tank.hpp"
 
 //Foward
@@ -27,7 +28,7 @@ namespace sf
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderWindow& window, FontHolder& font);
+	explicit World(sf::RenderWindow& window, FontHolder& font, SoundPlayer& sounds);
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
@@ -37,6 +38,7 @@ public:
 
 	bool IsGameOver() const;
 	Category::Type GetWinner() const;
+	bool AllowPlayerInput();
 
 private:
 	void LoadTextures();
@@ -46,6 +48,7 @@ private:
 	sf::FloatRect GetViewBounds() const;
 	sf::FloatRect GetBattlefieldBounds() const;
 	void HandleCollisions();
+	void UpdateSounds();
 
 private:
 	struct SpawnPoint
@@ -69,6 +72,7 @@ private:
 	std::array<SceneNode*, static_cast<int>(Layers::kLayerCount)> m_scene_layers;
 	CommandQueue m_command_queue;
 
+	SoundPlayer& m_sounds;
 	Map* map;
 
 	sf::FloatRect m_world_bounds;

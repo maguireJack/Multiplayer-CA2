@@ -9,6 +9,11 @@ SoundNode::SoundNode(SoundPlayer& player)
 {
 }
 
+void SoundNode::PlaySound(SoundEffect sound)
+{
+	m_sounds.Play(sound);
+}
+
 void SoundNode::PlaySound(SoundEffect sound, sf::Vector2f position)
 {
 	m_sounds.Play(sound, position);

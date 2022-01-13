@@ -5,7 +5,7 @@
 
 GameState::GameState(StateStack& stack, Context context)
 : State(stack, context)
-, m_world(*context.window, *context.fonts)
+, m_world(*context.window, *context.fonts, *context.sounds)
 , m_player(*context.player)
 , m_gui_area(0,600, 900, 200)
 , m_gui_center(m_gui_area.left + m_gui_area.width/2.f, m_gui_area.top+ m_gui_area.height/2.f)
@@ -46,6 +46,7 @@ void GameState::UpdateLabels() const
 bool GameState::HandleEvent(const sf::Event& event)
 {
 	CommandQueue& commands = m_world.getCommandQueue();
+
 	m_player.HandleEvent(event, commands);
 
 	//Escape should bring up the Pause Menu

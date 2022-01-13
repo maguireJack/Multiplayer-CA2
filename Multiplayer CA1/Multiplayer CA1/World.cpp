@@ -5,11 +5,12 @@
 
 #include "Pickup.hpp"
 #include "Projectile.hpp"
+#include "SoundNode.hpp"
 #include "SpawnerManager.hpp"
 #include "Tank.hpp"
 #include "Tile.hpp"
 
-World::World(sf::RenderWindow& window, FontHolder& font)
+World::World(sf::RenderWindow& window, FontHolder& font, SoundPlayer& sounds)
 	: m_window(window)
 	, m_camera(window.getDefaultView())
 	, m_textures()
@@ -24,6 +25,7 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 	, m_player_2_tank(nullptr)
 	, m_game_over(false)
 	, m_winner(Category::kNone)
+	, m_sounds(sounds)
 {
 	LoadTextures();
 	BuildScene();
@@ -51,6 +53,8 @@ void World::Update(sf::Time dt)
 
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
+
+	UpdateSounds();
 }
 
 void World::Draw()
@@ -98,6 +102,10 @@ void World::BuildScene()
 	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16));
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
 
+	// Add sound effect node
+	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
+	m_scenegraph.AttachChild(std::move(soundNode));
+
 	//Add player 1 tank
 	std::unique_ptr<Tank> p1tank(new Tank(TankType::kPlayer1Tank, m_textures));
 	m_player_1_tank = p1tank.get();
@@ -138,6 +146,11 @@ bool World::IsGameOver() const
 Category::Type World::GetWinner() const
 {
 	return m_winner;
+}
+
+bool World::AllowPlayerInput()
+{
+	return !m_game_over;
 }
 
 void World::AdaptPlayerVelocity(Tank* player)
@@ -233,4 +246,13 @@ void World::HandleCollisions()
 			tank.ResetToLastPos();
 		}
 	}
+}
+
+void World::UpdateSounds()
+{
+	// Set listener's position to player position
+	m_sounds.SetListenerPosition(m_player_1_tank->GetWorldPosition());
+
+	// Remove unused sounds
+	m_sounds.RemoveStoppedSounds();
 }
