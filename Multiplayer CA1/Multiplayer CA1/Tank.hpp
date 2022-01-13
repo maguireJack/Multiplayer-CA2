@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics/Sprite.hpp>
+#include <functional>
 
+#include "Animation.hpp"
 #include "TankType.hpp"
 #include "Entity.hpp"
 #include "ProjectileType.hpp"
@@ -31,7 +33,7 @@ public:
 	void FaceDirection(Utility::Direction dir);
 	int GetAmmo() const;
 	void ReplenishAmmo();
-	bool IsExploding();
+	bool IsExploding() const;
 	bool IsDestroyed() const override;
 
 	sf::FloatRect GetBoundingRect() const override;
@@ -41,10 +43,17 @@ protected:
 	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 	void PlaySound(CommandQueue& commands, SoundEffect effect, bool global = true);
 private:
+	void UpdateTank(sf::Time dt, CommandQueue& commands);
+	void UpdateExplosion(sf::Time dt, CommandQueue& commands);
 	void DrawCurrent(sf::RenderTarget&, sf::RenderStates states) const override;
+
+public:
+	std::function<void()> OnFinishExploding;
+
 private:
 	TankType m_type;
 	sf::Sprite m_sprite;
+	Animation m_explosion;
 
 	sf::Time m_fire_cooldown;
 	sf::Time m_fire_interval;

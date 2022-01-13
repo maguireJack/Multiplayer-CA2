@@ -74,6 +74,8 @@ void World::LoadTextures()
 
 	m_textures.Load(Textures::kBullet, "Media/Textures/Bullet.png");
 	m_textures.Load(Textures::kMissile, "Media/Textures/Missile.png");
+
+	m_textures.Load(Textures::kExplosion, "Media/Textures/Explosion.png");
 }
 
 void World::BuildScene()
@@ -220,8 +222,8 @@ void World::HandleCollisions()
 			//Apply the projectile damage to the plane
 			tank.Damage(projectile.GetDamage());
 			projectile.Destroy();
-			if (tank.IsDestroyed()) {
-				m_game_over = true;
+			if (tank.IsExploding()) {
+				tank.OnFinishExploding = [this] { m_game_over = true; };
 				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank));
 			}
 		}
