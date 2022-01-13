@@ -12,9 +12,12 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include <array>
+#include <SFML/Graphics/RenderTexture.hpp>
 
+#include "BloomEffect.hpp"
 #include "CommandQueue.hpp"
 #include "Map.hpp"
+#include "ShakeEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Tank.hpp"
 
@@ -28,7 +31,7 @@ namespace sf
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderWindow& window, FontHolder& font, SoundPlayer& sounds);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds);
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
@@ -64,7 +67,8 @@ private:
 	
 
 private:
-	sf::RenderWindow& m_window;
+	sf::RenderTarget& m_target;
+	sf::RenderTexture m_scene_texture;
 	sf::View m_camera;
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
@@ -83,5 +87,13 @@ private:
 	Tank* m_player_2_tank;
 	bool m_game_over;
 	Category::Type m_winner;
+
+	sf::Time m_total_time;
+	sf::Time m_shake_timer;
+	sf::Time m_max_shake_timer;
+	float m_max_shake_intensity;
+
+	BloomEffect m_bloom_effect;
+	ShakeEffect m_shake_effect;
 };
 

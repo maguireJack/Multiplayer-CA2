@@ -10,9 +10,9 @@
 #include "Tank.hpp"
 #include "Tile.hpp"
 
-World::World(sf::RenderWindow& window, FontHolder& font, SoundPlayer& sounds)
-	: m_window(window)
-	, m_camera(window.getDefaultView())
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
+	: m_target(output_target)
+	, m_camera(m_target.getDefaultView())
 	, m_textures()
 	, m_fonts(font)
 	, m_scenegraph()
@@ -26,7 +26,10 @@ World::World(sf::RenderWindow& window, FontHolder& font, SoundPlayer& sounds)
 	, m_game_over(false)
 	, m_winner(Category::kNone)
 	, m_sounds(sounds)
+	, m_max_shake_timer(sf::seconds(0.25))
+	, m_max_shake_intensity(10)
 {
+	m_scene_texture.create(m_target.getSize().x, m_target.getSize().y);
 	LoadTextures();
 	BuildScene();
 	std::cout << m_camera.getSize().x << m_camera.getSize().y << std::endl;
@@ -55,12 +58,35 @@ void World::Update(sf::Time dt)
 	m_scenegraph.Update(dt, m_command_queue);
 
 	UpdateSounds();
+
+	if (m_shake_timer.asSeconds() > 0)
+		m_shake_timer -= dt;
+
+	m_total_time += dt;
 }
 
 void World::Draw()
 {
-	m_window.setView(m_camera);
-	m_window.draw(m_scenegraph);
+	if (PostEffect::IsSupported())
+	{
+		m_scene_texture.clear();
+		m_scene_texture.setView(m_camera);
+		m_scene_texture.draw(m_scenegraph);
+		if (m_shake_timer.asSeconds() > 0) 
+		{
+			float intensity = m_max_shake_intensity * m_shake_timer.asSeconds() / m_max_shake_timer.asSeconds();
+			m_shake_effect.Apply(m_scene_texture, m_target, m_total_time, intensity);
+		}
+		else
+		{
+			m_bloom_effect.Apply(m_scene_texture, m_target);
+		}
+	}
+	else
+	{
+		m_target.setView(m_camera);
+		m_target.draw(m_scenegraph);
+	}
 }
 
 void World::LoadTextures()
@@ -222,6 +248,7 @@ void World::HandleCollisions()
 			//Apply the projectile damage to the plane
 			tank.Damage(projectile.GetDamage());
 			projectile.Destroy();
+			m_shake_timer = m_max_shake_timer;
 			if (tank.IsExploding()) {
 				tank.OnFinishExploding = [this] { m_game_over = true; };
 				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank));

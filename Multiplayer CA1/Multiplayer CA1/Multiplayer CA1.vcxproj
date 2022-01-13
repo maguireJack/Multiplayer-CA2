@@ -181,6 +181,7 @@
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="SettingsState.cpp" />
     <ClCompile Include="PickupSpawner.cpp" />
+    <ClCompile Include="ShakeEffect.cpp" />
     <ClCompile Include="SoundNode.cpp" />
     <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="SpawnerManager.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="SettingsState.hpp" />
     <ClInclude Include="PickupSpawner.hpp" />
     <ClInclude Include="Shaders.hpp" />
+    <ClInclude Include="ShakeEffect.hpp" />
     <ClInclude Include="SoundEffect.hpp" />
     <ClInclude Include="SoundNode.hpp" />
     <ClInclude Include="SoundPlayer.hpp" />
