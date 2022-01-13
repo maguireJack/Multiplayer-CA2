@@ -31,6 +31,7 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	//Setup Sprite
 	setScale(5, 5);
 	Utility::CentreOrigin(m_sprite);
+
 	if (type == TankType::kPlayer1Tank) FaceDirection(Utility::Down);
 	else FaceDirection(Utility::Up);
 
@@ -42,6 +43,14 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 			                       : ProjectileType::kPlayer2Bullet, textures);
 	};
 	m_fire_command.category = static_cast<int>(Category::Type::kScene);
+	
+	m_explosive_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
+	{
+		CreateProjectile(node, GetCategory() == Category::kPlayer1Tank
+			? ProjectileType::kPlayer1Missile
+			: ProjectileType::kPlayer2Missile, textures);
+	};
+	m_explosive_fire_command.category = static_cast<int>(Category::Type::kScene);
 }
 
 bool Tank::IsPlayer1Tank() const
@@ -65,6 +74,8 @@ void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 	else
 	{
 		target.draw(m_sprite, states);
+		target.draw(m_explosive_shots_sprite, states);
+		//target.draw(m_fire_rate_sprite, states);
 	}
 }
 
@@ -77,7 +88,7 @@ void Tank::Fire()
 	}
 }
 
-void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures) const
+void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive) const
 {
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset = GetWorldTransform().transformPoint(5.f, -1.f);
@@ -114,6 +125,18 @@ void Tank::Damage(unsigned points)
 void Tank::Destroy()
 {
 	Entity::Destroy();
+}
+
+void Tank::GetExplosiveShots()
+{
+	m_explosive_shot_countdown = sf::seconds(10);
+	m_actions = m_actions | ExplosiveUpgrade;
+}
+
+void Tank::GetIncreasedFireRate()
+{
+	m_fire_rate_countdown = sf::seconds(10);
+	m_actions = m_actions | FireRateUpgrade;
 }
 
 void Tank::FaceDirection(Utility::Direction dir)
@@ -156,6 +179,16 @@ bool Tank::IsDestroyed() const
 	return Entity::IsDestroyed() && m_explosion.IsFinished();
 }
 
+bool Tank::HasExplosiveShotsUpgrade() const
+{
+	return m_explosive_shot_countdown.asSeconds() > 0;
+}
+
+bool Tank::HasFireRateUpgrade() const
+{
+	return m_fire_rate_countdown.asSeconds() > 0;
+}
+
 sf::FloatRect Tank::GetBoundingRect() const
 {
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
@@ -187,10 +220,24 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 	{
 		if (m_fire_cooldown.asSeconds() <= 0.f && m_ammo > 0)
 		{
-			PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Fire : SoundEffect::kPlayer2Fire);
-			commands.Push(m_fire_command);
+			if(m_explosive_shot_countdown.asSeconds() > 0)
+			{
+				PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1FireMissile : SoundEffect::kPlayer2FireMissile);
+				commands.Push(m_explosive_fire_command);
+			}
+			else 
+			{
+				PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Fire : SoundEffect::kPlayer2Fire);
+				commands.Push(m_fire_command);
+			}
+
 			m_ammo--;
-			m_fire_cooldown = m_fire_interval;
+
+			if (HasFireRateUpgrade()) 
+			{
+				m_fire_cooldown = sf::seconds(m_fire_interval.asSeconds() / 2.f);
+			}
+			else m_fire_cooldown = m_fire_interval;
 		}
 	}
 	if (m_actions & Hit)
@@ -205,17 +252,27 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 	{
 		PlaySound(commands, SoundEffect::kRepair);
 	}
+	if (m_actions & TankActions::ExplosiveUpgrade)
+	{
+		PlaySound(commands, SoundEffect::kMissileUpgrade);
+	}
+	if (m_actions & TankActions::FireRateUpgrade)
+	{
+		PlaySound(commands, SoundEffect::kFireRateUpgrade);
+	}
 
 	m_actions = 0;
 
 	if (m_fire_cooldown.asSeconds() > 0.f) m_fire_cooldown -= dt;
+	if (HasExplosiveShotsUpgrade()) m_explosive_shot_countdown -= dt;
+	if (HasFireRateUpgrade()) m_fire_rate_countdown-= dt;
 }
 
 void Tank::UpdateExplosion(sf::Time dt, CommandQueue& commands)
 {
 	if (!m_destroy_sound_played)
 	{
-		PlaySound(commands, SoundEffect::kExplosion1);
+		PlaySound(commands, SoundEffect::kTankExplosion1);
 		m_destroy_sound_played = true;
 	}
 

@@ -18,8 +18,20 @@ SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval,
 		pickup_spawner->SpawnPickup(PickupType::kAmmoRefill, textures);
 	};
 
+	auto m_spawn_explosive_shots = [&textures](PickupSpawner* pickup_spawner)
+	{
+		pickup_spawner->SpawnPickup(PickupType::kExplosiveShots, textures);
+	};
+
+	auto m_spawn_fire_rate = [&textures](PickupSpawner* pickup_spawner)
+	{
+		pickup_spawner->SpawnPickup(PickupType::kFireRate, textures);
+	};
+
 	m_spawn_actions.emplace_back(m_spawn_health);
 	m_spawn_actions.emplace_back(m_spawn_ammo);
+	m_spawn_actions.emplace_back(m_spawn_explosive_shots);
+	m_spawn_actions.emplace_back(m_spawn_fire_rate);
 
 	SetupSpawners();
 }

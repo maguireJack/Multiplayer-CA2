@@ -20,13 +20,19 @@ SoundPlayer::SoundPlayer()
 {
 	m_sound_buffers.Load(SoundEffect::kPlayer1Fire, "Media/Sounds/Gunfire.wav");
 	m_sound_buffers.Load(SoundEffect::kPlayer2Fire, "Media/Sounds/Gunfire.wav");
-	m_sound_buffers.Load(SoundEffect::kExplosion1, "Media/Sounds/Explosion.wav");
-	m_sound_buffers.Load(SoundEffect::kExplosion2, "Media/Sounds/Explosion.wav");
+	m_sound_buffers.Load(SoundEffect::kPlayer1FireMissile, "Media/Sounds/Gunfire5.wav");
+	m_sound_buffers.Load(SoundEffect::kPlayer2FireMissile, "Media/Sounds/Gunfire5.wav");
+	m_sound_buffers.Load(SoundEffect::kTankExplosion1, "Media/Sounds/TankExplosion.wav");
+	m_sound_buffers.Load(SoundEffect::kTankExplosion2, "Media/Sounds/TankExplosion.wav");
+	m_sound_buffers.Load(SoundEffect::kMissileExplosion1, "Media/Sounds/MissileExplosion.wav");
+	m_sound_buffers.Load(SoundEffect::kMissileExplosion2, "Media/Sounds/MissileExplosion.wav");
 	m_sound_buffers.Load(SoundEffect::kPlayer1Hit, "Media/Sounds/Hit.wav");
 	m_sound_buffers.Load(SoundEffect::kPlayer2Hit, "Media/Sounds/Hit.wav");
 	m_sound_buffers.Load(SoundEffect::kCollectPickup, "Media/Sounds/CollectPickup.wav");
 	m_sound_buffers.Load(SoundEffect::kRepair, "Media/Sounds/Repair.wav");
 	m_sound_buffers.Load(SoundEffect::kRestock, "Media/Sounds/Restock.wav");
+	m_sound_buffers.Load(SoundEffect::kMissileUpgrade, "Media/Sounds/Missile.wav");
+	m_sound_buffers.Load(SoundEffect::kFireRateUpgrade, "Media/Sounds/FireRate.wav");
 	m_sound_buffers.Load(SoundEffect::kButton, "Media/Sounds/Button.wav");
 
 	// Listener points towards the screen (default in SFML)

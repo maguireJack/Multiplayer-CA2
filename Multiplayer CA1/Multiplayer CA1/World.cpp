@@ -96,7 +96,9 @@ void World::LoadTextures()
 	m_textures.Load(Textures::kBackground, "Media/Textures/Tanx.png", sf::IntRect(88, 44, 10, 10));
 
 	m_textures.Load(Textures::kHealthRefill, "Media/Textures/HealthRefill.png");
-	m_textures.Load(Textures::kAmmoRefill, "Media/Textures/FireRate.png");
+	m_textures.Load(Textures::kAmmoRefill, "Media/Textures/FireSpread.png");
+	m_textures.Load(Textures::kExplosiveShots, "Media/Textures/MissileRefill.png");
+	m_textures.Load(Textures::kFireRate, "Media/Textures/FireRate.png");
 
 	m_textures.Load(Textures::kBullet, "Media/Textures/Bullet.png");
 	m_textures.Load(Textures::kMissile, "Media/Textures/Missile.png");
@@ -146,7 +148,7 @@ void World::BuildScene()
 	m_player_2_tank->setPosition(m_world_center + m_spawn_offset);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(p2tank));
 
-	std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.1f));
+	std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
 	spawner_manager->setPosition(m_world_center);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 }
@@ -245,8 +247,12 @@ void World::HandleCollisions()
 		{
 			auto& tank = static_cast<Tank&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
+			if(!projectile.CanDamagePlayers())
+				continue;
+
 			//Apply the projectile damage to the plane
 			tank.Damage(projectile.GetDamage());
+			projectile.AppliedPlayerDamage();
 			projectile.Destroy();
 			m_shake_timer = m_max_shake_timer;
 			if (tank.IsExploding()) {

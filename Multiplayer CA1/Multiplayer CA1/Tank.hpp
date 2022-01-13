@@ -14,7 +14,9 @@ enum TankActions
 	Firing = 1 << 1,
 	Hit = 1 << 2,
 	Repair = 1 << 3,
-	Restock = 1 << 4
+	Restock = 1 << 4,
+	ExplosiveUpgrade = 1 << 5,
+	FireRateUpgrade = 1 << 5
 };
 
 class Tank : public Entity
@@ -25,16 +27,20 @@ public:
 	unsigned int GetCategory() const override;
 
 	void Fire();
-	void CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures) const;
+	void CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive = false) const;
 	float GetMaxSpeed();
 	void Repair(int health);
 	void Damage(unsigned points) override;
 	void Destroy() override;
+	void GetExplosiveShots();
+	void GetIncreasedFireRate();
 	void FaceDirection(Utility::Direction dir);
 	int GetAmmo() const;
 	void ReplenishAmmo();
 	bool IsExploding() const;
 	bool IsDestroyed() const override;
+	bool HasExplosiveShotsUpgrade() const;
+	bool HasFireRateUpgrade() const;
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
@@ -53,15 +59,21 @@ public:
 private:
 	TankType m_type;
 	sf::Sprite m_sprite;
+	sf::Sprite m_explosive_shots_sprite;
+	sf::Sprite m_fire_rate_sprite;
 	Animation m_explosion;
 
 	sf::Time m_fire_cooldown;
 	sf::Time m_fire_interval;
 	Command m_fire_command;
+	Command m_explosive_fire_command;
 	int m_ammo;
 	int m_actions;
 	bool m_destroy_sound_played;
 	sf::Time m_fire_countdown;
+
+	sf::Time m_explosive_shot_countdown;
+	sf::Time m_fire_rate_countdown;
 
 	sf::Vector2f m_last_pos;
 };

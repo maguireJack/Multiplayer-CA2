@@ -37,9 +37,13 @@ std::vector<ProjectileData> InitializeProjectileData()
 	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_speed = 400;
 	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_texture = Textures::kBullet;
 
-	data[static_cast<int>(ProjectileType::kMissile)].m_damage = 200;
-	data[static_cast<int>(ProjectileType::kMissile)].m_speed = 150.f;
-	data[static_cast<int>(ProjectileType::kMissile)].m_texture = Textures::kMissile;
+	data[static_cast<int>(ProjectileType::kPlayer1Missile)].m_damage = 40;
+	data[static_cast<int>(ProjectileType::kPlayer1Missile)].m_speed = 300.f;
+	data[static_cast<int>(ProjectileType::kPlayer1Missile)].m_texture = Textures::kMissile;
+
+	data[static_cast<int>(ProjectileType::kPlayer2Missile)].m_damage = 40;
+	data[static_cast<int>(ProjectileType::kPlayer2Missile)].m_speed = 300.f;
+	data[static_cast<int>(ProjectileType::kPlayer2Missile)].m_texture = Textures::kMissile;
 	return data;
 }
 
@@ -53,7 +57,13 @@ std::vector<PickupData> InitializePickupData()
 	
 	data[static_cast<int>(PickupType::kAmmoRefill)].m_texture = Textures::kAmmoRefill;
 	data[static_cast<int>(PickupType::kAmmoRefill)].m_action = [](Tank& t) { t.ReplenishAmmo(); };
-	
+
+	data[static_cast<int>(PickupType::kExplosiveShots)].m_texture = Textures::kExplosiveShots;
+	data[static_cast<int>(PickupType::kExplosiveShots)].m_action = [](Tank& t) { t.GetExplosiveShots(); };
+
+	data[static_cast<int>(PickupType::kFireRate)].m_texture = Textures::kFireRate;
+	data[static_cast<int>(PickupType::kFireRate)].m_action = [](Tank& t) { t.GetIncreasedFireRate(); };
+
 	return data;
 }
 

@@ -3,12 +3,18 @@ enum class SoundEffect
 {
 	kPlayer1Fire,
 	kPlayer2Fire,
-	kExplosion1,
-	kExplosion2,
+	kPlayer1FireMissile,
+	kPlayer2FireMissile,
+	kTankExplosion1,
+	kTankExplosion2,
+	kMissileExplosion1,
+	kMissileExplosion2,
 	kCollectPickup,
 	kButton,
 	kPlayer1Hit,
 	kPlayer2Hit,
 	kRepair,
-	kRestock
+	kRestock,
+	kMissileUpgrade,
+	kFireRateUpgrade
 };

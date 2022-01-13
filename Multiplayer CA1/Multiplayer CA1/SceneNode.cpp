@@ -152,7 +152,7 @@ bool Collision(const SceneNode& lhs, const SceneNode& rhs)
 
 void SceneNode::CheckNodeCollision(SceneNode& node, std::set<Pair>& collision_pairs)
 {
-	if(this != &node && Collision(*this, node) && !IsDestroyed() && !node.IsDestroyed())
+	if(this->is_collidable && node.is_collidable && this != &node && Collision(*this, node) && !IsDestroyed() && !node.IsDestroyed())
 	{
 		collision_pairs.insert(std::minmax(this, &node));
 	}

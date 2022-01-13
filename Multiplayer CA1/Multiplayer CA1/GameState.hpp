@@ -1,6 +1,7 @@
 #pragma once
 #include "BoundLabel.hpp"
 #include "Container.hpp"
+#include "Image.hpp"
 #include "State.hpp"
 #include "World.hpp"
 
@@ -14,6 +15,7 @@ public:
 	virtual bool HandleEvent(const sf::Event& event);
 
 private:
+	void UpdateIcons();
 	void BindGui(const FontHolder& fonts);
 	void CreatePlayerLabels(const FontHolder& fonts, sf::Vector2f offset, int text_size,
 	                       std::string prefix, std::function<std::function<std::string()>(const Tank* const t)> func_factory);
@@ -27,5 +29,10 @@ private:
 
 	sf::FloatRect m_gui_area;
 	sf::Vector2f m_gui_center;
+
+	Image::Ptr m_player1_explosion_upgrade_image;
+	Image::Ptr m_player2_explosion_upgrade_image;
+	Image::Ptr m_player1_fire_rate_upgrade_image;
+	Image::Ptr m_player2_fire_rate_upgrade_image;
 };
 

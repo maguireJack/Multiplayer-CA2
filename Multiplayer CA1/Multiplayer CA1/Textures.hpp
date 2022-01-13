@@ -9,6 +9,7 @@ enum class Textures
 	kBackground,
 	kBullet,
 	kMissile,
+	kExplosiveShots,
 	kHealthRefill,
 	kAmmoRefill,
 	kFireSpread,

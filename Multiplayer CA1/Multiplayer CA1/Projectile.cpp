@@ -5,6 +5,7 @@
 
 #include "DataTables.hpp"
 #include "ResourceHolder.hpp"
+#include "SoundNode.hpp"
 #include "Utility.hpp"
 
 namespace
@@ -13,27 +14,23 @@ namespace
 }
 
 Projectile::Projectile(ProjectileType type, const TextureHolder& textures)
-: Entity(1)
-, m_type(type)
-, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	: Entity(1)
+	  , m_type(type)
+	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	  , m_explosion(textures.Get(Textures::kExplosion))
 {
+	//Setup Animation
+	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
+	m_explosion.SetNumFrames(16);
+	m_explosion.SetDuration(sf::seconds(1));
+	Utility::CentreOrigin(m_explosion);
+
 	Utility::CentreOrigin(m_sprite);
-}
-
-void Projectile::GuideTowards(sf::Vector2f position)
-{
-	assert(IsGuided());
-	m_target_direction = Utility::UnitVector(position - GetWorldPosition());
-}
-
-bool Projectile::IsGuided() const
-{
-	return m_type == ProjectileType::kMissile;
 }
 
 unsigned int Projectile::GetCategory() const
 {
-	if (m_type == ProjectileType::kPlayer1Bullet)
+	if (m_type == ProjectileType::kPlayer1Bullet || m_type == ProjectileType::kPlayer1Missile)
 		return static_cast<int>(Category::kPlayer1Projectile);
 	else
 		return static_cast<int>(Category::kPlayer2Projectile);
@@ -41,7 +38,10 @@ unsigned int Projectile::GetCategory() const
 
 sf::FloatRect Projectile::GetBoundingRect() const
 {
-	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
+	if (m_is_exploding)
+		return GetWorldTransform().transformRect(sf::FloatRect(m_explosion.GetGlobalBounds().left - m_explosion.GetGlobalBounds().width/2.f, m_explosion.GetGlobalBounds().top - m_explosion.GetGlobalBounds().height/2.f, m_explosion.GetGlobalBounds().width, m_explosion.GetGlobalBounds().height));
+	else
+		return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
 }
 
 float Projectile::GetMaxSpeed() const
@@ -54,22 +54,74 @@ int Projectile::GetDamage() const
 	return Table[static_cast<int>(m_type)].m_damage;
 }
 
+bool Projectile::IsMissile() const
+{
+	return m_type == ProjectileType::kPlayer1Missile || m_type == ProjectileType::kPlayer2Missile;
+}
+
+void Projectile::Destroy()
+{
+	if (!IsMissile())
+		Entity::Destroy();
+	else
+	{
+		m_is_exploding = true;
+		setScale(0.25f, 0.25f);
+	}
+}
+
+bool Projectile::IsDestroyed() const
+{
+	return Entity::IsDestroyed();
+}
+
+bool Projectile::CanDamagePlayers()
+{
+	return !m_damaged_player;
+}
+
+void Projectile::AppliedPlayerDamage()
+{
+	m_damaged_player = true;
+}
+
 void Projectile::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	if(IsGuided())
+	if (m_is_exploding)
 	{
-		//Increase approach rate to move in the direction of the target faster
-		const float approach_rate = 200.f;
-		sf::Vector2f new_velocity = Utility::UnitVector(approach_rate * dt.asSeconds() * m_target_direction + GetVelocity());
-		new_velocity *= GetMaxSpeed();
-		float angle = std::atan2(new_velocity.y, new_velocity.x);
-		setRotation(Utility::ToDegrees(angle) + 90.f);
-		SetVelocity(new_velocity);
+		if(!m_explode_sound_played)
+		{
+			PlaySound(commands, SoundEffect::kMissileExplosion1);
+			m_explode_sound_played = true;
+		}
+		m_explosion.Update(dt);
+		if (m_explosion.IsFinished())
+			Entity::Destroy();
 	}
-	Entity::UpdateCurrent(dt, commands);
+	else Entity::UpdateCurrent(dt, commands);
 }
 
 void Projectile::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(m_sprite, states);
+	if (m_is_exploding)
+		target.draw(m_explosion, states);
+	else target.draw(m_sprite, states);
+}
+
+void Projectile::PlaySound(CommandQueue& commands, SoundEffect effect, bool global)
+{
+	sf::Vector2f world_position = GetWorldPosition();
+
+	Command command;
+	command.category = Category::kSoundEffect;
+	command.action = DerivedAction<SoundNode>(
+		[effect, world_position, global](SoundNode& node, sf::Time)
+		{
+			if (global)
+				node.PlaySound(effect);
+			else
+				node.PlaySound(effect, world_position);
+		});
+
+	commands.Push(command);
 }
