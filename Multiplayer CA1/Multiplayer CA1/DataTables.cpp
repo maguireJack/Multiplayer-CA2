@@ -11,13 +11,17 @@ std::vector<TankData> InitializeTankData()
 	std::vector<TankData> data(static_cast<int>(TankType::kTankTypeCount));
 
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_hitpoints = 100;
+	data[static_cast<int>(TankType::kPlayer1Tank)].m_max_hitpoints = 200;
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_ammo = 10;
+	data[static_cast<int>(TankType::kPlayer1Tank)].m_max_ammo = 20;
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_speed = 200.f;
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_fire_interval = sf::seconds(1);
 	data[static_cast<int>(TankType::kPlayer1Tank)].m_texture = Textures::kPlayer1Tank;
 
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_hitpoints = 100;
+	data[static_cast<int>(TankType::kPlayer2Tank)].m_max_hitpoints = 200;
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_ammo = 10;
+	data[static_cast<int>(TankType::kPlayer2Tank)].m_max_ammo = 20;
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_speed = 200.f;
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_fire_interval = sf::seconds(1);
 	data[static_cast<int>(TankType::kPlayer2Tank)].m_texture = Textures::kPlayer2Tank;

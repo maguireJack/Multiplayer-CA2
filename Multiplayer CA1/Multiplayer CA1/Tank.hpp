@@ -11,12 +11,13 @@
 
 enum TankActions
 {
-	Firing = 1 << 1,
-	Hit = 1 << 2,
-	Repair = 1 << 3,
-	Restock = 1 << 4,
-	ExplosiveUpgrade = 1 << 5,
-	FireRateUpgrade = 1 << 5
+	kFiring = 1 << 1,
+	kHit = 1 << 2,
+	kRepair = 1 << 3,
+	kRestock = 1 << 4,
+	kExplosiveUpgrade = 1 << 5,
+	kFireRateUpgrade = 1 << 6,
+	kUpgradeFailed = 1 << 7
 };
 
 class Tank : public Entity

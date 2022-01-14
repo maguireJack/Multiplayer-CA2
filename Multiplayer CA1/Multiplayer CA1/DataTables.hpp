@@ -31,10 +31,12 @@ struct AircraftData
 struct TankData
 {
 	int m_hitpoints;
+	int m_max_hitpoints;
 	float m_speed;
 	Textures m_texture;
 	sf::Time m_fire_interval;
 	int m_ammo;
+	int m_max_ammo;
 };
 
 struct ProjectileData

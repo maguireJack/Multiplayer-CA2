@@ -16,5 +16,6 @@ enum class SoundEffect
 	kRepair,
 	kRestock,
 	kMissileUpgrade,
-	kFireRateUpgrade
+	kFireRateUpgrade,
+	kHealthFull
 };

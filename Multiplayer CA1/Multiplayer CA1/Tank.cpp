@@ -84,7 +84,7 @@ void Tank::Fire()
 {
 	if (m_ammo > 0)
 	{
-		m_actions = m_actions | Firing;
+		m_actions = m_actions | kFiring;
 	}
 }
 
@@ -110,14 +110,23 @@ float Tank::GetMaxSpeed()
 
 void Tank::Repair(int health)
 {
-	Entity::Repair(health);
-	m_actions = m_actions | TankActions::Repair;
+	int maxHealth = Table[static_cast<int>(m_type)].m_max_hitpoints;
+	if (GetHitPoints() + health > maxHealth)
+	{
+		health = maxHealth - GetHitPoints();
+	}
+
+	if (health > 0) {
+		Entity::Repair(health);
+		m_actions = m_actions | TankActions::kRepair;
+	}
+	else m_actions = m_actions | TankActions::kUpgradeFailed;
 }
 
 void Tank::Damage(unsigned points)
 {
 	Entity::Damage(points);
-	m_actions = m_actions | Hit;
+	m_actions = m_actions | kHit;
 	if(IsExploding())
 		setScale(1, 1);
 }
@@ -130,13 +139,13 @@ void Tank::Destroy()
 void Tank::GetExplosiveShots()
 {
 	m_explosive_shot_countdown = sf::seconds(10);
-	m_actions = m_actions | ExplosiveUpgrade;
+	m_actions = m_actions | kExplosiveUpgrade;
 }
 
 void Tank::GetIncreasedFireRate()
 {
 	m_fire_rate_countdown = sf::seconds(10);
-	m_actions = m_actions | FireRateUpgrade;
+	m_actions = m_actions | kFireRateUpgrade;
 }
 
 void Tank::FaceDirection(Utility::Direction dir)
@@ -165,8 +174,22 @@ int Tank::GetAmmo() const
 
 void Tank::ReplenishAmmo()
 {
-	m_ammo = Table[static_cast<int>(m_type)].m_ammo;
-	m_actions = m_actions | Restock;
+	int ammoToAdd = Table[static_cast<int>(m_type)].m_ammo;
+	int maxAmmo = Table[static_cast<int>(m_type)].m_max_ammo;
+
+	if (m_ammo + ammoToAdd > maxAmmo)
+	{
+		ammoToAdd = maxAmmo - m_ammo;
+	}
+
+	if (ammoToAdd > 0) {
+		m_ammo += ammoToAdd;
+		m_actions = m_actions | kRestock;
+	}
+	else
+	{
+		m_actions = m_actions | kUpgradeFailed;
+	}
 }
 
 bool Tank::IsExploding() const
@@ -216,7 +239,7 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 {
 	m_last_pos = getPosition();
 	Entity::UpdateCurrent(dt, commands);
-	if (m_actions & Firing)
+	if (m_actions & kFiring)
 	{
 		if (m_fire_cooldown.asSeconds() <= 0.f && m_ammo > 0)
 		{
@@ -240,25 +263,29 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 			else m_fire_cooldown = m_fire_interval;
 		}
 	}
-	if (m_actions & Hit)
+	if (m_actions & kHit)
 	{
 		PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Hit : SoundEffect::kPlayer2Hit);
 	}
-	if (m_actions & Restock)
+	if (m_actions & kRestock)
 	{
 		PlaySound(commands, SoundEffect::kRestock);
 	}
-	if (m_actions & TankActions::Repair)
+	if (m_actions & TankActions::kRepair)
 	{
 		PlaySound(commands, SoundEffect::kRepair);
 	}
-	if (m_actions & TankActions::ExplosiveUpgrade)
+	if (m_actions & TankActions::kExplosiveUpgrade)
 	{
 		PlaySound(commands, SoundEffect::kMissileUpgrade);
 	}
-	if (m_actions & TankActions::FireRateUpgrade)
+	if (m_actions & TankActions::kFireRateUpgrade)
 	{
 		PlaySound(commands, SoundEffect::kFireRateUpgrade);
+	}
+	if (m_actions & TankActions::kUpgradeFailed)
+	{
+		PlaySound(commands, SoundEffect::kHealthFull);
 	}
 
 	m_actions = 0;

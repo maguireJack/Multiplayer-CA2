@@ -33,6 +33,7 @@ SoundPlayer::SoundPlayer()
 	m_sound_buffers.Load(SoundEffect::kRestock, "Media/Sounds/Restock.wav");
 	m_sound_buffers.Load(SoundEffect::kMissileUpgrade, "Media/Sounds/Missile.wav");
 	m_sound_buffers.Load(SoundEffect::kFireRateUpgrade, "Media/Sounds/FireRate.wav");
+	m_sound_buffers.Load(SoundEffect::kHealthFull, "Media/Sounds/HealthFull.wav");
 	m_sound_buffers.Load(SoundEffect::kButton, "Media/Sounds/Button.wav");
 
 	// Listener points towards the screen (default in SFML)
