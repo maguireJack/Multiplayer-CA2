@@ -13,71 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\States">
-      <UniqueIdentifier>{16aa46be-6416-4d0f-bc4d-f9d77b747374}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects">
-      <UniqueIdentifier>{1573124b-4cf8-42ee-99d9-6866d4114415}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene">
-      <UniqueIdentifier>{908d1049-b47c-4957-aa34-d57c7bf7ca4e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\GUI">
-      <UniqueIdentifier>{a98df76c-9f28-4322-95e6-09ea04ce462e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Resources">
-      <UniqueIdentifier>{b174659a-ef87-43be-b3c7-5a2450d7c178}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Input">
-      <UniqueIdentifier>{e898724e-4b2d-4828-b101-f2fd06d732df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Helper">
-      <UniqueIdentifier>{30553823-1b8d-4176-845e-b4df10d38033}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Input">
-      <UniqueIdentifier>{2ee3a154-e2c8-4e7d-87d3-e74df4850113}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Helper">
-      <UniqueIdentifier>{aff8a86a-e343-4078-9b3e-ec66c78017cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\States">
-      <UniqueIdentifier>{ec0ccb01-195f-4cc9-8cb9-bae815e4194a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene\Class">
-      <UniqueIdentifier>{54172d54-fc28-4f84-9f0d-7a88ff792512}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene\Class\Aircraft">
-      <UniqueIdentifier>{fea2f434-0e0d-4381-851d-9f7957a67a37}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene\Class\Pickup">
-      <UniqueIdentifier>{48c5c5ef-f2c5-44ff-91ff-ac64599838dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene\Class\Projectile">
-      <UniqueIdentifier>{02243756-4b30-4d1c-8775-d8e4b10bbf93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Objects">
-      <UniqueIdentifier>{ed61ed53-4896-457a-bc11-34536ccfa679}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Objects\GUI">
-      <UniqueIdentifier>{151b788e-cc46-4603-ad5d-0664e3b1003f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Objects\Scene">
-      <UniqueIdentifier>{8bc722b2-6ede-4f80-b91a-05c7350e7fdf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Objects\Scene\Class">
-      <UniqueIdentifier>{dbd530f4-b976-4b09-9716-3cb2af00074e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene\Mine">
-      <UniqueIdentifier>{69db2811-eb43-4f46-852e-bc4eded86901}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Objects\Scene\Mine\Tank">
-      <UniqueIdentifier>{5a6e3bb5-7a01-46e4-a5ec-70fe16937318}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Arena.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Tank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -218,9 +155,6 @@
     <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Arena.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -234,9 +168,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Component.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Container.hpp">

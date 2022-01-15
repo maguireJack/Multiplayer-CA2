@@ -10,8 +10,6 @@ GameState::GameState(StateStack& stack, Context context)
 , m_gui_area(0,600, 900, 200)
 , m_gui_center(m_gui_area.left + m_gui_area.width/2.f, m_gui_area.top+ m_gui_area.height/2.f)
 {
-	context.textures->Load(Textures::kExplosiveShots, "Media/Textures/MissileRefill.png");
-	context.textures->Load(Textures::kFireRate, "Media/Textures/FireRate.png");
 	m_player1_explosion_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kExplosiveShots);
 	m_player2_explosion_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kExplosiveShots);
 	m_player1_fire_rate_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kFireRate);

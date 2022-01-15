@@ -32,7 +32,6 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	m_scene_texture.create(m_target.getSize().x, m_target.getSize().y);
 	LoadTextures();
 	BuildScene();
-	std::cout << m_camera.getSize().x << m_camera.getSize().y << std::endl;
 	m_camera.setCenter(450,400);
 }
 
@@ -250,12 +249,12 @@ void World::HandleCollisions()
 			if(!projectile.CanDamagePlayers())
 				continue;
 
-			//Apply the projectile damage to the plane
+			//Apply the projectile damage to the tank
 			tank.Damage(projectile.GetDamage());
 			projectile.AppliedPlayerDamage();
 			projectile.Destroy();
 			m_shake_timer = m_max_shake_timer;
-			if (tank.IsExploding()) {
+			if (tank.IsExploding() && m_winner != Category::kPlayer1Tank && m_winner != Category::kPlayer2Tank) {
 				tank.OnFinishExploding = [this] { m_game_over = true; };
 				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank));
 			}

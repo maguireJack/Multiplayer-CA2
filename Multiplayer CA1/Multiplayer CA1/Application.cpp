@@ -23,6 +23,8 @@ Application::Application()
 	m_textures.Load(Textures::kButtonNormal, "Media/Textures/ButtonNormal.png");
 	m_textures.Load(Textures::kButtonSelected, "Media/Textures/ButtonSelected.png");
 	m_textures.Load(Textures::kButtonPressed, "Media/Textures/ButtonPressed.png");
+	m_textures.Load(Textures::kExplosiveShots, "Media/Textures/MissileRefill.png");
+	m_textures.Load(Textures::kFireRate, "Media/Textures/FireRate.png");
 
 	m_statistics_text.setFont(m_fonts.Get(Fonts::Main));
 	m_statistics_text.setPosition(5.f, 5.f);

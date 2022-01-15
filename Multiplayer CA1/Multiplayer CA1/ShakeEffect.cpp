@@ -32,8 +32,6 @@ void ShakeEffect::Apply(const sf::RenderTexture& input, sf::RenderTarget& output
 
 	shake.setUniformArray("blur_kernel", blur_kernel, 9);
 
-	shake.setUniform("source", input.getTexture());
-
 	ApplyShader(shake, output);
 }
 
