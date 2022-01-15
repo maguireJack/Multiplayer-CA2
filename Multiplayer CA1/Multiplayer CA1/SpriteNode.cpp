@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "SpriteNode.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

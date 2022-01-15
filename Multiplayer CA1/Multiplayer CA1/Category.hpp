@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564
 #pragma once
 //SceneNode category used to dispatch commands
 namespace Category

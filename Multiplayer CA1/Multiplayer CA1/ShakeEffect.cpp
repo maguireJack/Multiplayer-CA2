@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "ShakeEffect.hpp"
 
 #include <SFML/Graphics/Shader.hpp>

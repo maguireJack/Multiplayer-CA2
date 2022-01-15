@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "EmitterNode.hpp"
 #include "ParticleNode.hpp"
 #include "CommandQueue.hpp"

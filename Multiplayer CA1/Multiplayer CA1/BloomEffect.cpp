@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "BloomEffect.hpp"
 #include "Shaders.hpp"
 

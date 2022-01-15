@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "Entity.hpp"
 
 Entity::Entity(int hitpoints)

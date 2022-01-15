@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "Projectile.hpp"
 
 #include <valarray>

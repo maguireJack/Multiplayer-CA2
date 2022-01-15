@@ -1,3 +1,4 @@
+//Alex Nogueira / D00242564 
 #include "Image.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
