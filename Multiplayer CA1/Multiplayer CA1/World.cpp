@@ -171,6 +171,13 @@ void World::BuildScene()
 	std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
 	spawner_manager->setPosition(m_world_center);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
+
+	if (m_networked_world)
+	{
+		std::unique_ptr<NetworkNode> network_node(new NetworkNode());
+		m_network_node = network_node.get();
+		m_scenegraph.AttachChild(std::move(network_node));
+	}
 }
 
 void World::SetWorldHeight(float height)
