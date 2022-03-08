@@ -386,15 +386,12 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 
 	case Server::PacketType::InitialState:
 	{
-		sf::Int32 tank_identifier;
-		float world_height, current_scroll;
-		packet >> world_height >> current_scroll;
+		sf::Int32 tank_count;
+		float world_width, world_height;
+		packet >> world_width >> world_height;
 
-		m_world.SetWorldHeight(world_height);
-		m_world.SetCurrentBattleFieldPosition(current_scroll);
-
-		packet >> tank_identifier;
-		for (sf::Int32 i = 0; i < tank_identifier; ++i)
+		packet >> tank_count;
+		for (sf::Int32 i = 0; i < tank_count; ++i)
 		{
 			sf::Int32 tank_identifier;
 			sf::Int32 hitpoints;
@@ -464,27 +461,21 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 
 	case Server::PacketType::UpdateClientState:
 	{
-		float current_world_position;
-		sf::Int32 aircraft_count;
-		packet >> current_world_position >> aircraft_count;
+		sf::Int32 tank_count;
+		packet >> tank_count;
 
-		float current_view_position = m_world.GetViewBounds().top + m_world.GetViewBounds().height;
-
-		//Set the world's scroll compensation according to whether the view is behind or ahead
-		m_world.SetWorldScrollCompensation(current_view_position / current_world_position);
-
-		for (sf::Int32 i = 0; i < aircraft_count; ++i)
+		for (sf::Int32 i = 0; i < tank_count; ++i)
 		{
-			sf::Vector2f aircraft_position;
+			sf::Vector2f tank_position;
 			sf::Int32 aircraft_identifier;
-			packet >> aircraft_identifier >> aircraft_position.x >> aircraft_position.y;
+			packet >> aircraft_identifier >> tank_position.x >> tank_position.y;
 
-			Tank* aircraft = m_world.GetTank(aircraft_identifier);
-			bool is_local_plane = std::find(m_local_player_identifiers.begin(), m_local_player_identifiers.end(), aircraft_identifier) != m_local_player_identifiers.end();
-			if(aircraft && !is_local_plane)
+			Tank* tank = m_world.GetTank(aircraft_identifier);
+			bool is_local_tank = std::find(m_local_player_identifiers.begin(), m_local_player_identifiers.end(), aircraft_identifier) != m_local_player_identifiers.end();
+			if(tank && !is_local_tank)
 			{
-				sf::Vector2f interpolated_position = aircraft->getPosition() + (aircraft_position - aircraft->getPosition()) * 0.1f;
-				aircraft->setPosition(interpolated_position);
+				sf::Vector2f interpolated_position = tank->getPosition() + (tank_position - tank->getPosition()) * 0.1f;
+				tank->setPosition(interpolated_position);
 			}
 		}
 	}

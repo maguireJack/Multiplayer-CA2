@@ -15,7 +15,7 @@ struct TankMover
 	void operator()(Tank& tank, sf::Time) const
 	{
 		tank.FaceDirection(dir);
-		tank.Accelerate(velocity * tank.GetMaxSpeed());
+		tank.SetVelocity(velocity * tank.GetMaxSpeed());
 	}
 
 	Utility::Direction dir;
@@ -171,7 +171,6 @@ void Player::InitialiseActions()
 	m_action_binding[PlayerAction::kPlayer1MoveUp].category = Category::kPlayer1Tank;
 	m_action_binding[PlayerAction::kPlayer1MoveDown].category = Category::kPlayer1Tank;
 	m_action_binding[PlayerAction::kPlayer1Fire].category = Category::kPlayer1Tank;
-
 }
 
 bool Player::IsRealtimeAction(PlayerAction action)

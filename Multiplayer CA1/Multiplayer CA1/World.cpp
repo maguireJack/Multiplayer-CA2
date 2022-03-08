@@ -13,45 +13,45 @@
 
 World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked)
 	: m_target(output_target)
-	, m_camera(m_target.getDefaultView())
-	, m_textures()
-	, m_fonts(font)
-	, m_scenegraph()
-	, m_scene_layers()
-	, m_world_bounds(0.f, 0.f, 900, 600)
-	, m_world_center(m_world_bounds.width / 2.f, m_world_bounds.height / 2.f)
-	, m_spawn_offset(370, -175)
-	, m_scrollspeed(-50.f)
-	, m_player_1_tank(nullptr)
-	, m_player_2_tank(nullptr)
-	, m_game_over(false)
-	, m_winner(Category::kNone)
-	, m_sounds(sounds)
-	, m_max_shake_timer(sf::seconds(0.25))
-	, m_max_shake_intensity(10)
-	, m_networked_world(networked)
-	, m_network_node(nullptr)
-	, m_finish_sprite(nullptr)
+	  , m_camera(m_target.getDefaultView())
+	  , m_textures()
+	  , m_fonts(font)
+	  , m_scenegraph()
+	  , m_scene_layers()
+	  , m_world_bounds(0.f, 0.f, 900, 600)
+	  , m_world_center(m_world_bounds.width / 2.f, m_world_bounds.height / 2.f)
+	  , m_spawn_offset(370, -175)
+	  , m_scrollspeed(-50.f)
+	  , m_player_1_tank(nullptr)
+	  , m_game_over(false)
+	  , m_winner(Category::kNone)
+	  , m_sounds(sounds)
+	  , m_max_shake_timer(sf::seconds(0.25))
+	  , m_max_shake_intensity(10)
+	  , m_networked_world(networked)
+	  , m_network_node(nullptr)
+	  , m_finish_sprite(nullptr)
 {
 	m_scene_texture.create(m_target.getSize().x, m_target.getSize().y);
 	LoadTextures();
 	BuildScene();
-	m_camera.setCenter(450,400);
+	m_camera.setCenter(450, 400);
 }
 
 void World::Update(sf::Time dt)
 {
-	m_player_1_tank->SetVelocity(0, 0);
-	m_player_2_tank->SetVelocity(0, 0);
+	for (Tank* tank : m_player_tanks)
+	{
+		tank->SetVelocity(0, 0);
+	}
 
 	//Forward commands to the scenegraph until the command queue is empty
-	while(!m_command_queue.IsEmpty())
+	while (!m_command_queue.IsEmpty())
 	{
 		m_scenegraph.OnCommand(m_command_queue.Pop(), dt);
 	}
 
-	AdaptPlayerVelocity(m_player_1_tank);
-	AdaptPlayerVelocity(m_player_2_tank);
+	AdaptPlayerVelocity();
 
 	HandleCollisions();
 
@@ -92,7 +92,7 @@ void World::Draw()
 		m_scene_texture.clear();
 		m_scene_texture.setView(m_camera);
 		m_scene_texture.draw(m_scenegraph);
-		if (m_shake_timer.asSeconds() > 0) 
+		if (m_shake_timer.asSeconds() > 0)
 		{
 			float intensity = m_max_shake_intensity * m_shake_timer.asSeconds() / m_max_shake_timer.asSeconds();
 			m_shake_effect.Apply(m_scene_texture, m_target, m_total_time, intensity);
@@ -111,8 +111,8 @@ void World::Draw()
 
 void World::LoadTextures()
 {
-	m_textures.Load(Textures::kPlayer1Tank, "Media/Textures/Tanx.png", sf::IntRect(1,12,10,10));
-	m_textures.Load(Textures::kPlayer2Tank, "Media/Textures/Tanx.png", sf::IntRect(1,23,10,10));
+	m_textures.Load(Textures::kPlayer1Tank, "Media/Textures/Tanx.png", sf::IntRect(1, 12, 10, 10));
+	m_textures.Load(Textures::kPlayer2Tank, "Media/Textures/Tanx.png", sf::IntRect(1, 23, 10, 10));
 	m_textures.Load(Textures::kBackground, "Media/Textures/Tanx.png", sf::IntRect(88, 44, 10, 10));
 
 	m_textures.Load(Textures::kHealthRefill, "Media/Textures/HealthRefill.png");
@@ -131,7 +131,9 @@ void World::BuildScene()
 	//Initialize the different layers
 	for (std::size_t i = 0; i < static_cast<int>(Layers::kLayerCount); ++i)
 	{
-		Category::Type category = (i == static_cast<int>(Layers::kBattlefield)) ? Category::Type::kScene : Category::Type::kNone;
+		Category::Type category = (i == static_cast<int>(Layers::kBattlefield))
+			                          ? Category::Type::kScene
+			                          : Category::Type::kNone;
 		SceneNode::Ptr layer(new SceneNode(false, category));
 		m_scene_layers[i] = layer.get();
 		m_scenegraph.AttachChild(std::move(layer));
@@ -156,21 +158,9 @@ void World::BuildScene()
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
 	m_scenegraph.AttachChild(std::move(soundNode));
 
-	//Add player 1 tank
-	std::unique_ptr<Tank> p1tank(new Tank(TankType::kPlayer1Tank, m_textures));
-	m_player_1_tank = p1tank.get();
-	m_player_1_tank->setPosition(m_world_center - m_spawn_offset);
-	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(p1tank));
-
-	//Add plyaer 2 tank
-	std::unique_ptr<Tank> p2tank(new Tank(TankType::kPlayer2Tank, m_textures));
-	m_player_2_tank = p2tank.get();
-	m_player_2_tank->setPosition(m_world_center + m_spawn_offset);
-	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(p2tank));
-
-	std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
+	/*std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
 	spawner_manager->setPosition(m_world_center);
-	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));*/
 
 	if (m_networked_world)
 	{
@@ -184,9 +174,9 @@ void World::SetWorldHeight(float height)
 {
 	m_world_bounds.height = height;
 }
+
 void World::SetCurrentBattleFieldPosition(float lineY)
 {
-	m_camera.setCenter(m_camera.getCenter().x, lineY - m_camera.getSize().y / 2);
 	m_spawn_offset.y = m_world_bounds.height;
 }
 
@@ -198,11 +188,6 @@ CommandQueue& World::getCommandQueue()
 const Tank* const World::GetPlayer1() const
 {
 	return m_player_1_tank;
-}
-
-const Tank* const World::GetPlayer2() const
-{
-	return m_player_2_tank;
 }
 
 bool World::IsGameOver() const
@@ -228,13 +213,16 @@ void World::CreatePickup(sf::Vector2f position, PickupType type)
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(pickup));
 }
 
-void World::AdaptPlayerVelocity(Tank* player)
+void World::AdaptPlayerVelocity()
 {
-	sf::Vector2f velocity = player->GetVelocity();
-	//if moving diagonally then reduce velocity
-	if (velocity.x != 0.f && velocity.y != 0.f)
+	for (Tank* tank : m_player_tanks)
 	{
-		player->SetVelocity(velocity / std::sqrt(2.f));
+		sf::Vector2f velocity = tank->GetVelocity();
+		//if moving diagonally then reduce velocity
+		if (velocity.x != 0.f && velocity.y != 0.f)
+		{
+			tank->SetVelocity(velocity / std::sqrt(2.f));
+		}
 	}
 }
 
@@ -258,11 +246,11 @@ bool MatchesCategories(SceneNode::Pair& colliders, Category::Type type1, Categor
 	unsigned int category1 = colliders.first->GetCategory();
 	unsigned int category2 = colliders.second->GetCategory();
 
-	if(type1 & category1 && type2 & category2)
+	if (type1 & category1 && type2 & category2)
 	{
 		return true;
 	}
-	else if(type1 & category2 && type2 & category1)
+	else if (type1 & category2 && type2 & category1)
 	{
 		std::swap(colliders.first, colliders.second);
 		return true;
@@ -286,7 +274,7 @@ void World::RemoveTank(int identifier)
 Tank* World::AddTank(int identifier)
 {
 	std::unique_ptr<Tank> player(new Tank(TankType::kPlayer1Tank, m_textures));
-	player->setPosition(m_camera.getCenter());
+	player->setPosition(sf::Vector2f(150, 150));
 	player->SetIdentifier(identifier);
 
 	m_player_tanks.emplace_back(player.get());
@@ -299,7 +287,7 @@ void World::HandleCollisions()
 {
 	std::set<SceneNode::Pair> collision_pairs;
 	m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
-	for(SceneNode::Pair pair : collision_pairs)
+	for (SceneNode::Pair pair : collision_pairs)
 	{
 		if (MatchesCategories(pair, Category::Type::kTank, Category::Type::kPickup))
 		{
@@ -310,11 +298,12 @@ void World::HandleCollisions()
 			pickup.Destroy();
 		}
 
-		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kPlayer2Projectile) || MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kPlayer1Projectile))
+		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kPlayer2Projectile) ||
+			MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kPlayer1Projectile))
 		{
 			auto& tank = static_cast<Tank&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
-			if(!projectile.CanDamagePlayers())
+			if (!projectile.CanDamagePlayers())
 				continue;
 
 			//Apply the projectile damage to the tank
@@ -322,9 +311,12 @@ void World::HandleCollisions()
 			projectile.AppliedPlayerDamage();
 			projectile.Destroy();
 			m_shake_timer = m_max_shake_timer;
-			if (tank.IsExploding() && m_winner != Category::kPlayer1Tank && m_winner != Category::kPlayer2Tank) {
+			if (tank.IsExploding() && m_winner != Category::kPlayer1Tank && m_winner != Category::kPlayer2Tank)
+			{
 				tank.OnFinishExploding = [this] { m_game_over = true; };
-				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank ? Category::Type::kPlayer2Tank : Category::Type::kPlayer1Tank));
+				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank
+					                                                   ? Category::Type::kPlayer2Tank
+					                                                   : Category::Type::kPlayer1Tank));
 			}
 		}
 
@@ -336,13 +328,15 @@ void World::HandleCollisions()
 			projectile.Destroy();
 		}
 
-		else if (MatchesCategories(pair, Category::Type::kPlayer1Projectile, Category::Type::kTile) || MatchesCategories(pair, Category::Type::kPlayer2Projectile, Category::Type::kTile))
+		else if (MatchesCategories(pair, Category::Type::kPlayer1Projectile, Category::Type::kTile) ||
+			MatchesCategories(pair, Category::Type::kPlayer2Projectile, Category::Type::kTile))
 		{
 			auto& projectile = static_cast<Projectile&>(*pair.first);
 			projectile.Destroy();
 		}
 
-		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kTile) || MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kTile))
+		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kTile) || MatchesCategories(
+			pair, Category::Type::kPlayer2Tank, Category::Type::kTile))
 		{
 			auto& tank = static_cast<Tank&>(*pair.first);
 			tank.ResetToLastPos();
@@ -350,6 +344,7 @@ void World::HandleCollisions()
 	}
 }
 
+//TODO probably remove
 void World::SetWorldScrollCompensation(float compensation)
 {
 	m_scrollspeed_compensation = compensation;

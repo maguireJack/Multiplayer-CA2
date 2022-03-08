@@ -39,7 +39,7 @@ public:
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
-
+	
 	const Tank* const GetPlayer1() const;
 	const Tank* const GetPlayer2() const;
 	Tank* GetTank(int indentifier) const;
@@ -63,7 +63,7 @@ public:
 private:
 	void LoadTextures();
 	void BuildScene();
-	void AdaptPlayerVelocity(Tank* player);
+	void AdaptPlayerVelocity();
 
 	void HandleCollisions();
 	void UpdateSounds();
@@ -99,7 +99,6 @@ private:
 	sf::Vector2f m_world_center;
 	float m_scrollspeed;
 	Tank* m_player_1_tank;
-	Tank* m_player_2_tank;
 	std::vector<Tank*> m_player_tanks;
 	bool m_game_over;
 	Category::Type m_winner;
