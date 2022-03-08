@@ -14,8 +14,6 @@ namespace Server
 		PlayerRealtimeChange,
 		PlayerConnect,
 		PlayerDisconnect,
-		AcceptCoopPartner,
-		SpawnEnemy,
 		SpawnPickup,
 		SpawnSelf,
 		UpdateClientState,
@@ -30,7 +28,6 @@ namespace Client
 	{
 		PlayerEvent,
 		PlayerRealtimeChange,
-		RequestCoopPartner,
 		PositionUpdate,
 		GameEvent,
 		Quit

@@ -22,6 +22,7 @@ namespace Category
 		kDestroyableTile = 1 << 9,
 		kParticleSystem = 1 << 10,
 		kSoundEffect = 1 << 11,
+		kNetwork = 1 << 12,
 
 		kTile = kFloorTile | kWallTile | kDestroyableTile,
 		kTank = kPlayer1Tank | kPlayer2Tank,

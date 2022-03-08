@@ -8,53 +8,20 @@
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"
 
-GameOverState::GameOverState(StateStack& stack, Context context)
+GameOverState::GameOverState(StateStack& stack, Context context, const std::string& text)
 	: State(stack, context)
-	, m_dimmer(context.window->getView().getSize())
-	, m_finish_text()
-	, m_winner_text()
-	, m_instruction_text()
-{	
-	m_dimmer.setFillColor(sf::Color(0, 0, 0, 150));
-
-	sf::Font& font = context.fonts->Get(Fonts::Main);
-	sf::Vector2f viewSize(context.window->getView().getSize());
-
-	m_finish_text.setFont(font);
-	m_finish_text.setString("Game Over!");
-	m_finish_text.setCharacterSize(70);
-	Utility::CentreOrigin(m_finish_text);
-	m_finish_text.setPosition(0.5f * viewSize.x, 0.2f * viewSize.y);
-
-	m_winner_text.setFont(font);
-	m_winner_text.setString(GetWinnerText(context.player->m_winner));
-	m_winner_text.setCharacterSize(70);
-	Utility::CentreOrigin(m_winner_text);
-	m_winner_text.setPosition(0.5f * viewSize.x, 0.4f * viewSize.y);
-
-	m_instruction_text.setFont(font);
-	m_instruction_text.setString("Press Escape to Leave to Menu");
-	m_instruction_text.setCharacterSize(50);
-	Utility::CentreOrigin(m_instruction_text);
-	m_instruction_text.setPosition(0.5f * viewSize.x, 0.6f * viewSize.y);
-}
-
-std::string GameOverState::GetWinnerText(Category::Type winner) const
+	, m_game_over_text()
+	, m_elapsed_time(sf::Time::Zero)
 {
-	if (winner & Category::kPlayer1Tank && winner & Category::kPlayer2Tank)
-	{
-		return "It's a Draw!";
-	}
-	if (winner == Category::kPlayer1Tank)
-	{
-		return "Player 1 won!";
-	}
-	if (winner == Category::kPlayer2Tank)
-	{
-		return "Player 2 won!";
-	}
+	sf::Font& font = context.fonts->Get(Fonts::Main);
+	sf::Vector2f windowSize(context.window->getSize());
 
-	return "Invalid Winner";
+	m_game_over_text.setFont(font);
+	m_game_over_text.setString(text);
+
+	m_game_over_text.setCharacterSize(70);
+	Utility::CentreOrigin(m_game_over_text);
+	m_game_over_text.setPosition(0.5f * windowSize.x, 0.4f * windowSize.y);
 }
 
 void GameOverState::Draw()
@@ -62,27 +29,28 @@ void GameOverState::Draw()
 	sf::RenderWindow& window = *GetContext().window;
 	window.setView(window.getDefaultView());
 
-	window.draw(m_dimmer);
-	window.draw(m_finish_text);
-	window.draw(m_winner_text);
-	window.draw(m_instruction_text);
+	// Create dark, semitransparent background
+	sf::RectangleShape backgroundShape;
+	backgroundShape.setFillColor(sf::Color(0, 0, 0, 150));
+	backgroundShape.setSize(window.getView().getSize());
+
+	window.draw(backgroundShape);
+	window.draw(m_game_over_text);
 }
 
-bool GameOverState::Update(sf::Time)
+bool GameOverState::Update(sf::Time dt)
 {
-	return false;
-}
-
-bool GameOverState::HandleEvent(const sf::Event& event)
-{
-	if (event.type != sf::Event::KeyPressed)
-		return false;
-
-	if (event.key.code == sf::Keyboard::Escape)
+	// Show state for 3 seconds, after return to menu
+	m_elapsed_time += dt;
+	if (m_elapsed_time > sf::seconds(3))
 	{
 		RequestStackClear();
 		RequestStackPush(StateID::kMenu);
 	}
+	return false;
+}
 
+bool GameOverState::HandleEvent(const sf::Event&)
+{
 	return false;
 }

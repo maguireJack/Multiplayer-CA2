@@ -10,17 +10,13 @@
 class GameOverState : public State
 {
 public:
-	GameOverState(StateStack& stack, Context context);
-	std::string GetWinnerText(Category::Type winner) const;
-
+	GameOverState(StateStack& stack, Context context, const std::string& text);
 	virtual void		Draw();
 	virtual bool		Update(sf::Time dt);
 	virtual bool		HandleEvent(const sf::Event& event);
 
 
 private:
-	sf::RectangleShape  m_dimmer;
-	sf::Text			m_finish_text;
-	sf::Text			m_winner_text;
-	sf::Text			m_instruction_text;
+	sf::Text			m_game_over_text;
+	sf::Time			m_elapsed_time;
 };

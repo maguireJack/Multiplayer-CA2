@@ -64,6 +64,24 @@ unsigned Tank::GetCategory() const
 	return IsPlayer1Tank() ? Category::kPlayer1Tank : Category::kPlayer2Tank;
 }
 
+int	Tank::GetIdentifier()
+{
+	return m_identifier;
+}
+
+void Tank::SetIdentifier(int identifier)
+{
+	m_identifier = identifier;
+}
+
+
+void Tank::SetAmmo(int ammo)
+{
+	m_ammo = ammo;
+}
+
+
+
 void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (IsDestroyed()) return;

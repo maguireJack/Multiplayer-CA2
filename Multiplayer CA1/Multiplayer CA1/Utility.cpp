@@ -1,15 +1,14 @@
-//Alex Nogueira / D00242564 
 #define _USE_MATH_DEFINES
 #include "Utility.hpp"
 
 #include <cassert>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+
+
 #include <cmath>
 #include <random>
-#include <string>
-#include <sstream>
-#include <vector>
+#include "Animation.hpp"
 
 namespace
 {
@@ -22,17 +21,7 @@ namespace
 	auto RandomEngine = CreateRandomEngine();
 }
 
-//Taken from https://stackoverflow.com/questions/9435385/split-a-string-using-c11
-std::vector<std::string> Utility::Split(const std::string& s, char delim) {
-	std::stringstream ss(s);
-	std::string item;
-	std::vector<std::string> elems;
-	while (std::getline(ss, item, delim)) {
-		elems.push_back(item);
-		// elems.push_back(std::move(item)); // if C++11 (based on comment from @mchiasson)
-	}
-	return elems;
-}
+
 
 //TODO should we just implement for base class - sf::Transformable?
 void Utility::CentreOrigin(sf::Sprite& sprite)
@@ -40,14 +29,6 @@ void Utility::CentreOrigin(sf::Sprite& sprite)
 	sf::FloatRect bounds = sprite.getLocalBounds();
 	sprite.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
 }
-
-int Utility::RandomInt(int exclusiveMax)
-{
-	std::uniform_int_distribution<> distr(0, exclusiveMax - 1);
-	return distr(RandomEngine);
-}
-
-
 
 void Utility::CentreOrigin(sf::Text& text)
 {
@@ -59,6 +40,18 @@ void Utility::CentreOrigin(Animation& animation)
 {
 	sf::FloatRect bounds = animation.GetLocalBounds();
 	animation.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
+}
+
+//Taken from https://stackoverflow.com/questions/9435385/split-a-string-using-c11
+std::vector<std::string> Utility::Split(const std::string& s, char delim) {
+	std::stringstream ss(s);
+	std::string item;
+	std::vector<std::string> elems;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+		// elems.push_back(std::move(item)); // if C++11 (based on comment from @mchiasson)
+	}
+	return elems;
 }
 
 std::string Utility::toString(sf::Keyboard::Key key)
@@ -193,4 +186,10 @@ float Utility::Length(sf::Vector2f vector)
 float Utility::ToDegrees(float angle_in_radians)
 {
 	return angle_in_radians * (180/M_PI);
+}
+
+int Utility::RandomInt(int exclusiveMax)
+{
+	std::uniform_int_distribution<> distr(0, exclusiveMax - 1);
+	return distr(RandomEngine);
 }

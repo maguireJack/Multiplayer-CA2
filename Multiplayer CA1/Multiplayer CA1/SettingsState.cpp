@@ -1,4 +1,3 @@
-//Alex Nogueira / D00242564 
 #include "SettingsState.hpp"
 #include "Utility.hpp"
 #include "ResourceHolder.hpp"
@@ -14,23 +13,18 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 	m_background_sprite.setTexture(context.textures->Get(Textures::kTitleScreen));
 
 	// Build key binding buttons and labels
-	float x = 150;
-	AddButtonLabel(PlayerAction::kPlayer1MoveLeft, x, 300.f, "Move Left", context);
-	AddButtonLabel(PlayerAction::kPlayer1MoveRight, x, 350.f, "Move Right", context);
-	AddButtonLabel(PlayerAction::kPlayer1MoveUp, x, 400.f, "Move Up", context);
-	AddButtonLabel(PlayerAction::kPlayer1MoveDown, x, 450.f, "Move Down", context);
-	AddButtonLabel(PlayerAction::kPlayer1Fire, x, 500.f, "Fire", context);
-
-	x += 400;
-	AddButtonLabel(PlayerAction::kPlayer2MoveLeft, x, 300.f, "Move Left", context);
-	AddButtonLabel(PlayerAction::kPlayer2MoveRight, x, 350.f, "Move Right", context);
-	AddButtonLabel(PlayerAction::kPlayer2MoveUp, x, 400.f, "Move Up", context);
-	AddButtonLabel(PlayerAction::kPlayer2MoveDown, x, 450.f, "Move Down", context);
-	AddButtonLabel(PlayerAction::kPlayer2Fire, x, 500.f, "Fire", context);
+	for (std::size_t x = 0; x < 2; ++x)
+	{
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveLeft), x, 0, "Move Left", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveRight	), x, 1, "Move Right", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveUp), x, 2, "Move Up", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveDown), x, 3, "Move Down", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1Fire), x, 4, "Fire", context);
+	}
 
 	UpdateLabels();
 
-	auto back_button = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
+	auto back_button = std::make_shared<GUI::Button>(context);
 	back_button->setPosition(80.f, 620.f);
 	back_button->SetText("Back");
 	back_button->SetCallback(std::bind(&SettingsState::RequestStackPop, this));
@@ -53,25 +47,28 @@ bool SettingsState::Update(sf::Time)
 
 bool SettingsState::HandleEvent(const sf::Event& event)
 {
-	bool isKeyBinding = false;
+	bool is_key_binding = false;
 
 	// Iterate through all key binding buttons to see if they are being pressed, waiting for the user to enter a key
-	for (std::size_t action = 0; action < static_cast<int>(PlayerAction::kActionCount); ++action)
+	for (std::size_t i = 0; i < 2 * (static_cast<int>(PlayerAction::kActionCount)); ++i)
 	{
-		if (m_binding_buttons[action]->IsActive())
+		if (m_binding_buttons[i]->IsActive())
 		{
-			isKeyBinding = true;
+			is_key_binding = true;
 			if (event.type == sf::Event::KeyReleased)
 			{
-				GetContext().player->AssignKey(static_cast<PlayerAction>(action), event.key.code);
-				m_binding_buttons[action]->Deactivate();
+				// Player 1
+				if (i < static_cast<int>(PlayerAction::kActionCount))
+					GetContext().keys1->AssignKey(static_cast<PlayerAction>(i), event.key.code);
+
+				m_binding_buttons[i]->Deactivate();
 			}
 			break;
 		}
 	}
 
 	// If pressed button changed key bindings, update labels; otherwise consider other buttons in container
-	if (isKeyBinding)
+	if (is_key_binding)
 		UpdateLabels();
 	else
 		m_gui_container.HandleEvent(event);
@@ -81,27 +78,33 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 
 void SettingsState::UpdateLabels()
 {
-	Player& player = *GetContext().player;
-
 	for (std::size_t i = 0; i < static_cast<int>(PlayerAction::kActionCount); ++i)
 	{
-		sf::Keyboard::Key key = player.GetAssignedKey(static_cast<PlayerAction>(i));
-		m_binding_labels[i]->SetText(Utility::toString(key));
+		auto action = static_cast<PlayerAction>(i);
+
+		// Get keys of both players
+		sf::Keyboard::Key key1 = GetContext().keys1->GetAssignedKey(action);
+
+		// Assign both key strings to labels
+		m_binding_labels[i]->SetText(Utility::toString(key1));
 	}
 }
 
-void SettingsState::AddButtonLabel(PlayerAction action, float x, float y, const std::string& text, Context context)
+void SettingsState::AddButtonLabel(std::size_t index, std::size_t x, std::size_t y, const std::string& text, Context context)
 {
-	m_binding_buttons[static_cast<int>(action)] = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
-	m_binding_buttons[static_cast<int>(action)]->setPosition(x, y);
-	m_binding_buttons[static_cast<int>(action)]->SetText(text);
-	m_binding_buttons[static_cast<int>(action)]->SetToggle(true);
+	// For x==0, start at index 0, otherwise start at half of array
+	index += static_cast<int>(PlayerAction::kActionCount) * x;
 
-	m_binding_labels[static_cast<int>(action)] = std::make_shared<GUI::Label>("", *context.fonts);
-	m_binding_labels[static_cast<int>(action)]->setPosition(x+220, y + 15.f);
+	m_binding_buttons[index] = std::make_shared<GUI::Button>(context);
+	m_binding_buttons[index]->setPosition(400.f * x + 80.f, 50.f * y + 300.f);
+	m_binding_buttons[index]->SetText(text);
+	m_binding_buttons[index]->SetToggle(true);
 
-	m_gui_container.Pack(m_binding_buttons[static_cast<int>(action)]);
-	m_gui_container.Pack(m_binding_labels[static_cast<int>(action)]);
+	m_binding_labels[index] = std::make_shared<GUI::Label>("", *context.fonts);
+	m_binding_labels[index]->setPosition(400.f * x + 300.f, 50.f * y + 315.f);
+
+	m_gui_container.Pack(m_binding_buttons[index]);
+	m_gui_container.Pack(m_binding_labels[index]);
 }
 
 

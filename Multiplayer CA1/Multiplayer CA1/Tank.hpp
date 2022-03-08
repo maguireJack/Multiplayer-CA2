@@ -27,6 +27,8 @@ public:
 	Tank(TankType type, const TextureHolder& textures);
 	bool IsPlayer1Tank() const;
 	unsigned int GetCategory() const override;
+	int GetIdentifier();
+	void SetIdentifier(int identifier);
 
 	void Fire();
 	void CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive = false) const;
@@ -43,6 +45,7 @@ public:
 	bool IsDestroyed() const override;
 	bool HasExplosiveShotsUpgrade() const;
 	bool HasFireRateUpgrade() const;
+	void SetAmmo(int ammo);
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
@@ -78,5 +81,6 @@ private:
 	sf::Time m_fire_rate_countdown;
 
 	sf::Vector2f m_last_pos;
+	int m_identifier;
 };
 

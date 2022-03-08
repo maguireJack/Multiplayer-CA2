@@ -8,6 +8,7 @@
 #include "ResourceHolder.hpp"
 #include "ResourceIdentifiers.hpp"
 #include "StateStack.hpp"
+#include "KeyBinding.hpp"
 
 class Application
 {
@@ -24,7 +25,6 @@ private:
 
 private:
 	sf::RenderWindow m_window;
-	Player m_player;
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;
@@ -33,6 +33,8 @@ private:
 	SoundPlayer m_sounds;
 
 	StateStack m_stack;
+
+	KeyBinding m_key_binding_1;
 
 	sf::Text m_statistics_text;
 	sf::Time m_statistics_updatetime;

@@ -1,4 +1,3 @@
-//Alex Nogueira / D00242564
 #pragma once
 enum class StateID
 {
@@ -7,6 +6,10 @@ enum class StateID
 	kMenu,
 	kGame,
 	kPause,
+	kSettings,
 	kGameOver,
-	kSettings
+	kNetworkPause,
+	kMissionSuccess,
+	kHostGame,
+	kJoinGame
 };

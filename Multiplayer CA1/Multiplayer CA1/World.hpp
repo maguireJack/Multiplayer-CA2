@@ -18,6 +18,9 @@
 #include "BloomEffect.hpp"
 #include "CommandQueue.hpp"
 #include "Map.hpp"
+#include "NetworkNode.hpp"
+#include "NetworkProtocol.hpp"
+#include "PickupType.hpp"
 #include "ShakeEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Tank.hpp"
@@ -32,25 +35,36 @@ namespace sf
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked = false);
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
 
-	const Tank* const  GetPlayer1() const;
+	const Tank* const GetPlayer1() const;
 	const Tank* const GetPlayer2() const;
+	Tank* GetTank(int indentifier) const;
+	void SetCurrentBattleFieldPosition(float line_y);
+	void SetWorldHeight(float height);
+	void CreatePickup(sf::Vector2f position, PickupType type);
+
+	void SetWorldScrollCompensation(float compensation);
+
+	sf::FloatRect GetViewBounds() const;
+	sf::FloatRect GetBattlefieldBounds() const;
+
 
 	bool IsGameOver() const;
 	Category::Type GetWinner() const;
 	bool AllowPlayerInput();
+	Tank* AddTank(int identifier);
+	void RemoveTank(int identifier);
+	bool PollGameAction(GameActions::Action& out);
 
 private:
 	void LoadTextures();
 	void BuildScene();
 	void AdaptPlayerVelocity(Tank* player);
 
-	sf::FloatRect GetViewBounds() const;
-	sf::FloatRect GetBattlefieldBounds() const;
 	void HandleCollisions();
 	void UpdateSounds();
 
@@ -86,15 +100,20 @@ private:
 	float m_scrollspeed;
 	Tank* m_player_1_tank;
 	Tank* m_player_2_tank;
+	std::vector<Tank*> m_player_tanks;
 	bool m_game_over;
 	Category::Type m_winner;
 
 	sf::Time m_total_time;
 	sf::Time m_shake_timer;
 	sf::Time m_max_shake_timer;
+	NetworkNode* m_network_node;
+	float m_scrollspeed_compensation;
 	float m_max_shake_intensity;
 
 	BloomEffect m_bloom_effect;
 	ShakeEffect m_shake_effect;
+	bool m_networked_world;
+	SpriteNode* m_finish_sprite;
 };
 

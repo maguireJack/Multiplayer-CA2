@@ -1,8 +1,14 @@
-//Alex Nogueira / D00242564
 #pragma once
+#include "Utility.hpp"
+
+#include <cassert>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <cmath>
+#include <random>
 #include <string>
+#include <sstream>
 #include <vector>
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
 #include "Animation.hpp"
@@ -27,8 +33,6 @@ public:
 	static float Length(sf::Vector2f vector);
 	static float ToDegrees(float angle);
 	static int RandomInt(int exclusive_max);
-	
-
 	enum Direction
 	{
 		Up,

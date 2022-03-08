@@ -11,7 +11,7 @@
 #include "Tank.hpp"
 #include "Tile.hpp"
 
-World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked)
 	: m_target(output_target)
 	, m_camera(m_target.getDefaultView())
 	, m_textures()
@@ -29,6 +29,9 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_sounds(sounds)
 	, m_max_shake_timer(sf::seconds(0.25))
 	, m_max_shake_intensity(10)
+	, m_networked_world(networked)
+	, m_network_node(nullptr)
+	, m_finish_sprite(nullptr)
 {
 	m_scene_texture.create(m_target.getSize().x, m_target.getSize().y);
 	LoadTextures();
@@ -63,6 +66,23 @@ void World::Update(sf::Time dt)
 		m_shake_timer -= dt;
 
 	m_total_time += dt;
+}
+
+Tank* World::GetTank(int identifier) const
+{
+	for (Tank* a : m_player_tanks)
+	{
+		if (a->GetIdentifier() == identifier)
+		{
+			return a;
+		}
+	}
+	return nullptr;
+}
+
+bool World::PollGameAction(GameActions::Action& out)
+{
+	return m_network_node->PollGameAction(out);
 }
 
 void World::Draw()
@@ -153,6 +173,16 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 }
 
+void World::SetWorldHeight(float height)
+{
+	m_world_bounds.height = height;
+}
+void World::SetCurrentBattleFieldPosition(float lineY)
+{
+	m_camera.setCenter(m_camera.getCenter().x, lineY - m_camera.getSize().y / 2);
+	m_spawn_offset.y = m_world_bounds.height;
+}
+
 CommandQueue& World::getCommandQueue()
 {
 	return m_command_queue;
@@ -181,6 +211,14 @@ Category::Type World::GetWinner() const
 bool World::AllowPlayerInput()
 {
 	return !m_game_over;
+}
+
+void World::CreatePickup(sf::Vector2f position, PickupType type)
+{
+	std::unique_ptr<Pickup> pickup(new Pickup(type, m_textures));
+	pickup->setPosition(position);
+	pickup->SetVelocity(0.f, 1.f);
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(pickup));
 }
 
 void World::AdaptPlayerVelocity(Tank* player)
@@ -227,6 +265,28 @@ bool MatchesCategories(SceneNode::Pair& colliders, Category::Type type1, Categor
 		return false;
 	}
 }
+
+void World::RemoveTank(int identifier)
+{
+	Tank* tank = GetTank(identifier);
+	if (tank)
+	{
+		tank->Destroy();
+		m_player_tanks.erase(std::find(m_player_tanks.begin(), m_player_tanks.end(), tank));
+	}
+}
+
+Tank* World::AddTank(int identifier)
+{
+	std::unique_ptr<Tank> player(new Tank(TankType::kPlayer1Tank, m_textures));
+	player->setPosition(m_camera.getCenter());
+	player->SetIdentifier(identifier);
+
+	m_player_tanks.emplace_back(player.get());
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
+	return m_player_tanks.back();
+}
+
 
 void World::HandleCollisions()
 {
@@ -281,6 +341,11 @@ void World::HandleCollisions()
 			tank.ResetToLastPos();
 		}
 	}
+}
+
+void World::SetWorldScrollCompensation(float compensation)
+{
+	m_scrollspeed_compensation = compensation;
 }
 
 void World::UpdateSounds()

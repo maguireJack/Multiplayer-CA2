@@ -1,4 +1,3 @@
-//Alex Nogueira / D00242564
 #pragma once
 #include "State.hpp"
 #include "Container.hpp"
