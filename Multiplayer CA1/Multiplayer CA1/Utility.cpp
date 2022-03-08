@@ -6,9 +6,21 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <cmath>
+#include <random>
 #include <string>
 #include <sstream>
 #include <vector>
+
+namespace
+{
+	std::default_random_engine CreateRandomEngine()
+	{
+		auto seed = static_cast<unsigned long>(std::time(nullptr));
+		return std::default_random_engine(seed);
+	}
+
+	auto RandomEngine = CreateRandomEngine();
+}
 
 //Taken from https://stackoverflow.com/questions/9435385/split-a-string-using-c11
 std::vector<std::string> Utility::Split(const std::string& s, char delim) {
@@ -28,6 +40,14 @@ void Utility::CentreOrigin(sf::Sprite& sprite)
 	sf::FloatRect bounds = sprite.getLocalBounds();
 	sprite.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
 }
+
+int Utility::RandomInt(int exclusiveMax)
+{
+	std::uniform_int_distribution<> distr(0, exclusiveMax - 1);
+	return distr(RandomEngine);
+}
+
+
 
 void Utility::CentreOrigin(sf::Text& text)
 {
