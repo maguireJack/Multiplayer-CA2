@@ -22,6 +22,8 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	  , m_fire_interval(Table[static_cast<int>(type)].m_fire_interval)
 	  , m_ammo(Table[static_cast<int>(type)].m_ammo)
 	  , m_explosion(textures.Get(Textures::kExplosion))
+      , m_identifier(0)
+		
 {
 	//Setup Animation
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));

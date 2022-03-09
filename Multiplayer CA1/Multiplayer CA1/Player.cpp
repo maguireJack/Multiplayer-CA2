@@ -7,19 +7,38 @@
 
 struct TankMover
 {
-	TankMover(float vx, float vy, Utility::Direction direction) : velocity(vx, vy), dir(direction)
+	TankMover(float vx, float vy, Utility::Direction direction, int id) : velocity(vx, vy), dir(direction), tank_id(id)
 	{
 		
 	}
 
 	void operator()(Tank& tank, sf::Time) const
 	{
-		tank.FaceDirection(dir);
-		tank.SetVelocity(velocity * tank.GetMaxSpeed());
+		if (tank.GetIdentifier() == tank_id) {
+			tank.FaceDirection(dir);
+			tank.SetVelocity(velocity * tank.GetMaxSpeed());
+		}
 	}
 
 	Utility::Direction dir;
+	int tank_id;
 	sf::Vector2f velocity;
+};
+
+struct TankFire
+{
+	TankFire(int identifier) : tank_id(identifier)
+	{
+		
+	}
+
+	void operator() (Tank& tank, sf::Time) const
+	{
+		if (tank.GetIdentifier() == tank_id)
+			tank.Fire();
+	}
+
+	int tank_id;
 };
 
 Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding)
@@ -151,15 +170,11 @@ void Player::InitialiseActions()
 {
 	const float player_speed = 200.f;
 
-	auto moveLeft = DerivedAction<Tank>(TankMover(-1, 0.f, Utility::Left));
-	auto moveRight = DerivedAction<Tank>(TankMover(+1, 0.f, Utility::Right));
-	auto moveUp = DerivedAction<Tank>(TankMover(0, -1.f, Utility::Up));
-	auto moveDown = DerivedAction<Tank>(TankMover(0, 1.f, Utility::Down));
-	auto fire = DerivedAction<Tank>([](Tank& a, sf::Time
-		)
-		{
-			a.Fire();
-		});
+	auto moveLeft = DerivedAction<Tank>(TankMover(-1, 0.f, Utility::Left, m_identifier));
+	auto moveRight = DerivedAction<Tank>(TankMover(+1, 0.f, Utility::Right, m_identifier));
+	auto moveUp = DerivedAction<Tank>(TankMover(0, -1.f, Utility::Up, m_identifier));
+	auto moveDown = DerivedAction<Tank>(TankMover(0, 1.f, Utility::Down, m_identifier));
+	auto fire = DerivedAction<Tank>(TankFire(m_identifier));
 
 	m_action_binding[PlayerAction::kPlayer1MoveLeft].action = moveLeft;
 	m_action_binding[PlayerAction::kPlayer1MoveRight].action = moveRight;
@@ -172,6 +187,7 @@ void Player::InitialiseActions()
 	m_action_binding[PlayerAction::kPlayer1MoveDown].category = Category::kPlayer1Tank;
 	m_action_binding[PlayerAction::kPlayer1Fire].category = Category::kPlayer1Tank;
 }
+
 
 bool Player::IsRealtimeAction(PlayerAction action)
 {
