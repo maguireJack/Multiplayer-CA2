@@ -112,7 +112,7 @@ void Tank::Fire()
 void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive) const
 {
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
-	sf::Vector2f offset = GetWorldTransform().transformPoint(5.f, -1.f);
+	sf::Vector2f offset = GetWorldTransform().transformPoint(8.f, -1.f);
 	offset -= GetWorldPosition();
 	sf::Vector2f velocity(
 		std::cosf(Utility::ToRadians(getRotation())) * projectile->GetMaxSpeed(),

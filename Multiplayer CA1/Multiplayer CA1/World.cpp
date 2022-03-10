@@ -298,8 +298,7 @@ void World::HandleCollisions()
 			pickup.Destroy();
 		}
 
-		else if (MatchesCategories(pair, Category::Type::kPlayer1Tank, Category::Type::kPlayer2Projectile) ||
-			MatchesCategories(pair, Category::Type::kPlayer2Tank, Category::Type::kPlayer1Projectile))
+		else if (MatchesCategories(pair, Category::Type::kTank, Category::Type::kPlayer1Projectile))
 		{
 			auto& tank = static_cast<Tank&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
