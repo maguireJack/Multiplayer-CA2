@@ -468,7 +468,8 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		{
 			sf::Vector2f tank_position;
 			sf::Int32 aircraft_identifier;
-			packet >> aircraft_identifier >> tank_position.x >> tank_position.y;
+			sf::Int32 tank_hitpoints;
+			packet >> aircraft_identifier >> tank_hitpoints >> tank_position.x >> tank_position.y;
 
 			Tank* tank = m_world.GetTank(aircraft_identifier);
 			bool is_local_tank = std::find(m_local_player_identifiers.begin(), m_local_player_identifiers.end(), aircraft_identifier) != m_local_player_identifiers.end();
@@ -476,6 +477,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			{
 				sf::Vector2f interpolated_position = tank->getPosition() + (tank_position - tank->getPosition()) * 0.1f;
 				tank->setPosition(interpolated_position);
+				tank->setHitpoints(tank_hitpoints);
 			}
 		}
 	}

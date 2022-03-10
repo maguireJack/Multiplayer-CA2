@@ -469,7 +469,7 @@ void GameServer::UpdateClientState()
 
 	for(const auto& tank : m_tank_info)
 	{
-		update_client_state_packet << tank.first << tank.second.m_position.x << tank.second.m_position.y;
+		update_client_state_packet << tank.first << tank.second.m_hitpoints << tank.second.m_position.x << tank.second.m_position.y;
 	}
 
 	SendToAll(update_client_state_packet);

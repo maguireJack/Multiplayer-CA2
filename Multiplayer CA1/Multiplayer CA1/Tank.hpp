@@ -46,6 +46,7 @@ public:
 	bool HasExplosiveShotsUpgrade() const;
 	bool HasFireRateUpgrade() const;
 	void SetAmmo(int ammo);
+	void setHitpoints(int damage);
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();

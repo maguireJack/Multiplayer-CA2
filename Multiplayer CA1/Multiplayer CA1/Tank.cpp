@@ -157,6 +157,12 @@ void Tank::Destroy()
 	Entity::Destroy();
 }
 
+void Tank::setHitpoints(int damage)
+{
+	Entity::SetHitpoints(damage);
+}
+
+
 void Tank::GetExplosiveShots()
 {
 	m_explosive_shot_countdown = sf::seconds(10);
