@@ -112,7 +112,7 @@ void World::Draw()
 void World::LoadTextures()
 {
 	m_textures.Load(Textures::kPlayer1Tank, "Media/Textures/Tanx.png", sf::IntRect(1, 12, 10, 10));
-	m_textures.Load(Textures::kPlayer2Tank, "Media/Textures/Tanx.png", sf::IntRect(1, 23, 10, 10));
+	m_textures.Load(Textures::kPlayer2Tank, "Media/Textures/Tanx.png", sf::IntRect(1, 34, 10, 10));
 	m_textures.Load(Textures::kBackground, "Media/Textures/Tanx.png", sf::IntRect(88, 44, 10, 10));
 
 	m_textures.Load(Textures::kHealthRefill, "Media/Textures/HealthRefill.png");
