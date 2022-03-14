@@ -57,6 +57,7 @@ public:
 	Category::Type GetWinner() const;
 	bool AllowPlayerInput();
 	Tank* AddTank(int identifier);
+	Tank* AddTank(int identifier, TankType type);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
 

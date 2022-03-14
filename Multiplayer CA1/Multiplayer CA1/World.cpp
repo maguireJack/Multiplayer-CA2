@@ -282,6 +282,17 @@ Tank* World::AddTank(int identifier)
 	return m_player_tanks.back();
 }
 
+Tank* World::AddTank(int identifier, TankType type)
+{
+	std::unique_ptr<Tank> player(new Tank(type, m_textures));
+	player->setPosition(sf::Vector2f(150, 150));
+	player->SetIdentifier(identifier);
+
+	m_player_tanks.emplace_back(player.get());
+	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
+	return m_player_tanks.back();
+}
+
 
 void World::HandleCollisions()
 {
@@ -316,6 +327,26 @@ void World::HandleCollisions()
 				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank
 					                                                   ? Category::Type::kPlayer2Tank
 					                                                   : Category::Type::kPlayer1Tank));
+			}
+		}
+		else if (MatchesCategories(pair, Category::Type::kTank, Category::Type::kPlayer2Projectile))
+		{
+			auto& tank = static_cast<Tank&>(*pair.first);
+			auto& projectile = static_cast<Projectile&>(*pair.second);
+			if (!projectile.CanDamagePlayers())
+				continue;
+
+			//Apply the projectile damage to the tank
+			tank.Damage(projectile.GetDamage());
+			projectile.AppliedPlayerDamage();
+			projectile.Destroy();
+			m_shake_timer = m_max_shake_timer;
+			if (tank.IsExploding() && m_winner != Category::kPlayer1Tank && m_winner != Category::kPlayer2Tank)
+			{
+				tank.OnFinishExploding = [this] { m_game_over = true; };
+				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayer1Tank
+					? Category::Type::kPlayer2Tank
+					: Category::Type::kPlayer1Tank));
 			}
 		}
 

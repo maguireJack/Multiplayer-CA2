@@ -369,7 +369,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		sf::Vector2f aircraft_position;
 		packet >> tank_identifier >> aircraft_position.x >> aircraft_position.y;
 
-		Tank* tank = m_world.AddTank(tank_identifier);
+		Tank* tank = m_world.AddTank(tank_identifier, TankType::kPlayer2Tank);
 		tank->setPosition(aircraft_position);
 		m_players[tank_identifier].reset(new Player(&m_socket, tank_identifier, nullptr));
 	}
@@ -399,7 +399,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Vector2f aircraft_position;
 			packet >> tank_identifier >> aircraft_position.x >> aircraft_position.y >> hitpoints >> missile_ammo;
 
-			Tank* tank = m_world.AddTank(tank_identifier);
+			Tank* tank = m_world.AddTank(tank_identifier, TankType::kPlayer2Tank);
 			tank->setPosition(aircraft_position);
 			tank->SetHitpoints(hitpoints);
 			tank->SetAmmo(missile_ammo);
