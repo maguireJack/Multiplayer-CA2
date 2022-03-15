@@ -23,8 +23,9 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	  , m_ammo(Table[static_cast<int>(type)].m_ammo)
 	  , m_explosion(textures.Get(Textures::kExplosion))
       , m_identifier(0)
-		
 {
+	is_static = false;
+
 	//Setup Animation
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
 	m_explosion.SetNumFrames(16);

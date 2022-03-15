@@ -20,6 +20,7 @@ Projectile::Projectile(ProjectileType type, const TextureHolder& textures)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_explosion(textures.Get(Textures::kExplosion))
 {
+	is_static = false;
 	//Setup Animation
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
 	m_explosion.SetNumFrames(16);

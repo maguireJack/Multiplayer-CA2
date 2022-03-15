@@ -9,7 +9,7 @@
 
 #include "Utility.hpp"
 
-SceneNode::SceneNode(bool collidable, Category::Type category):m_children(), m_parent(nullptr), m_category(category), is_collidable(collidable)
+SceneNode::SceneNode(bool collidable, Category::Type category):m_children(), m_parent(nullptr), m_category(category), is_collidable(collidable), is_static(true)
 {
 }
 
@@ -151,8 +151,10 @@ bool Collision(const SceneNode& lhs, const SceneNode& rhs)
 	return lhs.GetBoundingRect().intersects(rhs.GetBoundingRect());
 }
 
+//TODO Better Collision Detection Algorithm
 void SceneNode::CheckNodeCollision(SceneNode& node, std::set<Pair>& collision_pairs)
 {
+	if (this->is_static && node.is_static) return;
 	if(this->is_collidable && node.is_collidable && this != &node && Collision(*this, node) && !IsDestroyed() && !node.IsDestroyed())
 	{
 		collision_pairs.insert(std::minmax(this, &node));

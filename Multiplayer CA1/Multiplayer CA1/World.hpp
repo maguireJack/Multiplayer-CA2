@@ -56,7 +56,7 @@ public:
 	bool IsGameOver() const;
 	Category::Type GetWinner() const;
 	bool AllowPlayerInput();
-	Tank* AddTank(int identifier);
+	Tank* AddSelfTank(int identifier);
 	Tank* AddTank(int identifier, TankType type);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
@@ -65,6 +65,7 @@ private:
 	void LoadTextures();
 	void BuildScene();
 	void AdaptPlayerVelocity();
+	void AdaptPlayerPosition();
 
 	void HandleCollisions();
 	void UpdateSounds();
@@ -96,10 +97,12 @@ private:
 	std::map<int, sf::Vector2f> m_tank_spawns;
 
 	sf::FloatRect m_world_bounds;
+	sf::FloatRect m_arena_bounds;
 	sf::Vector2f m_spawn_offset;
 	sf::Vector2f m_world_center;
 	float m_scrollspeed;
-	Tank* m_player_1_tank;
+	bool m_player_spawned;
+	Tank* m_player_tank;
 	std::vector<Tank*> m_player_tanks;
 	bool m_game_over;
 	Category::Type m_winner;

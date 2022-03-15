@@ -18,11 +18,13 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	  , m_fonts(font)
 	  , m_scenegraph()
 	  , m_scene_layers()
-	  , m_world_bounds(0.f, 0.f, 900, 600)
+	  , m_world_bounds(0.f, 0.f, 2700, 1800)
 	  , m_world_center(m_world_bounds.width / 2.f, m_world_bounds.height / 2.f)
+	  , m_arena_bounds(80.f, 80.f, m_world_bounds.width - 160.f, m_world_bounds.height - 160.f)
 	  , m_spawn_offset(370, -175)
 	  , m_scrollspeed(-50.f)
-	  , m_player_1_tank(nullptr)
+	  , m_player_tank(nullptr)
+	  , m_player_spawned(false)
 	  , m_game_over(false)
 	  , m_winner(Category::kNone)
 	  , m_sounds(sounds)
@@ -52,6 +54,9 @@ void World::Update(sf::Time dt)
 	}
 
 	AdaptPlayerVelocity();
+	AdaptPlayerPosition();
+
+	if(m_player_spawned) m_camera.setCenter(GetPlayer()->getPosition());
 
 	HandleCollisions();
 
@@ -187,7 +192,7 @@ CommandQueue& World::getCommandQueue()
 
 const Tank* const World::GetPlayer() const
 {
-	return m_player_1_tank;
+	return m_player_tank;
 }
 
 bool World::IsGameOver() const
@@ -228,6 +233,19 @@ void World::AdaptPlayerVelocity()
 		{
 			tank->SetVelocity(velocity / std::sqrt(2.f));
 		}
+	}
+}
+
+void World::AdaptPlayerPosition()
+{
+	for (Tank* tank : m_player_tanks)
+	{
+		sf::Vector2f position = tank->getPosition();
+		position.x = std::max(position.x, m_arena_bounds.left);
+		position.x = std::min(position.x, m_arena_bounds.left + m_arena_bounds.width);
+		position.y = std::max(position.y, m_arena_bounds.top);
+		position.y = std::min(position.y, m_arena_bounds.top + m_arena_bounds.height);
+		tank->setPosition(position);
 	}
 }
 
@@ -276,13 +294,16 @@ void World::RemoveTank(int identifier)
 	}
 }
 
-Tank* World::AddTank(int identifier)
+Tank* World::AddSelfTank(int identifier)
 {
 	std::unique_ptr<Tank> player(new Tank(TankType::kPlayer1Tank, m_textures));
 	player->setPosition(sf::Vector2f(150, 150));
 	player->SetIdentifier(identifier);
 
+	m_player_tank = player.get();
 	m_player_tanks.emplace_back(player.get());
+	m_player_spawned = true;
+
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
 	return m_player_tanks.back();
 }
@@ -387,7 +408,7 @@ void World::SetWorldScrollCompensation(float compensation)
 void World::UpdateSounds()
 {
 	// Set listener's position to player position
-	m_sounds.SetListenerPosition(m_player_1_tank->GetWorldPosition());
+	m_sounds.SetListenerPosition(m_player_tank->GetWorldPosition());
 
 	// Remove unused sounds
 	m_sounds.RemoveStoppedSounds();

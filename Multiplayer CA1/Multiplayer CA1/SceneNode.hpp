@@ -58,6 +58,7 @@ private:
 
 protected:
 	bool is_collidable;
+	bool is_static;
 	Category::Type m_category;
 private:
 	std::vector<Ptr> m_children;

@@ -9,7 +9,7 @@ Tile::Tile(sf::Texture& texture, Category::Type tileCategory)
 {
 	m_category = tileCategory;
 	setScale(5, 5);
-	is_collidable = tileCategory != Category::kFloorTile;
+	is_collidable = tileCategory == Category::kDestroyableTile;
 }
 
 unsigned Tile::GetCategory() const
