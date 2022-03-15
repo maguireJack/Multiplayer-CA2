@@ -151,7 +151,7 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Load the map
-	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16));
+	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, m_world_center, 45.f));
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
 
 	// Add sound effect node
@@ -185,7 +185,7 @@ CommandQueue& World::getCommandQueue()
 	return m_command_queue;
 }
 
-const Tank* const World::GetPlayer1() const
+const Tank* const World::GetPlayer() const
 {
 	return m_player_1_tank;
 }
@@ -211,6 +211,11 @@ void World::CreatePickup(sf::Vector2f position, PickupType type)
 	pickup->setPosition(position);
 	pickup->SetVelocity(0.f, 1.f);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(pickup));
+}
+
+sf::Vector2f World::GetTankSpawn(int tank_identifier)
+{
+	return m_tank_spawns[tank_identifier];
 }
 
 void World::AdaptPlayerVelocity()
@@ -292,7 +297,6 @@ Tank* World::AddTank(int identifier, TankType type)
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
 	return m_player_tanks.back();
 }
-
 
 void World::HandleCollisions()
 {

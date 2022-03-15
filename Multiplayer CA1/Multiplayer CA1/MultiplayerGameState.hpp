@@ -29,7 +29,7 @@ private:
 	TextureHolder& m_texture_holder;
 
 	std::map<int, PlayerPtr> m_players;
-	std::vector<sf::Int32> m_local_player_identifiers;
+	sf::Int32 m_local_player_identifier;
 	sf::TcpSocket m_socket;
 	bool m_connected;
 	std::unique_ptr<GameServer> m_game_server;
@@ -38,9 +38,6 @@ private:
 	std::vector<std::string> m_broadcasts;
 	sf::Text m_broadcast_text;
 	sf::Time m_broadcast_elapsed_time;
-
-	sf::Text m_player_invitation_text;
-	sf::Time m_player_invitation_time;
 
 	sf::Text m_failed_connection_text;
 	sf::Clock m_failed_connection_clock;

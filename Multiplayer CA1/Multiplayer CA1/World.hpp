@@ -40,12 +40,12 @@ public:
 	void Draw();
 	CommandQueue& getCommandQueue();
 	
-	const Tank* const GetPlayer1() const;
-	const Tank* const GetPlayer2() const;
+	const Tank* const GetPlayer() const;
 	Tank* GetTank(int indentifier) const;
 	void SetCurrentBattleFieldPosition(float line_y);
 	void SetWorldHeight(float height);
 	void CreatePickup(sf::Vector2f position, PickupType type);
+	sf::Vector2f GetTankSpawn(int tank_identifier);
 
 	void SetWorldScrollCompensation(float compensation);
 
@@ -93,7 +93,7 @@ private:
 	CommandQueue m_command_queue;
 
 	SoundPlayer& m_sounds;
-	Map* map;
+	std::map<int, sf::Vector2f> m_tank_spawns;
 
 	sf::FloatRect m_world_bounds;
 	sf::Vector2f m_spawn_offset;

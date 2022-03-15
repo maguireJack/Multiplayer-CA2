@@ -10,10 +10,12 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Thread.hpp>
 
+#include "World.hpp"
+
 class GameServer
 {
 public:
-	explicit GameServer(sf::Vector2f battlefield_size);
+	explicit GameServer(sf::Vector2f battlefield_size, World& world);
 	~GameServer();
 	void NotifyPlayerSpawn(sf::Int32 aircraft_identifier);
 	void NotifyPlayerRealtimeChange(sf::Int32 aircraft_identifier, sf::Int32 action, bool action_enabled);
@@ -74,10 +76,12 @@ private:
 	std::map<sf::Int32, TankInfo> m_tank_info;
 
 	std::vector<PeerPtr> m_peers;
-	sf::Int32 m_aircraft_identifier_counter;
+	sf::Int32 m_tank_identifier_counter;
 	bool m_waiting_thread_end;
 
 	sf::Time m_last_spawn_time;
 	sf::Time m_time_for_next_spawn;
+
+	World* m_world;
 };
 

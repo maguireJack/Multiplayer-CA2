@@ -16,7 +16,7 @@ GameServer::RemotePeer::RemotePeer():m_ready(false), m_timed_out(false)
 	m_socket.setBlocking(false);
 }
 
-GameServer::GameServer(sf::Vector2f battlefield_size)
+GameServer::GameServer(sf::Vector2f battlefield_size, World& world)
 	: m_thread(&GameServer::ExecutionThread, this)
 	, m_listening_state(false)
 	, m_client_timeout(sf::seconds(1.f))
@@ -25,10 +25,11 @@ GameServer::GameServer(sf::Vector2f battlefield_size)
 	, m_battlefield_rect(0.f, 0.f, 900, 600)
 	, m_tank_count(0)
 	, m_peers(1)
-	, m_aircraft_identifier_counter(1)
+	, m_tank_identifier_counter(1)
 	, m_waiting_thread_end(false)
 	, m_last_spawn_time(sf::Time::Zero)
 	, m_time_for_next_spawn(sf::seconds(5.f))
+	, m_world(&world)
 {
 	m_listener_socket.setBlocking(false);
 	m_peers[0].reset(new RemotePeer());
@@ -344,21 +345,21 @@ void GameServer::HandleIncomingConnections()
 	if(m_listener_socket.accept(m_peers[m_connected_players]->m_socket) == sf::TcpListener::Done)
 	{
 		//Order the new client to spawn its player 1
-		m_tank_info[m_aircraft_identifier_counter].m_position = sf::Vector2f(450, 300);
-		m_tank_info[m_aircraft_identifier_counter].m_hitpoints = 100;
-		m_tank_info[m_aircraft_identifier_counter].m_ammo = 2;
+		m_tank_info[m_tank_identifier_counter].m_position = m_world->GetTankSpawn(m_tank_identifier_counter);
+		m_tank_info[m_tank_identifier_counter].m_hitpoints = 100;
+		m_tank_info[m_tank_identifier_counter].m_ammo = 2;
 
 		sf::Packet packet;
 		packet << static_cast<sf::Int32>(Server::PacketType::SpawnSelf);
-		packet << m_aircraft_identifier_counter;
-		packet << m_tank_info[m_aircraft_identifier_counter].m_position.x;
-		packet << m_tank_info[m_aircraft_identifier_counter].m_position.y;
+		packet << m_tank_identifier_counter;
+		packet << m_tank_info[m_tank_identifier_counter].m_position.x;
+		packet << m_tank_info[m_tank_identifier_counter].m_position.y;
 
-		m_peers[m_connected_players]->m_tank_identifiers.emplace_back(m_aircraft_identifier_counter);
+		m_peers[m_connected_players]->m_tank_identifiers.emplace_back(m_tank_identifier_counter);
 
 		BroadcastMessage("New player");
 		InformWorldState(m_peers[m_connected_players]->m_socket);
-		NotifyPlayerSpawn(m_aircraft_identifier_counter++);
+		NotifyPlayerSpawn(m_tank_identifier_counter++);
 
 		m_peers[m_connected_players]->m_socket.send(packet);
 		m_peers[m_connected_players]->m_ready = true;
