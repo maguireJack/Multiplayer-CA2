@@ -9,6 +9,7 @@
 #include <iostream>
 #include <SFML/Network/Packet.hpp>
 
+#include "BoundLabel.hpp"
 #include "PickupType.hpp"
 
 sf::IpAddress GetAddressFromFile()
@@ -43,7 +44,13 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	  , m_game_started(false)
 	  , m_client_timeout(sf::seconds(2.f))
 	  , m_time_since_last_packet(sf::seconds(0.f))
+	  , m_gui_area(0, 600, 900, 200)
+	  , m_gui_center(m_gui_area.left + m_gui_area.width / 2.f, m_gui_area.top + m_gui_area.height / 2.f)
+
 {
+	m_player_explosion_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kExplosiveShots);
+	m_player_fire_rate_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kFireRate);
+	
 	m_broadcast_text.setFont(context.fonts->Get(Fonts::Main));
 	m_broadcast_text.setPosition(1024.f / 2, 100.f);
 
@@ -97,6 +104,8 @@ void MultiplayerGameState::Draw()
 		//Show broadcast messages in default view
 		m_window.setView(m_window.getDefaultView());
 
+		GetContext().window->draw(m_container);
+
 		if (!m_broadcasts.empty())
 		{
 			m_window.draw(m_broadcast_text);
@@ -114,6 +123,9 @@ bool MultiplayerGameState::Update(sf::Time dt)
 	if (m_connected)
 	{
 		m_world.Update(dt);
+
+		UpdateLabels();
+		UpdateIcons();
 
 		//Remove players whose aircraft were destroyed
 		bool found_local_plane = false;
@@ -336,6 +348,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			tank->setPosition(tank_position);
 			m_players[tank_identifier].reset(new Player(&m_socket, tank_identifier, GetContext().keys1));
 			m_local_player_identifier = tank_identifier;
+			BindGui(*GetContext().fonts);
 			m_game_started = true;
 		}
 		break;
@@ -459,5 +472,78 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			}
 		}
 		break;
+	}
+}
+
+
+void MultiplayerGameState::UpdateIcons()
+{
+	if (!m_game_started) return;
+	//Fire Rate 1
+	if (m_player_fire_rate_upgrade_image.get()->IsActive() && !m_world.GetPlayer()->HasFireRateUpgrade())
+	{
+		m_player_fire_rate_upgrade_image.get()->Deactivate();
+	}
+	if (!m_player_fire_rate_upgrade_image.get()->IsActive() && m_world.GetPlayer()->HasFireRateUpgrade())
+	{
+		m_player_fire_rate_upgrade_image.get()->Activate();
+	}
+
+	//Explosion 1
+	if (m_player_explosion_upgrade_image.get()->IsActive() && !m_world.GetPlayer()->HasExplosiveShotsUpgrade())
+	{
+		m_player_explosion_upgrade_image.get()->Deactivate();
+	}
+	if (!m_player_explosion_upgrade_image.get()->IsActive() && m_world.GetPlayer()->HasExplosiveShotsUpgrade())
+	{
+		m_player_explosion_upgrade_image.get()->Activate();
+	}
+}
+
+void MultiplayerGameState::BindGui(const FontHolder& fonts)
+{
+	sf::Vector2f offset(-300, -60);
+	m_container.setPosition(m_gui_center);
+	CreatePlayerLabels(fonts, offset, 30, "Health:", [this](const Tank* const tank)
+		{
+			return [tank] { return std::to_string(tank->GetHitPoints()); };
+		});
+	offset += sf::Vector2f(0, 60);
+	CreatePlayerLabels(fonts, offset, 30, "Ammo:", [this](const Tank* const tank)
+		{
+			return [tank] { return std::to_string(tank->GetAmmo()); };
+		});
+	offset += sf::Vector2f(0, 30);
+
+	m_player_explosion_upgrade_image.get()->setPosition(offset - sf::Vector2f(80, 0));
+	m_player_explosion_upgrade_image.get()->setScale(1.5, 1.5);
+	m_player_fire_rate_upgrade_image.get()->setPosition(offset);
+	m_player_fire_rate_upgrade_image.get()->setScale(1.5, 1.5);
+
+	m_container.Pack(m_player_explosion_upgrade_image);
+	m_container.Pack(m_player_fire_rate_upgrade_image);
+}
+
+void MultiplayerGameState::CreatePlayerLabels(const FontHolder& fonts, sf::Vector2f offset, int text_size,
+	std::string prefix, std::function<std::function<std::string()>(const Tank* const t)> func_factory)
+{
+	CreateLabel(fonts, sf::Color::Blue, offset, text_size, prefix, func_factory(m_world.GetPlayer()));
+}
+
+void MultiplayerGameState::CreateLabel(const FontHolder& fonts, sf::Color text_color, sf::Vector2f position, int text_size,
+	std::string prefix, std::function<std::string()> update_action)
+{
+	GUI::BoundLabel::Ptr bound_label(new GUI::BoundLabel(fonts, text_size, prefix, update_action, text_color));
+	bound_label->CentreText();
+	bound_label->setPosition(position);
+	m_container.Pack(bound_label);
+	m_bound_labels.emplace_back(bound_label);
+}
+
+void MultiplayerGameState::UpdateLabels() const
+{
+	for (auto label : m_bound_labels)
+	{
+		label.get()->Update();
 	}
 }
