@@ -2,6 +2,7 @@
 #include "Tank.hpp"
 
 #include <iostream>
+#include <SFML/Audio/Listener.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "DataTables.hpp"
@@ -15,7 +16,7 @@ namespace
 	const std::vector<TankData> Table = InitializeTankData();
 }
 
-Tank::Tank(TankType type, const TextureHolder& textures)
+Tank::Tank(TankType type, const TextureHolder& textures, bool hasListener)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
@@ -23,6 +24,7 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	  , m_ammo(Table[static_cast<int>(type)].m_ammo)
 	  , m_explosion(textures.Get(Textures::kExplosion))
       , m_identifier(0)
+	  , m_has_listener(hasListener)
 {
 	is_static = false;
 
@@ -42,7 +44,7 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	//Setup commands
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
 	{
-		CreateProjectile(node, GetCategory() == Category::kPlayer1Tank
+		CreateProjectile(node, GetCategory() == Category::kPlayerTank
 			                       ? ProjectileType::kPlayer1Bullet
 			                       : ProjectileType::kPlayer2Bullet, textures);
 	};
@@ -50,7 +52,7 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 	
 	m_explosive_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
 	{
-		CreateProjectile(node, GetCategory() == Category::kPlayer1Tank
+		CreateProjectile(node, GetCategory() == Category::kPlayerTank
 			? ProjectileType::kPlayer1Missile
 			: ProjectileType::kPlayer2Missile, textures);
 	};
@@ -64,7 +66,7 @@ bool Tank::IsPlayer1Tank() const
 
 unsigned Tank::GetCategory() const
 {
-	return IsPlayer1Tank() ? Category::kPlayer1Tank : Category::kPlayer2Tank;
+	return IsPlayer1Tank() ? Category::kPlayerTank : Category::kPlayer2Tank;
 }
 
 int	Tank::GetIdentifier()
@@ -321,6 +323,11 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 	if (m_fire_cooldown.asSeconds() > 0.f) m_fire_cooldown -= dt;
 	if (HasExplosiveShotsUpgrade()) m_explosive_shot_countdown -= dt;
 	if (HasFireRateUpgrade()) m_fire_rate_countdown-= dt;
+
+	if(m_has_listener)
+	{
+		sf::Listener::setPosition(sf::Vector3f(m_last_pos.x, 0, m_last_pos.y));
+	}
 }
 
 void Tank::UpdateExplosion(sf::Time dt, CommandQueue& commands)
@@ -350,7 +357,7 @@ void Tank::PlaySound(CommandQueue& commands, SoundEffect effect, bool global)
 		{
 			if (global)
 				node.PlaySound(effect);
-			else
+			else 
 				node.PlaySound(effect, world_position);
 		});
 

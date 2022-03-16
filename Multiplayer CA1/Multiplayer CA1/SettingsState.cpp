@@ -15,11 +15,11 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 	// Build key binding buttons and labels
 	for (std::size_t x = 0; x < 2; ++x)
 	{
-		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveLeft), x, 0, "Move Left", context);
-		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveRight	), x, 1, "Move Right", context);
-		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveUp), x, 2, "Move Up", context);
-		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1MoveDown), x, 3, "Move Down", context);
-		AddButtonLabel(static_cast<int>(PlayerAction::kPlayer1Fire), x, 4, "Fire", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayerMoveLeft), x, 0, "Move Left", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayerMoveRight	), x, 1, "Move Right", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayerMoveUp), x, 2, "Move Up", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayerMoveDown), x, 3, "Move Down", context);
+		AddButtonLabel(static_cast<int>(PlayerAction::kPlayerFire), x, 4, "Fire", context);
 	}
 
 	UpdateLabels();

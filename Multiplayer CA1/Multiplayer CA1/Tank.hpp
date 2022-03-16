@@ -24,7 +24,7 @@ enum TankActions
 class Tank : public Entity
 {
 public:
-	Tank(TankType type, const TextureHolder& textures);
+	Tank(TankType type, const TextureHolder& textures, bool hasListener = false);
 	bool IsPlayer1Tank() const;
 	unsigned int GetCategory() const override;
 	int GetIdentifier();
@@ -53,7 +53,7 @@ public:
 
 protected:
 	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
-	void PlaySound(CommandQueue& commands, SoundEffect effect, bool global = true);
+	void PlaySound(CommandQueue& commands, SoundEffect effect, bool global = false);
 private:
 	void UpdateTank(sf::Time dt, CommandQueue& commands);
 	void UpdateExplosion(sf::Time dt, CommandQueue& commands);
@@ -83,5 +83,7 @@ private:
 
 	sf::Vector2f m_last_pos;
 	int m_identifier;
+
+	bool m_has_listener;
 };
 

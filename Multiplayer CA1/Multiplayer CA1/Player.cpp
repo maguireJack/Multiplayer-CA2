@@ -55,9 +55,6 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 		pair.second.category = Category::kTank;
 }
 
-
-
-
 void Player::HandleEvent(const sf::Event& event, CommandQueue& commands)
 {
 	// Event
@@ -176,27 +173,28 @@ void Player::InitialiseActions()
 	auto moveDown = DerivedAction<Tank>(TankMover(0, 1.f, Utility::Down, m_identifier));
 	auto fire = DerivedAction<Tank>(TankFire(m_identifier));
 
-	m_action_binding[PlayerAction::kPlayer1MoveLeft].action = moveLeft;
-	m_action_binding[PlayerAction::kPlayer1MoveRight].action = moveRight;
-	m_action_binding[PlayerAction::kPlayer1MoveUp].action = moveUp;
-	m_action_binding[PlayerAction::kPlayer1MoveDown].action = moveDown;
-	m_action_binding[PlayerAction::kPlayer1Fire].action = fire;
-	m_action_binding[PlayerAction::kPlayer1MoveLeft].category = Category::kPlayer1Tank;
-	m_action_binding[PlayerAction::kPlayer1MoveRight].category = Category::kPlayer1Tank;
-	m_action_binding[PlayerAction::kPlayer1MoveUp].category = Category::kPlayer1Tank;
-	m_action_binding[PlayerAction::kPlayer1MoveDown].category = Category::kPlayer1Tank;
-	m_action_binding[PlayerAction::kPlayer1Fire].category = Category::kPlayer1Tank;
-
+	m_action_binding[PlayerAction::kPlayerMoveLeft].action = moveLeft;
+	m_action_binding[PlayerAction::kPlayerMoveRight].action = moveRight;
+	m_action_binding[PlayerAction::kPlayerMoveUp].action = moveUp;
+	m_action_binding[PlayerAction::kPlayerMoveDown].action = moveDown;
+	m_action_binding[PlayerAction::kPlayerFire].action = fire;
+	m_action_binding[PlayerAction::kPlayerMoveLeft].category = Category::kPlayerTank;
+	m_action_binding[PlayerAction::kPlayerMoveRight].category = Category::kPlayerTank;
+	m_action_binding[PlayerAction::kPlayerMoveUp].category = Category::kPlayerTank;
+	m_action_binding[PlayerAction::kPlayerMoveDown].category = Category::kPlayerTank;
+	m_action_binding[PlayerAction::kPlayerFire].category = Category::kPlayerTank;
+	/*
 	m_action_binding[PlayerAction::kPlayer2MoveLeft].action = moveLeft;
 	m_action_binding[PlayerAction::kPlayer2MoveRight].action = moveRight;
 	m_action_binding[PlayerAction::kPlayer2MoveUp].action = moveUp;
 	m_action_binding[PlayerAction::kPlayer2MoveDown].action = moveDown;
-	m_action_binding[PlayerAction::kPlayer2Fire].action = fire;
+	m_action_binding[PlayerAction::kEnemyFire].action = fire;
 	m_action_binding[PlayerAction::kPlayer2MoveLeft].category = Category::kPlayer2Tank;
 	m_action_binding[PlayerAction::kPlayer2MoveRight].category = Category::kPlayer2Tank;
 	m_action_binding[PlayerAction::kPlayer2MoveUp].category = Category::kPlayer2Tank;
 	m_action_binding[PlayerAction::kPlayer2MoveDown].category = Category::kPlayer2Tank;
-	m_action_binding[PlayerAction::kPlayer2Fire].category = Category::kPlayer2Tank;
+	m_action_binding[PlayerAction::kEnemyFire].category = Category::kPlayer2Tank;
+	*/
 }
 
 
@@ -204,17 +202,13 @@ bool Player::IsRealtimeAction(PlayerAction action)
 {
 	switch(action)
 	{
-	case PlayerAction::kPlayer1MoveLeft:
-	case PlayerAction::kPlayer1MoveRight:
-	case PlayerAction::kPlayer1MoveUp:
-	case PlayerAction::kPlayer1MoveDown:
-	case PlayerAction::kPlayer1Fire:
-	case PlayerAction::kPlayer2MoveLeft:
-	case PlayerAction::kPlayer2MoveRight:
-	case PlayerAction::kPlayer2MoveUp:
-	case PlayerAction::kPlayer2MoveDown:
-	case PlayerAction::kPlayer2Fire:
+	case PlayerAction::kPlayerMoveLeft:
+	case PlayerAction::kPlayerMoveRight:
+	case PlayerAction::kPlayerMoveUp:
+	case PlayerAction::kPlayerMoveDown:
 		return true;
+	case PlayerAction::kPlayerFire:
+		return false;
 	default:
 		return false;
 	}

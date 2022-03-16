@@ -2,16 +2,16 @@
 #pragma once
 enum class PlayerAction
 {
-	kPlayer1MoveLeft,
+	kPlayerMoveLeft,
 	kPlayer2MoveLeft,
-	kPlayer1MoveRight,
+	kPlayerMoveRight,
 	kPlayer2MoveRight,
-	kPlayer1MoveUp,
+	kPlayerMoveUp,
 	kPlayer2MoveUp,
-	kPlayer1MoveDown,
+	kPlayerMoveDown,
 	kPlayer2MoveDown,
-	kPlayer1Fire,
-	kPlayer2Fire,
+	kPlayerFire,
+	kEnemyFire,
 
 	kActionCount
 };

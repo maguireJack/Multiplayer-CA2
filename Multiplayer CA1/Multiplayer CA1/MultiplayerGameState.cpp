@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <SFML/Audio/Listener.hpp>
 #include <SFML/Network/Packet.hpp>
 
 #include "BoundLabel.hpp"
@@ -420,7 +421,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Int32 aircraft_identifier;
 			sf::Int32 action;
 			bool action_enabled;
-			packet >> aircraft_identifier >> action >> action_enabled;
+ 			packet >> aircraft_identifier >> action >> action_enabled;
 
 			auto itr = m_players.find(aircraft_identifier);
 			if (itr != m_players.end())

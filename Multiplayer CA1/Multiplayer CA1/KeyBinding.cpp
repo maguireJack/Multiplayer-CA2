@@ -9,11 +9,11 @@ KeyBinding::KeyBinding(int control_preconfiguration)
 	// Set initial key bindings for player 1
 	if (control_preconfiguration == 1)
 	{
-		m_key_map[sf::Keyboard::Left] = PlayerAction::kPlayer1MoveLeft;
-		m_key_map[sf::Keyboard::Right] = PlayerAction::kPlayer1MoveRight;
-		m_key_map[sf::Keyboard::Up] = PlayerAction::kPlayer1MoveUp;
-		m_key_map[sf::Keyboard::Down] = PlayerAction::kPlayer1MoveDown;
-		m_key_map[sf::Keyboard::Space] = PlayerAction::kPlayer1Fire;
+		m_key_map[sf::Keyboard::Left] = PlayerAction::kPlayerMoveLeft;
+		m_key_map[sf::Keyboard::Right] = PlayerAction::kPlayerMoveRight;
+		m_key_map[sf::Keyboard::Up] = PlayerAction::kPlayerMoveUp;
+		m_key_map[sf::Keyboard::Down] = PlayerAction::kPlayerMoveDown;
+		m_key_map[sf::Keyboard::Space] = PlayerAction::kPlayerFire;
 	}
 	
 }
@@ -77,11 +77,11 @@ bool IsRealtimeAction(PlayerAction action)
 {
 	switch (action)
 	{
-	case PlayerAction::kPlayer1MoveLeft:
-	case PlayerAction::kPlayer1MoveRight:
-	case PlayerAction::kPlayer1MoveDown:
-	case PlayerAction::kPlayer1MoveUp:
-	case PlayerAction::kPlayer1Fire:
+	case PlayerAction::kPlayerMoveLeft:
+	case PlayerAction::kPlayerMoveRight:
+	case PlayerAction::kPlayerMoveDown:
+	case PlayerAction::kPlayerMoveUp:
+	case PlayerAction::kPlayerFire:
 		return true;
 
 	default:

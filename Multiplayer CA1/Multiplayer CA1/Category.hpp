@@ -7,7 +7,7 @@ namespace Category
 	{
 		kNone = 0,
 		kScene = 1 << 0,
-		kPlayer1Tank = 1 << 1,
+		kPlayerTank = 1 << 1,
 		kPlayer2Tank = 1 << 2,
 		kPlayerAircraft = 1 << 1,
 		kAlliedAircraft = 1 << 2,
@@ -25,7 +25,7 @@ namespace Category
 		kNetwork = 1 << 12,
 
 		kTile = kFloorTile | kWallTile | kDestroyableTile,
-		kTank = kPlayer1Tank | kPlayer2Tank,
+		kTank = kPlayerTank | kPlayer2Tank,
 		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
 		kProjectile = kPlayer1Projectile | kPlayer2Projectile,
 	};
