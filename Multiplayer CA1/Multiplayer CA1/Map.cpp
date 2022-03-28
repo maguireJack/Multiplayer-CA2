@@ -8,10 +8,13 @@
 #include "Tile.hpp"
 #include "Utility.hpp"
 
-Map::Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns, sf::Vector2f world_center, float spawn_offset)
+Map::Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns, sf::Vector2f world_center, float spawn_offset, bool load_map)
 {
 	//LoadLayer(path, "_BG.csv", textureAtlas, tilesX, Category::kFloorTile);
-	LoadLayer(path, "_Border.csv", textureAtlas, tilesX, Category::kWallTile);
+	if (load_map) {
+		LoadLayer(path, "_Border.csv", textureAtlas, tilesX, Category::kWallTile);
+		return;
+	}
 	LoadLayer(path, "_Destroyable.csv", textureAtlas, tilesX, Category::kDestroyableTile);
 	LoadSpawns(path, "_Spawns.csv", tank_spawns, world_center, spawn_offset);
 }

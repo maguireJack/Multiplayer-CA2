@@ -39,7 +39,7 @@ Tank::Tank(TankType type, const TextureHolder& textures, bool hasListener)
 	Utility::CentreOrigin(m_sprite);
 
 	if (type == TankType::kPlayer1Tank) FaceDirection(Utility::Down);
-	else FaceDirection(Utility::Up);
+	else FaceDirection(Utility::Down);
 
 	//Setup commands
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)

@@ -156,8 +156,10 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Load the map
-	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, m_world_center, 45.f));
+	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, m_world_center, 45.f, false));
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
+
+
 
 	// Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));

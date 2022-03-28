@@ -1,4 +1,7 @@
 #include "GameServer.hpp"
+
+#include <iostream>
+
 #include "NetworkProtocol.hpp"
 #include <SFML/System.hpp>
 
@@ -291,8 +294,8 @@ void GameServer::HandleIncomingPacket(sf::Packet& packet, RemotePeer& receiving_
 
 	case Client::PacketType::PositionUpdate:
 	{
-		sf::Int32 num_aircraft;
-		packet >> num_aircraft;
+		sf::Int32 num_aircraft = 1;
+		
 
 		for (sf::Int32 i = 0; i < num_aircraft; ++i)
 		{
@@ -304,6 +307,8 @@ void GameServer::HandleIncomingPacket(sf::Packet& packet, RemotePeer& receiving_
 			m_tank_info[aircraft_identifier].m_position = aircraft_position;
 			m_tank_info[aircraft_identifier].m_hitpoints = aircraft_hitpoints;
 			m_tank_info[aircraft_identifier].m_ammo = missile_ammo;
+			std::cout << aircraft_identifier << "," << m_tank_info[aircraft_identifier].m_position.x << "," << m_tank_info[aircraft_identifier].m_position.y << "," << m_tank_info[aircraft_identifier].m_hitpoints << "," << m_tank_info[aircraft_identifier].m_ammo << std::endl;
+
 		}
 	}
 	break;
@@ -471,6 +476,7 @@ void GameServer::UpdateClientState()
 	for(const auto& tank : m_tank_info)
 	{
 		update_client_state_packet << tank.first << tank.second.m_hitpoints << tank.second.m_position.x << tank.second.m_position.y;
+		std::cout << "Server:" << tank.second.m_position.x << ", " << tank.second.m_position.y << std::endl;
 	}
 
 	SendToAll(update_client_state_packet);

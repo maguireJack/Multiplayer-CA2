@@ -180,7 +180,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 		sf::Packet packet;
 		if (m_socket.receive(packet) == sf::Socket::Done)
 		{
-			std::cout << packet << std::endl;
+			//std::cout << packet << std::endl;
 			m_time_since_last_packet = sf::seconds(0.f);
 			sf::Int32 packet_type;
 			packet >> packet_type;
@@ -220,14 +220,14 @@ bool MultiplayerGameState::Update(sf::Time dt)
 			sf::Packet position_update_packet;
 			position_update_packet << static_cast<sf::Int32>(Client::PacketType::PositionUpdate);
 
-			if (Tank* tank = m_world.GetTank(m_local_player_identifier))
+			if (Tank* aircraft = m_world.GetTank(m_local_player_identifier))
 			{
-				position_update_packet << m_local_player_identifier << tank->getPosition().x << tank->getPosition().y <<
-					static_cast<sf::Int32>(tank->GetHitPoints()) << static_cast<sf::Int32>(tank->GetAmmo());
+				position_update_packet << m_local_player_identifier << aircraft->getPosition().x << aircraft->getPosition().y << static_cast<sf::Int32>(aircraft->GetHitPoints()) << static_cast<sf::Int32>(aircraft->GetAmmo());
+				//std::cout << aircraft->getPosition().x << "," << aircraft->getPosition().y << std::endl;
+				m_socket.send(position_update_packet);
+				m_tick_clock.restart();
 			}
-
-			m_socket.send(position_update_packet);
-			m_tick_clock.restart();
+			
 		}
 		m_time_since_last_packet += dt;
 	}
@@ -466,7 +466,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 				if (tank && !is_local_tank)
 				{
 					sf::Vector2f interpolated_position = tank->getPosition() + (tank_position - tank->getPosition()) *
-						0.1f;
+						.25f;
 					tank->setPosition(interpolated_position);
 					tank->setHitpoints(tank_hitpoints);
 				}
