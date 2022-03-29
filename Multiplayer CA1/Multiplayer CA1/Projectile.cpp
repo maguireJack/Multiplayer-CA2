@@ -32,10 +32,7 @@ Projectile::Projectile(ProjectileType type, const TextureHolder& textures)
 
 unsigned int Projectile::GetCategory() const
 {
-	if (m_type == ProjectileType::kPlayer1Bullet || m_type == ProjectileType::kPlayer1Missile)
-		return static_cast<int>(Category::kPlayer1Projectile);
-	else
-		return static_cast<int>(Category::kPlayer2Projectile);
+	return static_cast<int>(Category::kProjectile);
 }
 
 sf::FloatRect Projectile::GetBoundingRect() const
@@ -58,7 +55,7 @@ int Projectile::GetDamage() const
 
 bool Projectile::IsMissile() const
 {
-	return m_type == ProjectileType::kPlayer1Missile || m_type == ProjectileType::kPlayer2Missile;
+	return m_type == ProjectileType::kPlayerMissile;
 }
 
 void Projectile::Destroy()

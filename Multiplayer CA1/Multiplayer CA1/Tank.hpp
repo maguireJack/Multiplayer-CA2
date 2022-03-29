@@ -24,10 +24,10 @@ enum TankActions
 class Tank : public Entity
 {
 public:
-	Tank(TankType type, const TextureHolder& textures, bool hasListener = false);
-	bool IsPlayer1Tank() const;
+	Tank(TankType type, const TextureHolder& textures);
+	bool IsLocalTank() const;
 	unsigned int GetCategory() const override;
-	int GetIdentifier();
+	int GetIdentifier() const;
 	void SetIdentifier(int identifier);
 
 	void Fire();
@@ -46,7 +46,7 @@ public:
 	bool HasExplosiveShotsUpgrade() const;
 	bool HasFireRateUpgrade() const;
 	void SetAmmo(int ammo);
-	void setHitpoints(int damage);
+	void SetHitpoints(int damage);
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
@@ -85,5 +85,6 @@ private:
 	int m_identifier;
 
 	bool m_has_listener;
+	bool m_is_local;
 };
 

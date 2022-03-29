@@ -7,7 +7,7 @@
 class SpawnerManager : public SceneNode
 {
 public:
-	SpawnerManager(const TextureHolder& textures, sf::Time interval, float baseChance);
+	SpawnerManager(const TextureHolder& textures, sf::Time interval, float baseChance, bool networked = false);
 	void SetupSpawners();
 
 private:
@@ -18,5 +18,6 @@ private:
 	sf::Time m_cooldown;
 	sf::Time m_interval;
 	float m_chance;
+	bool m_networked;
 };
 

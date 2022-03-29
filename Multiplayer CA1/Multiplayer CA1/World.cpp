@@ -11,7 +11,7 @@
 #include "Tank.hpp"
 #include "Tile.hpp"
 
-World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked)
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked, bool is_host)
 	: m_target(output_target)
 	  , m_camera(m_target.getDefaultView())
 	  , m_textures()
@@ -31,6 +31,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	  , m_max_shake_timer(sf::seconds(0.25))
 	  , m_max_shake_intensity(10)
 	  , m_networked_world(networked)
+	  , m_is_host(is_host)
 	  , m_network_node(nullptr)
 	  , m_finish_sprite(nullptr)
 {
@@ -47,6 +48,19 @@ void World::Update(sf::Time dt)
 		tank->SetVelocity(0, 0);
 	}
 
+	//Destroy all pickups that reached the end of their lifetime
+	for(int i = 0; i < m_pickups.size(); i++)
+	{
+		m_pickup_lifetimes[i] -= dt.asSeconds();
+		if (m_pickup_lifetimes[i] <= 0)
+		{
+			m_pickups[i]->Destroy();
+			m_pickups.erase(m_pickups.begin() + i);
+			m_pickup_lifetimes.erase(m_pickup_lifetimes.begin() + i);
+			i--;
+		}
+	}
+
 	//Forward commands to the scenegraph until the command queue is empty
 	while (!m_command_queue.IsEmpty())
 	{
@@ -56,7 +70,7 @@ void World::Update(sf::Time dt)
 	AdaptPlayerVelocity();
 	AdaptPlayerPosition();
 
-	if(m_player_spawned) m_camera.setCenter(GetPlayer()->getPosition());
+	if (m_player_spawned) m_camera.setCenter(GetPlayer()->getPosition());
 
 	HandleCollisions();
 
@@ -156,9 +170,9 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Load the map
-	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, m_world_center, 45.f, false));
+	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, m_world_center,
+	                               45.f, false));
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
-
 
 
 	// Add sound effect node
@@ -174,6 +188,20 @@ void World::BuildScene()
 		std::unique_ptr<NetworkNode> network_node(new NetworkNode());
 		m_network_node = network_node.get();
 		m_scenegraph.AttachChild(std::move(network_node));
+
+		if(m_is_host)
+		{
+			std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f, true));
+			spawner_manager->setPosition(m_world_center);
+			m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
+			m_spawner_manager = spawner_manager.get();
+		}
+	}
+	else
+	{
+		std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
+		spawner_manager->setPosition(m_world_center);
+		m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 	}
 }
 
@@ -214,9 +242,11 @@ bool World::AllowPlayerInput()
 
 void World::CreatePickup(sf::Vector2f position, PickupType type)
 {
+	if (m_is_host) return;
 	std::unique_ptr<Pickup> pickup(new Pickup(type, m_textures));
 	pickup->setPosition(position);
-	pickup->SetVelocity(0.f, 1.f);
+	m_pickups.emplace_back(pickup.get());
+	m_pickup_lifetimes.emplace_back(10.f);
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(pickup));
 }
 
@@ -296,25 +326,17 @@ void World::RemoveTank(int identifier)
 	}
 }
 
-Tank* World::AddSelfTank(int identifier)
-{
-	std::unique_ptr<Tank> player(new Tank(TankType::kPlayer1Tank, m_textures, true));
-	player->setPosition(sf::Vector2f(150, 150));
-	player->SetIdentifier(identifier);
-
-	m_player_tank = player.get();
-	m_player_tanks.emplace_back(player.get());
-	m_player_spawned = true;
-
-	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
-	return m_player_tanks.back();
-}
-
 Tank* World::AddTank(int identifier, TankType type)
 {
 	std::unique_ptr<Tank> player(new Tank(type, m_textures));
 	player->setPosition(sf::Vector2f(150, 150));
 	player->SetIdentifier(identifier);
+
+	if(type == TankType::kLocalTank)
+	{
+		m_player_tank = player.get();
+		m_player_spawned = true;
+	}
 
 	m_player_tanks.emplace_back(player.get());
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
@@ -331,8 +353,17 @@ void World::HandleCollisions()
 		{
 			auto& player = static_cast<Tank&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
-			//Apply the pickup effect
+			//Apply the m_pickup effect
 			pickup.Apply(player);
+			//Search for the pickup in your list and destroy it, the timer doesnt need to tick anymore for that pickup
+			for(int i = 0; i < m_pickups.size(); i++)
+			{
+				if(m_pickups[i] == pair.second)
+				{
+					m_pickups.erase(m_pickups.begin() + i);
+					m_pickup_lifetimes.erase(m_pickup_lifetimes.begin() + i);
+				}
+			}
 			pickup.Destroy();
 		}
 
@@ -349,17 +380,17 @@ void World::HandleCollisions()
 			projectile.Destroy();
 
 			//Check if self has been hit
-			if(&tank == m_player_tank)
+			if (&tank == m_player_tank)
 			{
 				m_shake_timer = m_max_shake_timer;
 			}
 
-			if (tank.IsExploding() && m_winner != Category::kPlayerTank && m_winner != Category::kPlayer2Tank)
+			if (tank.IsExploding() && m_winner != Category::kLocalTank && m_winner != Category::kEnemyTank)
 			{
 				tank.OnFinishExploding = [this] { m_game_over = true; };
-				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kPlayerTank
-					? Category::Type::kPlayer2Tank
-					: Category::Type::kPlayerTank));
+				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kLocalTank
+					                                                   ? Category::Type::kEnemyTank
+					                                                   : Category::Type::kLocalTank));
 			}
 		}
 
@@ -371,26 +402,19 @@ void World::HandleCollisions()
 			projectile.Destroy();
 		}
 
-		else if (MatchesCategories(pair, Category::Type::kPlayer1Projectile, Category::Type::kTile) ||
-			MatchesCategories(pair, Category::Type::kPlayer2Projectile, Category::Type::kTile))
+		else if (MatchesCategories(pair, Category::Type::kProjectile, Category::Type::kTile))
 		{
 			auto& projectile = static_cast<Projectile&>(*pair.first);
 			projectile.Destroy();
 		}
 
-		else if (MatchesCategories(pair, Category::Type::kPlayerTank, Category::Type::kTile) || MatchesCategories(
-			pair, Category::Type::kPlayer2Tank, Category::Type::kTile))
+		else if (MatchesCategories(pair, Category::Type::kLocalTank, Category::Type::kTile) || MatchesCategories(
+			pair, Category::Type::kEnemyTank, Category::Type::kTile))
 		{
 			auto& tank = static_cast<Tank&>(*pair.first);
 			tank.ResetToLastPos();
 		}
 	}
-}
-
-//TODO probably remove
-void World::SetWorldScrollCompensation(float compensation)
-{
-	m_scrollspeed_compensation = compensation;
 }
 
 void World::UpdateSounds()

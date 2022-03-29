@@ -178,22 +178,22 @@ void Player::InitialiseActions()
 	m_action_binding[PlayerAction::kPlayerMoveUp].action = moveUp;
 	m_action_binding[PlayerAction::kPlayerMoveDown].action = moveDown;
 	m_action_binding[PlayerAction::kPlayerFire].action = fire;
-	m_action_binding[PlayerAction::kPlayerMoveLeft].category = Category::kPlayerTank;
-	m_action_binding[PlayerAction::kPlayerMoveRight].category = Category::kPlayerTank;
-	m_action_binding[PlayerAction::kPlayerMoveUp].category = Category::kPlayerTank;
-	m_action_binding[PlayerAction::kPlayerMoveDown].category = Category::kPlayerTank;
-	m_action_binding[PlayerAction::kPlayerFire].category = Category::kPlayerTank;
+	m_action_binding[PlayerAction::kPlayerMoveLeft].category = Category::kLocalTank;
+	m_action_binding[PlayerAction::kPlayerMoveRight].category = Category::kLocalTank;
+	m_action_binding[PlayerAction::kPlayerMoveUp].category = Category::kLocalTank;
+	m_action_binding[PlayerAction::kPlayerMoveDown].category = Category::kLocalTank;
+	m_action_binding[PlayerAction::kPlayerFire].category = Category::kLocalTank;
 	/*
 	m_action_binding[PlayerAction::kPlayer2MoveLeft].action = moveLeft;
 	m_action_binding[PlayerAction::kPlayer2MoveRight].action = moveRight;
 	m_action_binding[PlayerAction::kPlayer2MoveUp].action = moveUp;
 	m_action_binding[PlayerAction::kPlayer2MoveDown].action = moveDown;
 	m_action_binding[PlayerAction::kEnemyFire].action = fire;
-	m_action_binding[PlayerAction::kPlayer2MoveLeft].category = Category::kPlayer2Tank;
-	m_action_binding[PlayerAction::kPlayer2MoveRight].category = Category::kPlayer2Tank;
-	m_action_binding[PlayerAction::kPlayer2MoveUp].category = Category::kPlayer2Tank;
-	m_action_binding[PlayerAction::kPlayer2MoveDown].category = Category::kPlayer2Tank;
-	m_action_binding[PlayerAction::kEnemyFire].category = Category::kPlayer2Tank;
+	m_action_binding[PlayerAction::kPlayer2MoveLeft].category = Category::kEnemyTank;
+	m_action_binding[PlayerAction::kPlayer2MoveRight].category = Category::kEnemyTank;
+	m_action_binding[PlayerAction::kPlayer2MoveUp].category = Category::kEnemyTank;
+	m_action_binding[PlayerAction::kPlayer2MoveDown].category = Category::kEnemyTank;
+	m_action_binding[PlayerAction::kEnemyFire].category = Category::kEnemyTank;
 	*/
 }
 

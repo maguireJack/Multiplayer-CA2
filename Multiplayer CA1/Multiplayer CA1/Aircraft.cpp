@@ -59,7 +59,7 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	m_missile_command.category = static_cast<int>(Category::Type::kScene);
 	m_missile_command.action = [this, &textures](SceneNode& node, sf::Time)
 	{
-		CreateProjectile(node, ProjectileType::kMissile, 0.f, 0.5f, textures);
+		CreateProjectile(node, ProjectileType::kPlayerMissile, 0.f, 0.5f, textures);
 	};
 	
 	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
@@ -230,7 +230,7 @@ bool Aircraft::IsAllied() const
 //TODO Do enemies need a different offset as they are flying down the screen?
 void Aircraft::CreateBullets(SceneNode& node, const TextureHolder& textures) const
 {
-	ProjectileType type = IsAllied() ? ProjectileType::kAlliedBullet : ProjectileType::kEnemyBullet;
+	/*ProjectileType type = IsAllied() ? ProjectileType::kAlliedBullet : ProjectileType::kEnemyBullet;
 	switch(m_spread_level)
 	{
 		case 1:
@@ -247,8 +247,9 @@ void Aircraft::CreateBullets(SceneNode& node, const TextureHolder& textures) con
 			break;
 
 	}
-
+	*/
 }
+
 
 void Aircraft::CreateProjectile(SceneNode& node, ProjectileType type, float x_offset, float y_offset,
 	const TextureHolder& textures) const

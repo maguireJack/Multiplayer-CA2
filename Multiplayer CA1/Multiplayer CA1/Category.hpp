@@ -7,15 +7,10 @@ namespace Category
 	{
 		kNone = 0,
 		kScene = 1 << 0,
-		kPlayerTank = 1 << 1,
-		kPlayer2Tank = 1 << 2,
-		kPlayerAircraft = 1 << 1,
-		kAlliedAircraft = 1 << 2,
-		kEnemyAircraft = 1 << 3,
+		kLocalTank = 1 << 1,
+		kEnemyTank = 1 << 2,
 		kPickup = 1 << 4,
-		kPlayer1Projectile = 1 << 5,
-		kPlayer2Projectile = 1 << 6,
-		kAlliedProjectile = 1 << 5,
+		kPlayerProjectile = 1 << 5,
 		kEnemyProjectile = 1 << 6,
 		kFloorTile = 1 << 7,
 		kWallTile = 1 << 8,
@@ -25,8 +20,12 @@ namespace Category
 		kNetwork = 1 << 12,
 
 		kTile = kFloorTile | kWallTile | kDestroyableTile,
-		kTank = kPlayerTank | kPlayer2Tank,
-		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
-		kProjectile = kPlayer1Projectile | kPlayer2Projectile,
+		kTank = kLocalTank | kEnemyTank,
+		kProjectile = kPlayerProjectile | kEnemyProjectile,
+
+		//Aircraft stuff
+		kPlayerAircraft = 1 << 1,
+		kAlliedAircraft = 1 << 2,
+		kEnemyAircraft = 1 << 3,
 	};
 }

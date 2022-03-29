@@ -5,28 +5,32 @@
 #include <cstdlib>
 #include <ctime>
 
-SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval, float base_chance)
-	: m_interval(interval), m_chance(base_chance), m_cooldown(interval)
+SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval, float base_chance, bool networked)
+	: m_interval(interval), m_chance(base_chance), m_cooldown(interval), m_networked(networked)
 {
 	srand(time(NULL));
-	auto m_spawn_health = [&textures](PickupSpawner* pickup_spawner)
+	auto m_spawn_health = [&textures, networked](PickupSpawner* pickup_spawner)
 	{
-		pickup_spawner->SpawnPickup(PickupType::kHealthRefill, textures);
+		if (networked) pickup_spawner->SpawnPickupNetwork(PickupType::kHealthRefill, textures);
+		else pickup_spawner->SpawnPickup(PickupType::kHealthRefill, textures);
 	};
 
-	auto m_spawn_ammo = [&textures](PickupSpawner* pickup_spawner)
+	auto m_spawn_ammo = [&textures, networked](PickupSpawner* pickup_spawner)
 	{
-		pickup_spawner->SpawnPickup(PickupType::kAmmoRefill, textures);
+		if (networked) pickup_spawner->SpawnPickupNetwork(PickupType::kAmmoRefill, textures);
+		else pickup_spawner->SpawnPickup(PickupType::kAmmoRefill, textures);
 	};
 
-	auto m_spawn_explosive_shots = [&textures](PickupSpawner* pickup_spawner)
+	auto m_spawn_explosive_shots = [&textures, networked](PickupSpawner* pickup_spawner)
 	{
-		pickup_spawner->SpawnPickup(PickupType::kExplosiveShots, textures);
+		if (networked) pickup_spawner->SpawnPickupNetwork(PickupType::kExplosiveShots, textures);
+		else pickup_spawner->SpawnPickup(PickupType::kExplosiveShots, textures);
 	};
 
-	auto m_spawn_fire_rate = [&textures](PickupSpawner* pickup_spawner)
+	auto m_spawn_fire_rate = [&textures, networked](PickupSpawner* pickup_spawner)
 	{
-		pickup_spawner->SpawnPickup(PickupType::kFireRate, textures);
+		if (networked) pickup_spawner->SpawnPickupNetwork(PickupType::kFireRate, textures);
+		else pickup_spawner->SpawnPickup(PickupType::kFireRate, textures);
 	};
 
 	m_spawn_actions.emplace_back(m_spawn_health);

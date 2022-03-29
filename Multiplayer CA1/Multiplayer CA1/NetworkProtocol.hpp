@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 
+#include "PickupType.hpp"
+
 const unsigned short SERVER_PORT = 50000;
 
 namespace Server
@@ -38,7 +40,8 @@ namespace GameActions
 {
 	enum Type
 	{
-		EnemyExplode
+		EnemyExplode,
+		PickupSpawn
 	};
 
 	struct Action
@@ -48,13 +51,14 @@ namespace GameActions
 			
 		}
 
-		Action(Type type, sf::Vector2f position):type(type), position(position)
+		Action(Type type, sf::Vector2f position, PickupType pickupType) :type(type), position(position), pickup_type(pickupType)
 		{
-			
+
 		}
 
 		Type type;
 		sf::Vector2f position;
+		PickupType pickup_type;
 	};
 }
 

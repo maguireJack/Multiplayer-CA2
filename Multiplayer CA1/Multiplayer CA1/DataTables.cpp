@@ -11,21 +11,21 @@ std::vector<TankData> InitializeTankData()
 {
 	std::vector<TankData> data(static_cast<int>(TankType::kTankTypeCount));
 
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_hitpoints = 100;
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_max_hitpoints = 200;
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_ammo = 10;
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_max_ammo = 20;
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_speed = 200.f;
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_fire_interval = sf::seconds(1);
-	data[static_cast<int>(TankType::kPlayer1Tank)].m_texture = Textures::kPlayer1Tank;
+	data[static_cast<int>(TankType::kLocalTank)].m_hitpoints = 100;
+	data[static_cast<int>(TankType::kLocalTank)].m_max_hitpoints = 200;
+	data[static_cast<int>(TankType::kLocalTank)].m_ammo = 10;
+	data[static_cast<int>(TankType::kLocalTank)].m_max_ammo = 20;
+	data[static_cast<int>(TankType::kLocalTank)].m_speed = 200.f;
+	data[static_cast<int>(TankType::kLocalTank)].m_fire_interval = sf::seconds(1);
+	data[static_cast<int>(TankType::kLocalTank)].m_texture = Textures::kPlayer1Tank;
 
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_hitpoints = 100;
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_max_hitpoints = 200;
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_ammo = 10;
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_max_ammo = 20;
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_speed = 200.f;
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_fire_interval = sf::seconds(1);
-	data[static_cast<int>(TankType::kPlayer2Tank)].m_texture = Textures::kPlayer2Tank;
+	data[static_cast<int>(TankType::kEnemyTank)].m_hitpoints = 100;
+	data[static_cast<int>(TankType::kEnemyTank)].m_max_hitpoints = 200;
+	data[static_cast<int>(TankType::kEnemyTank)].m_ammo = 10;
+	data[static_cast<int>(TankType::kEnemyTank)].m_max_ammo = 20;
+	data[static_cast<int>(TankType::kEnemyTank)].m_speed = 200.f;
+	data[static_cast<int>(TankType::kEnemyTank)].m_fire_interval = sf::seconds(1);
+	data[static_cast<int>(TankType::kEnemyTank)].m_texture = Textures::kPlayer2Tank;
 
 	return data;
 }
@@ -34,21 +34,14 @@ std::vector<ProjectileData> InitializeProjectileData()
 {
 	std::vector<ProjectileData> data(static_cast<int>(ProjectileType::kProjectileCount));
 
-	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_damage = 20;
-	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_speed = 400;
-	data[static_cast<int>(ProjectileType::kPlayer1Bullet)].m_texture = Textures::kBullet;
+	data[static_cast<int>(ProjectileType::kPlayerBullet)].m_damage = 20;
+	data[static_cast<int>(ProjectileType::kPlayerBullet)].m_speed = 400;
+	data[static_cast<int>(ProjectileType::kPlayerBullet)].m_texture = Textures::kBullet;
 
-	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_damage = 20;
-	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_speed = 400;
-	data[static_cast<int>(ProjectileType::kPlayer2Bullet)].m_texture = Textures::kBullet;
+	data[static_cast<int>(ProjectileType::kPlayerMissile)].m_damage = 40;
+	data[static_cast<int>(ProjectileType::kPlayerMissile)].m_speed = 300.f;
+	data[static_cast<int>(ProjectileType::kPlayerMissile)].m_texture = Textures::kMissile;
 
-	data[static_cast<int>(ProjectileType::kPlayer1Missile)].m_damage = 40;
-	data[static_cast<int>(ProjectileType::kPlayer1Missile)].m_speed = 300.f;
-	data[static_cast<int>(ProjectileType::kPlayer1Missile)].m_texture = Textures::kMissile;
-
-	data[static_cast<int>(ProjectileType::kPlayer2Missile)].m_damage = 40;
-	data[static_cast<int>(ProjectileType::kPlayer2Missile)].m_speed = 300.f;
-	data[static_cast<int>(ProjectileType::kPlayer2Missile)].m_texture = Textures::kMissile;
 	return data;
 }
 

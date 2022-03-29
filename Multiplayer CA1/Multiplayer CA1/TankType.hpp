@@ -3,7 +3,7 @@
 
 enum class TankType
 {
-	kPlayer1Tank,
-	kPlayer2Tank,
+	kLocalTank,
+	kEnemyTank,
 	kTankTypeCount
 };

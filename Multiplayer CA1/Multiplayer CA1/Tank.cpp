@@ -16,7 +16,7 @@ namespace
 	const std::vector<TankData> Table = InitializeTankData();
 }
 
-Tank::Tank(TankType type, const TextureHolder& textures, bool hasListener)
+Tank::Tank(TankType type, const TextureHolder& textures)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
@@ -24,9 +24,14 @@ Tank::Tank(TankType type, const TextureHolder& textures, bool hasListener)
 	  , m_ammo(Table[static_cast<int>(type)].m_ammo)
 	  , m_explosion(textures.Get(Textures::kExplosion))
       , m_identifier(0)
-	  , m_has_listener(hasListener)
 {
 	is_static = false;
+
+	if (type == TankType::kLocalTank)
+	{
+		m_has_listener = true;
+		m_is_local = true;
+	}
 
 	//Setup Animation
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
@@ -38,38 +43,33 @@ Tank::Tank(TankType type, const TextureHolder& textures, bool hasListener)
 	setScale(5, 5);
 	Utility::CentreOrigin(m_sprite);
 
-	if (type == TankType::kPlayer1Tank) FaceDirection(Utility::Down);
-	else FaceDirection(Utility::Down);
+	FaceDirection(Utility::Down);
 
 	//Setup commands
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
 	{
-		CreateProjectile(node, GetCategory() == Category::kPlayerTank
-			                       ? ProjectileType::kPlayer1Bullet
-			                       : ProjectileType::kPlayer2Bullet, textures);
+		CreateProjectile(node, ProjectileType::kPlayerBullet, textures);
 	};
 	m_fire_command.category = static_cast<int>(Category::Type::kScene);
 	
 	m_explosive_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
 	{
-		CreateProjectile(node, GetCategory() == Category::kPlayerTank
-			? ProjectileType::kPlayer1Missile
-			: ProjectileType::kPlayer2Missile, textures);
+		CreateProjectile(node, ProjectileType::kPlayerMissile, textures);
 	};
 	m_explosive_fire_command.category = static_cast<int>(Category::Type::kScene);
 }
 
-bool Tank::IsPlayer1Tank() const
+bool Tank::IsLocalTank() const
 {
-	return m_type == TankType::kPlayer1Tank;
+	return m_is_local;
 }
 
 unsigned Tank::GetCategory() const
 {
-	return IsPlayer1Tank() ? Category::kPlayerTank : Category::kPlayer2Tank;
+	return IsLocalTank() ? Category::kLocalTank : Category::kEnemyTank;
 }
 
-int	Tank::GetIdentifier()
+int	Tank::GetIdentifier() const
 {
 	return m_identifier;
 }
@@ -116,6 +116,10 @@ void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureH
 {
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 	sf::Vector2f offset = GetWorldTransform().transformPoint(8.f, -1.f);
+	if(type == ProjectileType::kPlayerMissile)
+	{
+		offset = GetWorldTransform().transformPoint(10.f, -1.f);
+	}
 	offset -= GetWorldPosition();
 	sf::Vector2f velocity(
 		std::cosf(Utility::ToRadians(getRotation())) * projectile->GetMaxSpeed(),
@@ -160,7 +164,7 @@ void Tank::Destroy()
 	Entity::Destroy();
 }
 
-void Tank::setHitpoints(int damage)
+void Tank::SetHitpoints(int damage)
 {
 	Entity::SetHitpoints(damage);
 }
@@ -275,12 +279,12 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 		{
 			if(m_explosive_shot_countdown.asSeconds() > 0)
 			{
-				PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1FireMissile : SoundEffect::kPlayer2FireMissile);
+				PlaySound(commands, IsLocalTank() ? SoundEffect::kPlayer1FireMissile : SoundEffect::kPlayer2FireMissile);
 				commands.Push(m_explosive_fire_command);
 			}
 			else 
 			{
-				PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Fire : SoundEffect::kPlayer2Fire);
+				PlaySound(commands, IsLocalTank() ? SoundEffect::kPlayer1Fire : SoundEffect::kPlayer2Fire);
 				commands.Push(m_fire_command);
 			}
 
@@ -295,7 +299,7 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 	}
 	if (m_actions & kHit)
 	{
-		PlaySound(commands, IsPlayer1Tank() ? SoundEffect::kPlayer1Hit : SoundEffect::kPlayer2Hit);
+		PlaySound(commands, IsLocalTank() ? SoundEffect::kPlayer1Hit : SoundEffect::kPlayer2Hit);
 	}
 	if (m_actions & kRestock)
 	{

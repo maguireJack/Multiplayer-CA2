@@ -8,7 +8,7 @@ class NetworkNode : public SceneNode
 {
 public:
 	NetworkNode();
-	void NotifyGameAction(GameActions::Type type, sf::Vector2f position);
+	void NotifyGameAction(GameActions::Action action);
 	bool PollGameAction(GameActions::Action& out);
 	virtual unsigned int GetCategory() const override;
 

@@ -12,7 +12,7 @@ public:
 	void SetVelocity(float vx, float vy);
 	void Accelerate(sf::Vector2f velocity);
 	void Accelerate(float vx, float vy);
-	void SetHitpoints(int points);
+	virtual void SetHitpoints(int points);
 	sf::Vector2f GetVelocity() const;
 
 	int GetHitPoints() const;

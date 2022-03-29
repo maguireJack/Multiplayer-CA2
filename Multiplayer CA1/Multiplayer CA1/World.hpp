@@ -23,6 +23,7 @@
 #include "PickupType.hpp"
 #include "ShakeEffect.hpp"
 #include "SoundPlayer.hpp"
+#include "SpawnerManager.hpp"
 #include "Tank.hpp"
 
 //Foward
@@ -35,7 +36,7 @@ namespace sf
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked = false);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked = false, bool is_host = false);
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
@@ -56,7 +57,6 @@ public:
 	bool IsGameOver() const;
 	Category::Type GetWinner() const;
 	bool AllowPlayerInput();
-	Tank* AddSelfTank(int identifier);
 	Tank* AddTank(int identifier, TankType type);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
@@ -111,12 +111,16 @@ private:
 	sf::Time m_shake_timer;
 	sf::Time m_max_shake_timer;
 	NetworkNode* m_network_node;
-	float m_scrollspeed_compensation;
 	float m_max_shake_intensity;
 
 	BloomEffect m_bloom_effect;
 	ShakeEffect m_shake_effect;
 	bool m_networked_world;
+	bool m_is_host;
 	SpriteNode* m_finish_sprite;
+	SpawnerManager* m_spawner_manager;
+	std::vector<Pickup*> m_pickups;
+	std::vector<float> m_pickup_lifetimes;
+	std::map<Pickup, int> m_pickup_map;
 };
 

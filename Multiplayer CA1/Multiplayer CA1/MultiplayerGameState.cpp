@@ -34,7 +34,7 @@ sf::IpAddress GetAddressFromFile()
 
 MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, bool is_host)
 	: State(stack, context)
-	  , m_world(*context.window, *context.fonts, *context.sounds, true)
+	  , m_world(*context.window, *context.fonts, *context.sounds, true, is_host)
 	  , m_window(*context.window)
 	  , m_texture_holder(*context.textures)
 	  , m_connected(false)
@@ -93,7 +93,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	m_socket.setBlocking(false);
 
 	//Play game theme
-	context.music->Play(MusicThemes::kGameplayTheme);
+	//context.music->Play(MusicThemes::kGameplayTheme);
 }
 
 void MultiplayerGameState::Draw()
@@ -210,6 +210,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 			packet << static_cast<sf::Int32>(game_action.type);
 			packet << game_action.position.x;
 			packet << game_action.position.y;
+			packet << static_cast<sf::Int32>(game_action.pickup_type);
 
 			m_socket.send(packet);
 		}
@@ -345,7 +346,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Int32 tank_identifier;
 			sf::Vector2f tank_position;
 			packet >> tank_identifier >> tank_position.x >> tank_position.y;
-			Tank* tank = m_world.AddSelfTank(tank_identifier);
+			Tank* tank = m_world.AddTank(tank_identifier, TankType::kLocalTank);
 			tank->setPosition(tank_position);
 			m_players[tank_identifier].reset(new Player(&m_socket, tank_identifier, GetContext().keys1));
 			m_local_player_identifier = tank_identifier;
@@ -360,7 +361,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Vector2f aircraft_position;
 			packet >> tank_identifier >> aircraft_position.x >> aircraft_position.y;
 
-			Tank* tank = m_world.AddTank(tank_identifier, TankType::kPlayer2Tank);
+			Tank* tank = m_world.AddTank(tank_identifier, TankType::kEnemyTank);
 			tank->setPosition(aircraft_position);
 			m_players[tank_identifier].reset(new Player(&m_socket, tank_identifier, nullptr));
 		}
@@ -390,7 +391,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 				sf::Vector2f aircraft_position;
 				packet >> tank_identifier >> aircraft_position.x >> aircraft_position.y >> hitpoints >> missile_ammo;
 
-				Tank* tank = m_world.AddTank(tank_identifier, TankType::kPlayer2Tank);
+				Tank* tank = m_world.AddTank(tank_identifier, TankType::kEnemyTank);
 				tank->setPosition(aircraft_position);
 				tank->SetHitpoints(hitpoints);
 				tank->SetAmmo(missile_ammo);
@@ -446,6 +447,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Vector2f position;
 			packet >> type >> position.x >> position.y;
 			m_world.CreatePickup(position, static_cast<PickupType>(type));
+			std::cout << "Pickup Spawned!";
 		}
 		break;
 
@@ -468,7 +470,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 					sf::Vector2f interpolated_position = tank->getPosition() + (tank_position - tank->getPosition()) *
 						.25f;
 					tank->setPosition(interpolated_position);
-					tank->setHitpoints(tank_hitpoints);
+					tank->SetHitpoints(tank_hitpoints);
 				}
 			}
 		}
