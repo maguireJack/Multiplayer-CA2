@@ -161,8 +161,14 @@ void Tank::Damage(unsigned points)
 
 void Tank::Destroy()
 {
-	Entity::Destroy();
+	m_is_ghost = true;
 }
+
+bool Tank::GetGhost()
+{
+	return m_is_ghost;
+}
+
 
 void Tank::SetHitpoints(int damage)
 {

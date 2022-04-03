@@ -4,5 +4,6 @@ enum class Layers
 {
 	kBackground,
 	kBattlefield,
+	kGhostWorld,
 	kLayerCount
 };

@@ -46,6 +46,11 @@ void World::Update(sf::Time dt)
 	for (Tank* tank : m_player_tanks)
 	{
 		tank->SetVelocity(0, 0);
+		/*if (tank->GetGhost())
+		{
+			AddTank(tank->GetIdentifier(), TankType::kLocalTank, true);
+			RemoveTank(tank->GetIdentifier());
+		}*/
 	}
 
 	//Destroy all pickups that reached the end of their lifetime
@@ -79,7 +84,9 @@ void World::Update(sf::Time dt)
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
 
-	UpdateSounds();
+	if (m_player_tank != nullptr && m_player_tank->GetHitPoints()> 0) {
+		UpdateSounds();
+	}
 
 	if (m_shake_timer.asSeconds() > 0)
 		m_shake_timer -= dt;
@@ -157,6 +164,7 @@ void World::BuildScene()
 		m_scene_layers[i] = layer.get();
 		m_scenegraph.AttachChild(std::move(layer));
 	}
+
 
 	//Prepare the background
 	sf::Texture& texture = m_textures.Get(Textures::kBackground);
@@ -326,7 +334,7 @@ void World::RemoveTank(int identifier)
 	}
 }
 
-Tank* World::AddTank(int identifier, TankType type)
+Tank* World::AddTank(int identifier, TankType type, bool m_ghost_world)
 {
 	std::unique_ptr<Tank> player(new Tank(type, m_textures));
 	player->setPosition(sf::Vector2f(150, 150));
@@ -337,10 +345,17 @@ Tank* World::AddTank(int identifier, TankType type)
 		m_player_tank = player.get();
 		m_player_spawned = true;
 	}
-
+	
+	if (m_ghost_world) 
+	{
+		m_ghost_tanks.emplace_back(player.get());
+		m_scene_layers[static_cast<int>(Layers::kGhostWorld)]->AttachChild(std::move(player));
+		return m_ghost_tanks.back();
+	}
 	m_player_tanks.emplace_back(player.get());
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
 	return m_player_tanks.back();
+	
 }
 
 void World::HandleCollisions()
@@ -421,7 +436,7 @@ void World::UpdateSounds()
 {
 	// Set listener's position to player position
 	m_sounds.SetListenerPosition(m_player_tank->GetWorldPosition());
-
+	
 	// Remove unused sounds
 	m_sounds.RemoveStoppedSounds();
 }

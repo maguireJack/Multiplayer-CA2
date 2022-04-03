@@ -57,7 +57,7 @@ public:
 	bool IsGameOver() const;
 	Category::Type GetWinner() const;
 	bool AllowPlayerInput();
-	Tank* AddTank(int identifier, TankType type);
+	Tank* AddTank(int identifier, TankType type, bool ghost = false);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
 
@@ -104,6 +104,7 @@ private:
 	bool m_player_spawned;
 	Tank* m_player_tank;
 	std::vector<Tank*> m_player_tanks;
+	std::vector<Tank*> m_ghost_tanks;
 	bool m_game_over;
 	Category::Type m_winner;
 
@@ -117,6 +118,7 @@ private:
 	ShakeEffect m_shake_effect;
 	bool m_networked_world;
 	bool m_is_host;
+	bool m_ghost_world;
 	SpriteNode* m_finish_sprite;
 	SpawnerManager* m_spawner_manager;
 	std::vector<Pickup*> m_pickups;

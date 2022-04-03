@@ -31,6 +31,7 @@ public:
 	void SetIdentifier(int identifier);
 
 	void Fire();
+	bool GetGhost();
 	void CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive = false) const;
 	float GetMaxSpeed();
 	void Repair(int health);
@@ -86,5 +87,6 @@ private:
 
 	bool m_has_listener;
 	bool m_is_local;
+	bool m_is_ghost = false;
 };
 

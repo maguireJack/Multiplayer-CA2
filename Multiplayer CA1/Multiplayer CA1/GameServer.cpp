@@ -277,9 +277,9 @@ void GameServer::HandleIncomingPacket(sf::Packet& packet, RemotePeer& receiving_
 				m_tank_info[aircraft_identifier].m_position = aircraft_position;
 				m_tank_info[aircraft_identifier].m_hitpoints = aircraft_hitpoints;
 				m_tank_info[aircraft_identifier].m_ammo = missile_ammo;
-				std::cout << aircraft_identifier << "," << m_tank_info[aircraft_identifier].m_position.x << "," <<
+			/*	std::cout << aircraft_identifier << "," << m_tank_info[aircraft_identifier].m_position.x << "," <<
 					m_tank_info[aircraft_identifier].m_position.y << "," << m_tank_info[aircraft_identifier].m_hitpoints
-					<< "," << m_tank_info[aircraft_identifier].m_ammo << std::endl;
+					<< "," << m_tank_info[aircraft_identifier].m_ammo << std::endl;*/
 			}
 		}
 		break;
@@ -443,7 +443,7 @@ void GameServer::UpdateClientState()
 	{
 		update_client_state_packet << tank.first << tank.second.m_hitpoints << tank.second.m_position.x << tank.second.
 			m_position.y;
-		std::cout << "Server:" << tank.second.m_position.x << ", " << tank.second.m_position.y << std::endl;
+		//std::cout << "Server:" << tank.second.m_position.x << ", " << tank.second.m_position.y << std::endl;
 	}
 
 	SendToAll(update_client_state_packet);

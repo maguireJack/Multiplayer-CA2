@@ -132,12 +132,13 @@ bool MultiplayerGameState::Update(sf::Time dt)
 		bool found_local_plane = false;
 		for (auto itr = m_players.begin(); itr != m_players.end();)
 		{
+			
 			//Check if there are no more local planes for remote clients
 			if (itr->first == m_local_player_identifier)
 			{
 				found_local_plane = true;
 			}
-
+			
 			if (!m_world.GetTank(itr->first))
 			{
 				itr = m_players.erase(itr);
@@ -152,11 +153,12 @@ bool MultiplayerGameState::Update(sf::Time dt)
 			{
 				++itr;
 			}
+			std::cout << found_local_plane << std::endl;
 		}
 
 		if (!found_local_plane && m_game_started)
 		{
-			//RequestStackPush(StateID::kGameOver);
+			RequestStackPush(StateID::kGameOver);
 		}
 
 		//Only handle the realtime input if the window has focus and the game is unpaused
