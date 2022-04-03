@@ -9,6 +9,7 @@
 #include "ProjectileType.hpp"
 #include "ResourceIdentifiers.hpp"
 #include "Utility.hpp"
+#include "Projectile.hpp"
 
 enum TankActions
 {
@@ -24,15 +25,16 @@ enum TankActions
 class Tank : public Entity
 {
 public:
-	Tank(TankType type, const TextureHolder& textures);
+	Tank(TankType type, const TextureHolder& textures, bool* is_ghost_world);
+	void SetSpawnPos(sf::Vector2f position);
 	bool IsLocalTank() const;
 	unsigned int GetCategory() const override;
 	int GetIdentifier() const;
 	void SetIdentifier(int identifier);
 
 	void Fire();
-	bool GetGhost();
-	void CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive = false) const;
+	bool IsGhost() const;
+	void CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive = false);
 	float GetMaxSpeed();
 	void Repair(int health);
 	void Damage(unsigned points) override;
@@ -48,6 +50,7 @@ public:
 	bool HasFireRateUpgrade() const;
 	void SetAmmo(int ammo);
 	void SetHitpoints(int damage);
+	void TurnToGhost();
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
@@ -88,5 +91,8 @@ private:
 	bool m_has_listener;
 	bool m_is_local;
 	bool m_is_ghost = false;
+	bool* m_is_ghost_world;
+	sf::Vector2f m_spawn_pos;
+	std::vector<Projectile*> projectiles;
 };
 

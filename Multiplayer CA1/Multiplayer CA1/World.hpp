@@ -55,9 +55,9 @@ public:
 
 
 	bool IsGameOver() const;
-	Category::Type GetWinner() const;
+	std::string GetWinner() const;
 	bool AllowPlayerInput();
-	Tank* AddTank(int identifier, TankType type, bool ghost = false);
+	Tank* AddTank(int identifier, TankType type, sf::Vector2f position);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
 
@@ -106,7 +106,7 @@ private:
 	std::vector<Tank*> m_player_tanks;
 	std::vector<Tank*> m_ghost_tanks;
 	bool m_game_over;
-	Category::Type m_winner;
+	std::string m_winner;
 
 	sf::Time m_total_time;
 	sf::Time m_shake_timer;

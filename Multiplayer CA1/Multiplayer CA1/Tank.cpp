@@ -16,14 +16,15 @@ namespace
 	const std::vector<TankData> Table = InitializeTankData();
 }
 
-Tank::Tank(TankType type, const TextureHolder& textures)
+Tank::Tank(TankType type, const TextureHolder& textures, bool* is_ghost_world)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
 	  , m_fire_interval(Table[static_cast<int>(type)].m_fire_interval)
 	  , m_ammo(Table[static_cast<int>(type)].m_ammo)
 	  , m_explosion(textures.Get(Textures::kExplosion))
-      , m_identifier(0)
+	  , m_identifier(0)
+	  , m_is_ghost_world(is_ghost_world)
 {
 	is_static = false;
 
@@ -51,12 +52,17 @@ Tank::Tank(TankType type, const TextureHolder& textures)
 		CreateProjectile(node, ProjectileType::kPlayerBullet, textures);
 	};
 	m_fire_command.category = static_cast<int>(Category::Type::kScene);
-	
+
 	m_explosive_fire_command.action = [this, &textures](SceneNode& node, sf::Time time)
 	{
 		CreateProjectile(node, ProjectileType::kPlayerMissile, textures);
 	};
 	m_explosive_fire_command.category = static_cast<int>(Category::Type::kScene);
+}
+
+void Tank::SetSpawnPos(sf::Vector2f position)
+{
+	m_spawn_pos = position;
 }
 
 bool Tank::IsLocalTank() const
@@ -66,10 +72,31 @@ bool Tank::IsLocalTank() const
 
 unsigned Tank::GetCategory() const
 {
-	return IsLocalTank() ? Category::kLocalTank : Category::kEnemyTank;
+	if (IsLocalTank())
+	{
+		if (IsGhost())
+		{
+			return Category::kLocalGhostTank;
+		}
+		else
+		{
+			return Category::kLocalTank;
+		}
+	}
+	else
+	{
+		if (IsGhost())
+		{
+			return Category::kEnemyGhostTank;
+		}
+		else
+		{
+			return Category::kEnemyTank;
+		}
+	}
 }
 
-int	Tank::GetIdentifier() const
+int Tank::GetIdentifier() const
 {
 	return m_identifier;
 }
@@ -85,8 +112,6 @@ void Tank::SetAmmo(int ammo)
 	m_ammo = ammo;
 }
 
-
-
 void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (IsDestroyed()) return;
@@ -97,6 +122,16 @@ void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 	}
 	else
 	{
+		if (m_is_ghost)
+		{
+			if (*m_is_ghost_world)
+			{
+				target.draw(m_sprite, states);
+				target.draw(m_explosive_shots_sprite, states);
+			}
+			return;
+		}
+
 		target.draw(m_sprite, states);
 		target.draw(m_explosive_shots_sprite, states);
 		//target.draw(m_fire_rate_sprite, states);
@@ -112,11 +147,11 @@ void Tank::Fire()
 	}
 }
 
-void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive) const
+void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive)
 {
-	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
+	std::unique_ptr<Projectile> projectile(new Projectile(type, textures, IsGhost()));
 	sf::Vector2f offset = GetWorldTransform().transformPoint(8.f, -1.f);
-	if(type == ProjectileType::kPlayerMissile)
+	if (type == ProjectileType::kPlayerMissile)
 	{
 		offset = GetWorldTransform().transformPoint(10.f, -1.f);
 	}
@@ -144,7 +179,8 @@ void Tank::Repair(int health)
 		health = maxHealth - GetHitPoints();
 	}
 
-	if (health > 0) {
+	if (health > 0)
+	{
 		Entity::Repair(health);
 		m_actions = m_actions | TankActions::kRepair;
 	}
@@ -154,8 +190,9 @@ void Tank::Repair(int health)
 void Tank::Damage(unsigned points)
 {
 	Entity::Damage(points);
+
 	m_actions = m_actions | kHit;
-	if(IsExploding())
+	if (IsExploding())
 		setScale(1, 1);
 }
 
@@ -164,11 +201,15 @@ void Tank::Destroy()
 	m_is_ghost = true;
 }
 
-bool Tank::GetGhost()
+bool Tank::IsGhost() const
 {
 	return m_is_ghost;
 }
 
+void Tank::TurnToGhost()
+{
+	m_sprite.setColor(sf::Color(255, 255, 255, 100));
+}
 
 void Tank::SetHitpoints(int damage)
 {
@@ -222,7 +263,8 @@ void Tank::ReplenishAmmo()
 		ammoToAdd = maxAmmo - m_ammo;
 	}
 
-	if (ammoToAdd > 0) {
+	if (ammoToAdd > 0)
+	{
 		m_ammo += ammoToAdd;
 		m_actions = m_actions | kRestock;
 	}
@@ -234,12 +276,13 @@ void Tank::ReplenishAmmo()
 
 bool Tank::IsExploding() const
 {
-	return Entity::IsDestroyed() && !m_explosion.IsFinished();
+	bool exploding = Entity::IsDestroyed() && !m_explosion.IsFinished();
+	return exploding;
 }
 
 bool Tank::IsDestroyed() const
 {
-	return Entity::IsDestroyed() && m_explosion.IsFinished();
+	return false;
 }
 
 bool Tank::HasExplosiveShotsUpgrade() const
@@ -264,7 +307,7 @@ void Tank::ResetToLastPos()
 
 void Tank::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	if(IsExploding())
+	if (IsExploding())
 	{
 		UpdateExplosion(dt, commands);
 	}
@@ -272,7 +315,6 @@ void Tank::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	{
 		UpdateTank(dt, commands);
 	}
-	
 }
 
 void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
@@ -283,12 +325,14 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 	{
 		if (m_fire_cooldown.asSeconds() <= 0.f && m_ammo > 0)
 		{
-			if(m_explosive_shot_countdown.asSeconds() > 0)
+			if (m_explosive_shot_countdown.asSeconds() > 0)
 			{
-				PlaySound(commands, IsLocalTank() ? SoundEffect::kPlayer1FireMissile : SoundEffect::kPlayer2FireMissile);
+				PlaySound(commands, IsLocalTank()
+					                    ? SoundEffect::kPlayer1FireMissile
+					                    : SoundEffect::kPlayer2FireMissile);
 				commands.Push(m_explosive_fire_command);
 			}
-			else 
+			else
 			{
 				PlaySound(commands, IsLocalTank() ? SoundEffect::kPlayer1Fire : SoundEffect::kPlayer2Fire);
 				commands.Push(m_fire_command);
@@ -296,7 +340,7 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 
 			m_ammo--;
 
-			if (HasFireRateUpgrade()) 
+			if (HasFireRateUpgrade())
 			{
 				m_fire_cooldown = sf::seconds(m_fire_interval.asSeconds() / 2.f);
 			}
@@ -332,9 +376,9 @@ void Tank::UpdateTank(sf::Time dt, CommandQueue& commands)
 
 	if (m_fire_cooldown.asSeconds() > 0.f) m_fire_cooldown -= dt;
 	if (HasExplosiveShotsUpgrade()) m_explosive_shot_countdown -= dt;
-	if (HasFireRateUpgrade()) m_fire_rate_countdown-= dt;
+	if (HasFireRateUpgrade()) m_fire_rate_countdown -= dt;
 
-	if(m_has_listener)
+	if (m_has_listener)
 	{
 		sf::Listener::setPosition(sf::Vector3f(m_last_pos.x, 0, m_last_pos.y));
 	}
@@ -350,8 +394,17 @@ void Tank::UpdateExplosion(sf::Time dt, CommandQueue& commands)
 
 	m_explosion.Update(dt);
 
-	if(m_explosion.IsFinished())
+	if (m_explosion.IsFinished())
 	{
+		if(!m_is_ghost)
+		{
+			m_is_ghost = true;
+			TurnToGhost();
+		}
+		Repair(100);
+		m_ammo = 10;
+		setPosition(m_spawn_pos);
+		setScale(5, 5);
 		OnFinishExploding();
 	}
 }
@@ -367,7 +420,7 @@ void Tank::PlaySound(CommandQueue& commands, SoundEffect effect, bool global)
 		{
 			if (global)
 				node.PlaySound(effect);
-			else 
+			else
 				node.PlaySound(effect, world_position);
 		});
 

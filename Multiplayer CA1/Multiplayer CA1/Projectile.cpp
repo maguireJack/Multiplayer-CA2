@@ -1,7 +1,6 @@
 //Alex Nogueira / D00242564 
 #include "Projectile.hpp"
 
-#include <valarray>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "DataTables.hpp"
@@ -14,11 +13,12 @@ namespace
 	const std::vector<ProjectileData> Table = InitializeProjectileData();
 }
 
-Projectile::Projectile(ProjectileType type, const TextureHolder& textures)
+Projectile::Projectile(ProjectileType type, const TextureHolder& textures, bool is_ghost)
 	: Entity(1)
 	  , m_type(type)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_explosion(textures.Get(Textures::kExplosion))
+	  , m_is_ghost(is_ghost)
 {
 	is_static = false;
 	//Setup Animation
@@ -32,7 +32,8 @@ Projectile::Projectile(ProjectileType type, const TextureHolder& textures)
 
 unsigned int Projectile::GetCategory() const
 {
-	return static_cast<int>(Category::kProjectile);
+	if(!m_is_ghost) return static_cast<int>(Category::kProjectile);
+	return static_cast<int>(Category::kGhostProjectile);
 }
 
 sf::FloatRect Projectile::GetBoundingRect() const

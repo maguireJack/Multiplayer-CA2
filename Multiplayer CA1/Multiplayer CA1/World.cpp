@@ -26,7 +26,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	  , m_player_tank(nullptr)
 	  , m_player_spawned(false)
 	  , m_game_over(false)
-	  , m_winner(Category::kNone)
+	  , m_winner("")
 	  , m_sounds(sounds)
 	  , m_max_shake_timer(sf::seconds(0.25))
 	  , m_max_shake_intensity(10)
@@ -46,11 +46,6 @@ void World::Update(sf::Time dt)
 	for (Tank* tank : m_player_tanks)
 	{
 		tank->SetVelocity(0, 0);
-		/*if (tank->GetGhost())
-		{
-			AddTank(tank->GetIdentifier(), TankType::kLocalTank, true);
-			RemoveTank(tank->GetIdentifier());
-		}*/
 	}
 
 	//Destroy all pickups that reached the end of their lifetime
@@ -238,7 +233,7 @@ bool World::IsGameOver() const
 	return m_game_over;
 }
 
-Category::Type World::GetWinner() const
+std::string World::GetWinner() const
 {
 	return m_winner;
 }
@@ -334,10 +329,11 @@ void World::RemoveTank(int identifier)
 	}
 }
 
-Tank* World::AddTank(int identifier, TankType type, bool m_ghost_world)
+Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 {
-	std::unique_ptr<Tank> player(new Tank(type, m_textures));
-	player->setPosition(sf::Vector2f(150, 150));
+	std::unique_ptr<Tank> player(new Tank(type, m_textures, &m_ghost_world));
+	player->setPosition(position);
+	player->SetSpawnPos(position);
 	player->SetIdentifier(identifier);
 
 	if(type == TankType::kLocalTank)
@@ -370,7 +366,7 @@ void World::HandleCollisions()
 			auto& pickup = static_cast<Pickup&>(*pair.second);
 			//Apply the m_pickup effect
 			pickup.Apply(player);
-			//Search for the pickup in your list and destroy it, the timer doesnt need to tick anymore for that pickup
+			//Search for the pickup in your list and destroy it, the timer doesn't need to tick anymore for that pickup
 			for(int i = 0; i < m_pickups.size(); i++)
 			{
 				if(m_pickups[i] == pair.second)
@@ -389,6 +385,8 @@ void World::HandleCollisions()
 			if (!projectile.CanDamagePlayers())
 				continue;
 
+			bool tank_was_alive = !tank.IsGhost();
+
 			//Apply the projectile damage to the tank
 			tank.Damage(projectile.GetDamage());
 			projectile.AppliedPlayerDamage();
@@ -398,14 +396,34 @@ void World::HandleCollisions()
 			if (&tank == m_player_tank)
 			{
 				m_shake_timer = m_max_shake_timer;
+				m_ghost_world |= tank.IsExploding();
 			}
 
-			if (tank.IsExploding() && m_winner != Category::kLocalTank && m_winner != Category::kEnemyTank)
+			if (tank.IsExploding() && tank_was_alive && m_winner == "")
 			{
-				tank.OnFinishExploding = [this] { m_game_over = true; };
-				m_winner = static_cast<Category::Type>(m_winner | (tank.GetCategory() == Category::Type::kLocalTank
-					                                                   ? Category::Type::kEnemyTank
-					                                                   : Category::Type::kLocalTank));
+				tank.OnFinishExploding = [this]
+				{
+					//TODO something
+				};
+			}
+		}
+
+		else if (MatchesCategories(pair, Category::Type::kGhostTank, Category::Type::kGhostProjectile))
+		{
+			auto& tank = static_cast<Tank&>(*pair.first);
+			auto& projectile = static_cast<Projectile&>(*pair.second);
+			if (!projectile.CanDamagePlayers())
+				continue;
+
+			//Apply the projectile damage to the tank
+			tank.Damage(projectile.GetDamage());
+			projectile.AppliedPlayerDamage();
+			projectile.Destroy();
+
+			//Check if self has been hit
+			if (&tank == m_player_tank)
+			{
+				m_shake_timer = m_max_shake_timer;
 			}
 		}
 

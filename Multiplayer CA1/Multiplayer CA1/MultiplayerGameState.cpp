@@ -93,7 +93,9 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	m_socket.setBlocking(false);
 
 	//Play game theme
-	//context.music->Play(MusicThemes::kGameplayTheme);
+	context.music->Play(MusicThemes::kGameplayTheme);
+	//Music annoying
+	context.music->SetVolume(0);
 }
 
 void MultiplayerGameState::Draw()
@@ -127,39 +129,6 @@ bool MultiplayerGameState::Update(sf::Time dt)
 
 		UpdateLabels();
 		UpdateIcons();
-
-		//Remove players whose aircraft were destroyed
-		bool found_local_plane = false;
-		for (auto itr = m_players.begin(); itr != m_players.end();)
-		{
-			
-			//Check if there are no more local planes for remote clients
-			if (itr->first == m_local_player_identifier)
-			{
-				found_local_plane = true;
-			}
-			
-			if (!m_world.GetTank(itr->first))
-			{
-				itr = m_players.erase(itr);
-
-				//No more players left : Mission failed
-				if (m_players.empty())
-				{
-					RequestStackPush(StateID::kGameOver);
-				}
-			}
-			else
-			{
-				++itr;
-			}
-			std::cout << found_local_plane << std::endl;
-		}
-
-		if (!found_local_plane && m_game_started)
-		{
-			RequestStackPush(StateID::kGameOver);
-		}
 
 		//Only handle the realtime input if the window has focus and the game is unpaused
 		if (m_active_state && m_has_focus)
@@ -348,8 +317,7 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Int32 tank_identifier;
 			sf::Vector2f tank_position;
 			packet >> tank_identifier >> tank_position.x >> tank_position.y;
-			Tank* tank = m_world.AddTank(tank_identifier, TankType::kLocalTank);
-			tank->setPosition(tank_position);
+			Tank* tank = m_world.AddTank(tank_identifier, TankType::kLocalTank, tank_position);
 			m_players[tank_identifier].reset(new Player(&m_socket, tank_identifier, GetContext().keys1));
 			m_local_player_identifier = tank_identifier;
 			BindGui(*GetContext().fonts);
@@ -360,11 +328,10 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 	case Server::PacketType::PlayerConnect:
 		{
 			sf::Int32 tank_identifier;
-			sf::Vector2f aircraft_position;
-			packet >> tank_identifier >> aircraft_position.x >> aircraft_position.y;
+			sf::Vector2f tank_position;
+			packet >> tank_identifier >> tank_position.x >> tank_position.y;
 
-			Tank* tank = m_world.AddTank(tank_identifier, TankType::kEnemyTank);
-			tank->setPosition(aircraft_position);
+			Tank* tank = m_world.AddTank(tank_identifier, TankType::kEnemyTank, tank_position);
 			m_players[tank_identifier].reset(new Player(&m_socket, tank_identifier, nullptr));
 		}
 		break;
@@ -390,11 +357,10 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 				sf::Int32 tank_identifier;
 				sf::Int32 hitpoints;
 				sf::Int32 missile_ammo;
-				sf::Vector2f aircraft_position;
-				packet >> tank_identifier >> aircraft_position.x >> aircraft_position.y >> hitpoints >> missile_ammo;
+				sf::Vector2f tank_position;
+				packet >> tank_identifier >> tank_position.x >> tank_position.y >> hitpoints >> missile_ammo;
 
-				Tank* tank = m_world.AddTank(tank_identifier, TankType::kEnemyTank);
-				tank->setPosition(aircraft_position);
+				Tank* tank = m_world.AddTank(tank_identifier, TankType::kEnemyTank, tank_position);
 				tank->SetHitpoints(hitpoints);
 				tank->SetAmmo(missile_ammo);
 

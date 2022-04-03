@@ -52,7 +52,7 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 
 	// Assign all categories to player's aircraft
 	for (auto& pair : m_action_binding)
-		pair.second.category = Category::kTank;
+		pair.second.category = Category::kAllTank;
 }
 
 void Player::HandleEvent(const sf::Event& event, CommandQueue& commands)
@@ -178,11 +178,6 @@ void Player::InitialiseActions()
 	m_action_binding[PlayerAction::kPlayerMoveUp].action = moveUp;
 	m_action_binding[PlayerAction::kPlayerMoveDown].action = moveDown;
 	m_action_binding[PlayerAction::kPlayerFire].action = fire;
-	m_action_binding[PlayerAction::kPlayerMoveLeft].category = Category::kLocalTank;
-	m_action_binding[PlayerAction::kPlayerMoveRight].category = Category::kLocalTank;
-	m_action_binding[PlayerAction::kPlayerMoveUp].category = Category::kLocalTank;
-	m_action_binding[PlayerAction::kPlayerMoveDown].category = Category::kLocalTank;
-	m_action_binding[PlayerAction::kPlayerFire].category = Category::kLocalTank;
 	/*
 	m_action_binding[PlayerAction::kPlayer2MoveLeft].action = moveLeft;
 	m_action_binding[PlayerAction::kPlayer2MoveRight].action = moveRight;

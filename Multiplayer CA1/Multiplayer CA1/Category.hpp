@@ -18,10 +18,17 @@ namespace Category
 		kParticleSystem = 1 << 10,
 		kSoundEffect = 1 << 11,
 		kNetwork = 1 << 12,
+		kLocalGhostTank = 1 << 13,
+		kEnemyGhostTank = 1 << 14,
+		kPlayerGhostProjectile = 1 << 15,
+		kEnemyGhostProjectile = 1 << 16,
 
 		kTile = kFloorTile | kWallTile | kDestroyableTile,
 		kTank = kLocalTank | kEnemyTank,
+		kGhostTank = kLocalGhostTank | kEnemyGhostTank,
+		kAllTank = kTank | kGhostTank,
 		kProjectile = kPlayerProjectile | kEnemyProjectile,
+		kGhostProjectile = kPlayerGhostProjectile | kEnemyGhostProjectile,
 
 		//Aircraft stuff
 		kPlayerAircraft = 1 << 1,
