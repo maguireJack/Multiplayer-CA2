@@ -154,6 +154,7 @@ void Tank::Fire()
 void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive)
 {
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures, IsGhost()));
+	projectile->SetBounds(m_bounds);
 	sf::Vector2f offset = GetWorldTransform().transformPoint(8.f, -1.f);
 	if (type == ProjectileType::kPlayerMissile)
 	{
@@ -214,6 +215,11 @@ void Tank::TurnToGhost()
 {
 	m_is_ghost = true;
 	m_sprite.setColor(sf::Color(255, 255, 255, 100));
+}
+
+void Tank::SetMapBounds(sf::FloatRect bounds)
+{
+	m_bounds = bounds;
 }
 
 void Tank::SetHitpoints(int damage)

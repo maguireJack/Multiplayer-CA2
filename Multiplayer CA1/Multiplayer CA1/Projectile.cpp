@@ -19,6 +19,7 @@ Projectile::Projectile(ProjectileType type, const TextureHolder& textures, bool 
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_explosion(textures.Get(Textures::kExplosion))
 	  , m_is_ghost(is_ghost)
+	  , m_ttl(sf::seconds(5))
 {
 	is_static = false;
 	//Setup Animation
@@ -87,6 +88,15 @@ void Projectile::AppliedPlayerDamage()
 
 void Projectile::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
+	if(m_ttl.asSeconds() > 0)
+	{
+		m_ttl -= dt;
+	}
+	else
+	{
+		Destroy();
+	}
+
 	if (m_is_exploding)
 	{
 		if(!m_explode_sound_played)
@@ -99,6 +109,11 @@ void Projectile::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 			Entity::Destroy();
 	}
 	else Entity::UpdateCurrent(dt, commands);
+
+	if(!m_bounds.contains(getPosition()))
+	{
+		Destroy();
+	}
 }
 
 void Projectile::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
@@ -124,4 +139,9 @@ void Projectile::PlaySound(CommandQueue& commands, SoundEffect effect, bool glob
 		});
 
 	commands.Push(command);
+}
+
+void Projectile::SetBounds(sf::FloatRect& bounds)
+{
+	m_bounds = bounds;
 }

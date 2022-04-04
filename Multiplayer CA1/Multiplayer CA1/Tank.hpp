@@ -51,6 +51,7 @@ public:
 	void SetAmmo(int ammo);
 	void SetHitpoints(int damage);
 	void TurnToGhost();
+	void SetMapBounds(sf::FloatRect bounds);
 
 	sf::FloatRect GetBoundingRect() const override;
 	void ResetToLastPos();
@@ -95,5 +96,6 @@ private:
 	sf::Vector2f m_spawn_pos;
 	std::vector<Projectile*> projectiles;
 	sf::Text m_playerName;
+	sf::FloatRect m_bounds;
 };
 

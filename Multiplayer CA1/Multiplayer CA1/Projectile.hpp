@@ -22,6 +22,7 @@ public:
 	bool IsDestroyed() const override;
 	bool CanDamagePlayers();
 	void AppliedPlayerDamage();
+	void SetBounds(sf::FloatRect& bounds);
 
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -37,5 +38,7 @@ private:
 	bool m_explode_sound_played;
 	bool m_damaged_player;
 	bool m_is_ghost;
+	sf::Time m_ttl;
+	sf::FloatRect m_bounds;
 };
 

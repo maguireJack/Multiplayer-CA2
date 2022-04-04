@@ -21,7 +21,6 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	  , m_world_bounds(0.f, 0.f, 2700, 1800)
 	  , m_world_center(m_world_bounds.width / 2.f, m_world_bounds.height / 2.f)
 	  , m_arena_bounds(80.f, 80.f, m_world_bounds.width - 160.f, m_world_bounds.height - 160.f)
-	  , m_spawn_offset(370, -175)
 	  , m_scrollspeed(-50.f)
 	  , m_player_tank(nullptr)
 	  , m_player_spawned(false)
@@ -213,11 +212,6 @@ void World::SetWorldHeight(float height)
 	m_world_bounds.height = height;
 }
 
-void World::SetCurrentBattleFieldPosition(float lineY)
-{
-	m_spawn_offset.y = m_world_bounds.height;
-}
-
 CommandQueue& World::getCommandQueue()
 {
 	return m_command_queue;
@@ -334,6 +328,7 @@ Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 	std::unique_ptr<Tank> player(new Tank(type, m_textures, m_fonts, &m_ghost_world));
 	player->setPosition(position);
 	player->SetSpawnPos(position);
+	player->SetMapBounds(m_world_bounds);
 	player->SetIdentifier(identifier);
 
 	if(type == TankType::kLocalTank)

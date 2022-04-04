@@ -43,7 +43,6 @@ public:
 	
 	const Tank* const GetPlayer() const;
 	Tank* GetTank(int indentifier) const;
-	void SetCurrentBattleFieldPosition(float line_y);
 	void SetWorldHeight(float height);
 	void CreatePickup(sf::Vector2f position, PickupType type);
 	sf::Vector2f GetTankSpawn(int tank_identifier);
@@ -98,7 +97,6 @@ private:
 
 	sf::FloatRect m_world_bounds;
 	sf::FloatRect m_arena_bounds;
-	sf::Vector2f m_spawn_offset;
 	sf::Vector2f m_world_center;
 	float m_scrollspeed;
 	bool m_player_spawned;
