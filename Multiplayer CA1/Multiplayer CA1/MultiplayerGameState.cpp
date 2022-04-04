@@ -415,7 +415,6 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 			sf::Vector2f position;
 			packet >> type >> position.x >> position.y;
 			m_world.CreatePickup(position, static_cast<PickupType>(type));
-			std::cout << "Pickup Spawned!";
 		}
 		break;
 
@@ -435,6 +434,10 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 				bool is_local_tank = m_local_player_identifier == tank_identifier;
 				if (tank && !is_local_tank)
 				{
+					if (tank_identifier == 3)
+					{
+						std::cout << "RECEIVED POS : " << tank_position.x << " , " << tank_position.y << " LOCAL POS: " << tank->getPosition().x << " , " << tank->getPosition().y << std::endl;
+					}
 					sf::Vector2f interpolated_position = tank->getPosition() + (tank_position - tank->getPosition()) *
 						.25f;
 					tank->setPosition(interpolated_position);

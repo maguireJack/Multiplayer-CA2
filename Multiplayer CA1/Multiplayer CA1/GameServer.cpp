@@ -178,17 +178,6 @@ void GameServer::Tick()
 
 	//TODO do we really need this ?
 	//Remove tanks that have been destroyed
-	for (auto itr = m_tank_info.begin(); itr != m_tank_info.end();)
-	{
-		if (itr->second.m_hitpoints <= 0)
-		{
-			m_tank_info.erase(itr++);
-		}
-		else
-		{
-			++itr;
-		}
-	}
 }
 
 sf::Time GameServer::Now() const

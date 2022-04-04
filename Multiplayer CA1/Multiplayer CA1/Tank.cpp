@@ -16,7 +16,7 @@ namespace
 	const std::vector<TankData> Table = InitializeTankData();
 }
 
-Tank::Tank(TankType type, const TextureHolder& textures, bool* is_ghost_world)
+Tank::Tank(TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
@@ -25,6 +25,7 @@ Tank::Tank(TankType type, const TextureHolder& textures, bool* is_ghost_world)
 	  , m_explosion(textures.Get(Textures::kExplosion))
 	  , m_identifier(0)
 	  , m_is_ghost_world(is_ghost_world)
+	  , m_playerName("Player " + std::to_string(m_identifier), fonts.Get(Fonts::Main), 12)
 {
 	is_static = false;
 
@@ -103,7 +104,8 @@ int Tank::GetIdentifier() const
 
 void Tank::SetIdentifier(int identifier)
 {
-	m_identifier = identifier;
+	m_identifier = identifier; 
+	m_playerName.setString("Player " + std::to_string(m_identifier));
 }
 
 
@@ -114,6 +116,8 @@ void Tank::SetAmmo(int ammo)
 
 void Tank::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	target.draw(m_playerName, states);
+
 	if (IsDestroyed()) return;
 
 	if (IsExploding())
@@ -208,6 +212,7 @@ bool Tank::IsGhost() const
 
 void Tank::TurnToGhost()
 {
+	m_is_ghost = true;
 	m_sprite.setColor(sf::Color(255, 255, 255, 100));
 }
 
@@ -396,9 +401,9 @@ void Tank::UpdateExplosion(sf::Time dt, CommandQueue& commands)
 
 	if (m_explosion.IsFinished())
 	{
+		m_explosion.Restart();
 		if(!m_is_ghost)
 		{
-			m_is_ghost = true;
 			TurnToGhost();
 		}
 		Repair(100);
