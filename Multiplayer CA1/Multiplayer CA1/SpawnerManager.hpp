@@ -7,10 +7,10 @@
 class SpawnerManager : public SceneNode
 {
 public:
-	SpawnerManager(const TextureHolder& textures, sf::Time interval, float baseChance, bool networked = false);
-	void SetupSpawners();
+	SpawnerManager(const TextureHolder& textures, sf::Time interval, std::vector<sf::Vector2f> spawn_positions, float baseChance, bool networked = false);
 
 private:
+	void SetupSpawners(std::vector<sf::Vector2f> spawn_positions);
 	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 
 private:

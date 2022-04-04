@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
-SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval, float base_chance, bool networked)
+SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval, std::vector<sf::Vector2f> spawn_positions, float base_chance, bool networked)
 	: m_interval(interval), m_chance(base_chance), m_cooldown(interval), m_networked(networked)
 {
 	srand(time(NULL));
@@ -38,21 +39,17 @@ SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval,
 	m_spawn_actions.emplace_back(m_spawn_explosive_shots);
 	m_spawn_actions.emplace_back(m_spawn_fire_rate);
 
-	SetupSpawners();
+	SetupSpawners(spawn_positions);
 }
 
-void SpawnerManager::SetupSpawners()
+void SpawnerManager::SetupSpawners(std::vector<sf::Vector2f> spawn_positions)
 {
-	std::unique_ptr<PickupSpawner> spawner1(new PickupSpawner());
-	spawner1->setPosition(0, 0);
-	std::unique_ptr<PickupSpawner> spawner2(new PickupSpawner());
-	spawner2->setPosition(-365, 0);
-	std::unique_ptr<PickupSpawner> spawner3(new PickupSpawner());
-	spawner3->setPosition(365, 0);
-
-	AttachChild(std::move(spawner1));
-	AttachChild(std::move(spawner2));
-	AttachChild(std::move(spawner3));
+	for(auto pos : spawn_positions)
+	{
+		std::unique_ptr<PickupSpawner> spawner(new PickupSpawner());
+		spawner->setPosition(pos);
+		AttachChild(std::move(spawner));
+	}
 }
 
 void SpawnerManager::UpdateCurrent(sf::Time dt, CommandQueue& commands)

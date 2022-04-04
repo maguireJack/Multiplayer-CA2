@@ -8,7 +8,7 @@
 class Map : public SceneNode
 {
 public:
-	Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns, sf::Vector2f world_center, float spawn_offset, bool load_map);	
+	Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns, std::vector<sf::Vector2f>& pickup_spawners, sf::Vector2f world_center, float spawn_offset, bool load_map);	
 
 private:
 	void LoadTextureAt(sf::Texture& texture, std::string texture_string, int index, int tilesX);

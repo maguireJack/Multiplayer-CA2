@@ -8,18 +8,28 @@
 #include "Tile.hpp"
 #include "Utility.hpp"
 
-Map::Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns, sf::Vector2f world_center, float spawn_offset, bool load_map)
+Map::Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns,
+         std::vector<sf::Vector2f>& pickup_spawners, sf::Vector2f world_center, float spawn_offset, bool load_map)
 {
 	//LoadLayer(path, "_BG.csv", textureAtlas, tilesX, Category::kFloorTile);
-	if (load_map) {
+	if (load_map)
+	{
 		LoadLayer(path, "_Border.csv", textureAtlas, tilesX, Category::kWallTile);
 		return;
 	}
 	LoadLayer(path, "_Destroyable.csv", textureAtlas, tilesX, Category::kDestroyableTile);
 	LoadSpawns(path, "_Spawns.csv", tank_spawns, world_center, spawn_offset);
+
+	LoadFile(path, "_Pickups.csv", [this, &pickup_spawners](int xPos, int yPos, int elem)
+	{
+		if (elem == -1) return;
+		sf::Vector2f pos(xPos, yPos);
+		pickup_spawners.push_back(pos);
+	});
 }
 
-void Map::LoadTextureAtPos(int xPos, int yPos, int elem, std::string textureAtlas, int tilesX, Category::Type tileCategory)
+void Map::LoadTextureAtPos(int xPos, int yPos, int elem, std::string textureAtlas, int tilesX,
+                           Category::Type tileCategory)
 {
 	if (texture_map.find(elem) == texture_map.end())
 		LoadTextureAt(texture_map[elem], textureAtlas, elem, tilesX);
@@ -28,15 +38,22 @@ void Map::LoadTextureAtPos(int xPos, int yPos, int elem, std::string textureAtla
 	AttachChild(std::move(tile));
 }
 
-void Map::LoadSpawns(std::string path, std::string layer, std::map<int, sf::Vector2f>& tank_spawns, sf::Vector2f world_center, float spawn_offset)
+void Map::LoadSpawns(std::string path, std::string layer, std::map<int, sf::Vector2f>& tank_spawns,
+                     sf::Vector2f world_center, float spawn_offset)
 {
-	LoadFile(path, layer, [this, &tank_spawns, world_center, spawn_offset](int xPos, int yPos, int elem) { LoadSpawnAtPos(xPos, yPos, elem, tank_spawns, world_center, spawn_offset); });
+	LoadFile(path, layer, [this, &tank_spawns, world_center, spawn_offset](int xPos, int yPos, int elem)
+	{
+		LoadSpawnAtPos(xPos, yPos, elem, tank_spawns, world_center, spawn_offset);
+	});
 }
 
 void Map::LoadLayer(std::string path, std::string layer, std::string textureAtlas, int tilesX,
-	Category::Type tileCategory)
+                    Category::Type tileCategory)
 {
-	LoadFile(path, layer, [this, textureAtlas, tilesX, tileCategory](int xPos, int yPos, int elem) { LoadTextureAtPos(xPos, yPos, elem, textureAtlas, tilesX, tileCategory); });
+	LoadFile(path, layer, [this, textureAtlas, tilesX, tileCategory](int xPos, int yPos, int elem)
+	{
+		LoadTextureAtPos(xPos, yPos, elem, textureAtlas, tilesX, tileCategory);
+	});
 }
 
 void Map::LoadFile(std::string path, std::string layer, std::function<void(int, int, int)> func)
@@ -65,7 +82,8 @@ void Map::LoadFile(std::string path, std::string layer, std::function<void(int, 
 	file.close();
 }
 
-void Map::LoadSpawnAtPos(int xPos, int yPos, int elem, std::map<int, sf::Vector2f>& tank_spawns, sf::Vector2f world_center, float spawn_offset)
+void Map::LoadSpawnAtPos(int xPos, int yPos, int elem, std::map<int, sf::Vector2f>& tank_spawns,
+                         sf::Vector2f world_center, float spawn_offset)
 {
 	if (elem == -1) return;
 	sf::Vector2f pos(xPos, yPos);

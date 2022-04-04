@@ -5,6 +5,7 @@
 PickupSpawner::PickupSpawner()
 	: m_life(sf::seconds(10))
 {
+	is_static = true;
 }
 
 void PickupSpawner::UpdateCurrent(sf::Time dt, CommandQueue& commands)

@@ -172,7 +172,8 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Load the map
-	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, m_world_center,
+	std::vector<sf::Vector2f> spawner_positions;
+	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, spawner_positions, m_world_center,
 	                               45.f, false));
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
 
@@ -193,16 +194,14 @@ void World::BuildScene()
 
 		if(m_is_host)
 		{
-			std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f, true));
-			spawner_manager->setPosition(m_world_center);
+			std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), spawner_positions,  0.5f, true));
 			m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 			m_spawner_manager = spawner_manager.get();
 		}
 	}
 	else
 	{
-		std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
-		spawner_manager->setPosition(m_world_center);
+		std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), spawner_positions, 0.5f));
 		m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 	}
 }

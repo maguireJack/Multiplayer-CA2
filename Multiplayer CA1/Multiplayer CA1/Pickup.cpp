@@ -18,6 +18,7 @@ Pickup::Pickup(PickupType type, const TextureHolder& textures)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 {
 	Utility::CentreOrigin(m_sprite);
+	is_static = true;
 }
 
 unsigned Pickup::GetCategory() const
