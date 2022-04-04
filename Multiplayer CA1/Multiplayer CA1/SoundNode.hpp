@@ -9,7 +9,7 @@ class SoundPlayer;
 class SoundNode : public SceneNode
 {
 public:
-	explicit SoundNode(SoundPlayer& player);
+	explicit SoundNode(World* world, SoundPlayer& player);
 	void PlaySound(SoundEffect sound);
 	void PlaySound(SoundEffect sound, sf::Vector2f position);
 

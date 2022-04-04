@@ -11,7 +11,7 @@ class Tank;
 class Pickup : public Entity
 {
 public:
-	Pickup(PickupType type, const TextureHolder& textures);
+	Pickup(World* world, PickupType type, const TextureHolder& textures);
 	virtual unsigned int GetCategory() const override;
 	virtual sf::FloatRect GetBoundingRect() const;
 	void Apply(Tank& player) const;

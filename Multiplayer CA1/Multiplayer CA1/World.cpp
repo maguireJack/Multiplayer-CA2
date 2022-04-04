@@ -16,7 +16,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	  , m_camera(m_target.getDefaultView())
 	  , m_textures()
 	  , m_fonts(font)
-	  , m_scenegraph()
+	  , m_scenegraph(this)
 	  , m_scene_layers()
 	  , m_world_bounds(0.f, 0.f, 2700, 1800)
 	  , m_world_center(m_world_bounds.width / 2.f, m_world_bounds.height / 2.f)
@@ -48,7 +48,7 @@ void World::Update(sf::Time dt)
 	}
 
 	//Destroy all pickups that reached the end of their lifetime
-	for(int i = 0; i < m_pickups.size(); i++)
+	for (int i = 0; i < m_pickups.size(); i++)
 	{
 		m_pickup_lifetimes[i] -= dt.asSeconds();
 		if (m_pickup_lifetimes[i] <= 0)
@@ -78,7 +78,8 @@ void World::Update(sf::Time dt)
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
 
-	if (m_player_tank != nullptr && m_player_tank->GetHitPoints()> 0) {
+	if (m_player_tank != nullptr && m_player_tank->GetHitPoints() > 0)
+	{
 		UpdateSounds();
 	}
 
@@ -103,6 +104,43 @@ Tank* World::GetTank(int identifier) const
 bool World::PollGameAction(GameActions::Action& out)
 {
 	return m_network_node->PollGameAction(out);
+}
+
+void World::RegisterCollidableSceneNode(SceneNode* node)
+{
+	m_non_static_coll.emplace_back(node);
+	return;
+	//If it's static we can add it to our collection of non moving stuff -> already sorted
+	if (node->IsStatic())
+	{
+		float xMin = node->GetBoundingRect().left;
+		int index = 0;
+		for (auto staticNode : m_static_coll)
+		{
+			if (staticNode->GetBoundingRect().left > xMin) break;
+			index++;
+		}
+		m_static_coll.insert(m_static_coll.begin() + index, node);
+	}
+		//If not, we add it to the dynamic objects
+	else
+	{
+		m_non_static_coll.emplace_back(node);
+	}
+}
+
+void World::UnregisterCollidableSceneNode(SceneNode* node)
+{
+	m_non_static_coll.erase(std::find(m_non_static_coll.begin(), m_non_static_coll.end(), node));
+	return;
+	if (node->IsStatic())
+	{
+		m_static_coll.erase(std::find(m_static_coll.begin(), m_static_coll.end(), node));
+	}
+	else
+	{
+		m_non_static_coll.erase(std::find(m_non_static_coll.begin(), m_non_static_coll.end(), node));
+	}
 }
 
 void World::Draw()
@@ -154,7 +192,7 @@ void World::BuildScene()
 		Category::Type category = (i == static_cast<int>(Layers::kBattlefield))
 			                          ? Category::Type::kScene
 			                          : Category::Type::kNone;
-		SceneNode::Ptr layer(new SceneNode(false, category));
+		SceneNode::Ptr layer(new SceneNode(this, false, category));
 		m_scene_layers[i] = layer.get();
 		m_scenegraph.AttachChild(std::move(layer));
 	}
@@ -167,19 +205,20 @@ void World::BuildScene()
 	texture.setRepeated(true);
 
 	//Add the background sprite to our scene
-	std::unique_ptr<SpriteNode> background_sprite(new SpriteNode(texture, textureRect));
+	std::unique_ptr<SpriteNode> background_sprite(new SpriteNode(this, texture, textureRect));
 	background_sprite->setPosition(m_world_bounds.left, m_world_bounds.top);
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Load the map
 	std::vector<sf::Vector2f> spawner_positions;
-	std::unique_ptr<Map> m(new Map("Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns, spawner_positions, m_world_center,
+	std::unique_ptr<Map> m(new Map(this, "Media/Arena Data/map", "Media/Textures/Tanx.png", 16, m_tank_spawns,
+	                               spawner_positions, m_world_center,
 	                               45.f, false));
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(m));
 
 
 	// Add sound effect node
-	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
+	std::unique_ptr<SoundNode> soundNode(new SoundNode(this, m_sounds));
 	m_scenegraph.AttachChild(std::move(soundNode));
 
 	/*std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), 0.2f));
@@ -188,20 +227,22 @@ void World::BuildScene()
 
 	if (m_networked_world)
 	{
-		std::unique_ptr<NetworkNode> network_node(new NetworkNode());
+		std::unique_ptr<NetworkNode> network_node(new NetworkNode(this));
 		m_network_node = network_node.get();
 		m_scenegraph.AttachChild(std::move(network_node));
 
-		if(m_is_host)
+		if (m_is_host)
 		{
-			std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), spawner_positions,  0.5f, true));
+			std::unique_ptr<SpawnerManager> spawner_manager(
+				new SpawnerManager(this, m_textures, sf::seconds(1), spawner_positions, 0.5f, true));
 			m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 			m_spawner_manager = spawner_manager.get();
 		}
 	}
 	else
 	{
-		std::unique_ptr<SpawnerManager> spawner_manager(new SpawnerManager(m_textures, sf::seconds(1), spawner_positions, 0.5f));
+		std::unique_ptr<SpawnerManager> spawner_manager(
+			new SpawnerManager(this, m_textures, sf::seconds(1), spawner_positions, 0.5f));
 		m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(spawner_manager));
 	}
 }
@@ -239,7 +280,7 @@ bool World::AllowPlayerInput()
 void World::CreatePickup(sf::Vector2f position, PickupType type)
 {
 	if (m_is_host) return;
-	std::unique_ptr<Pickup> pickup(new Pickup(type, m_textures));
+	std::unique_ptr<Pickup> pickup(new Pickup(this, type, m_textures));
 	pickup->setPosition(position);
 	m_pickups.emplace_back(pickup.get());
 	m_pickup_lifetimes.emplace_back(10.f);
@@ -324,24 +365,26 @@ void World::RemoveTank(int identifier)
 
 Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 {
-	std::unique_ptr<Tank> player(new Tank(type, m_textures, m_fonts, &m_ghost_world));
+	std::unique_ptr<Tank> player(new Tank(this, type, m_textures, m_fonts, &m_ghost_world));
 	player->setPosition(position);
 	player->SetSpawnPos(position);
 	player->SetMapBounds(m_world_bounds);
 	player->SetIdentifier(identifier);
 
-	if(type == TankType::kLocalTank)
+	if (type == TankType::kLocalTank)
 	{
 		m_player_tank = player.get();
 		m_player_spawned = true;
-		std::cout << "Added NETWORK tank to game with Identifier : " << identifier << " at spawn pos : " << position.x << " , " << position.y << std::endl;
+		std::cout << "Added NETWORK tank to game with Identifier : " << identifier << " at spawn pos : " << position.x
+			<< " , " << position.y << std::endl;
 	}
 	else
 	{
-		std::cout << "Added LOCAL tank to game with Identifier : " << identifier << " at spawn pos : " << position.x << " , " << position.y << std::endl;
+		std::cout << "Added LOCAL tank to game with Identifier : " << identifier << " at spawn pos : " << position.x <<
+			" , " << position.y << std::endl;
 	}
-	
-	if (m_ghost_world) 
+
+	if (m_ghost_world)
 	{
 		m_ghost_tanks.emplace_back(player.get());
 		m_scene_layers[static_cast<int>(Layers::kGhostWorld)]->AttachChild(std::move(player));
@@ -350,13 +393,88 @@ Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 	m_player_tanks.emplace_back(player.get());
 	m_scene_layers[static_cast<int>(Layers::kBattlefield)]->AttachChild(std::move(player));
 	return m_player_tanks.back();
-	
 }
 
 void World::HandleCollisions()
 {
+	std::sort(m_non_static_coll.begin(), m_non_static_coll.end(), [](SceneNode* a, SceneNode* b)
+	{
+		return a->GetBoundingRect().left < b->GetBoundingRect().left;
+	});
+
 	std::set<SceneNode::Pair> collision_pairs;
-	m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
+	std::vector<SceneNode*> candidates;
+	float xMin = 0;
+	float xMax = 0;
+	int size = m_non_static_coll.size();
+
+	int i = 0, j = 0;
+	bool iFinish = false, jFinish = false;
+	int index = 0;
+	for (auto candidate : m_non_static_coll)
+	{
+		if (candidate->IsStatic())
+		{
+			index++;
+			continue;
+		}
+
+		sf::FloatRect candidateRect = candidate->GetBoundingRect();
+		xMin = candidateRect.left;
+		xMax = candidateRect.left + candidateRect.width;
+		while (!(iFinish && jFinish))
+		{
+			if (!iFinish)
+			{
+				i++;
+				if ((index - i) < 0) iFinish = true;
+				else
+				{
+					SceneNode* node = m_non_static_coll[index - i];
+					sf::FloatRect boundingRect = node->GetBoundingRect();
+					if (boundingRect.left + boundingRect.width < xMin)
+					{
+						iFinish = true;
+					}
+					else
+					{
+						if (candidateRect.intersects(boundingRect))
+						{
+							collision_pairs.emplace(std::minmax(candidate, node));
+						}
+					}
+				}
+			}
+			if (!jFinish)
+			{
+				j++;
+				if ((index + j) >= size) jFinish = true;
+				else {
+					SceneNode* node = m_non_static_coll[index + j];
+					sf::FloatRect boundingRect = node->GetBoundingRect();
+					if (boundingRect.left > xMax)
+					{
+						jFinish = true;
+					}
+					else
+					{
+						if (candidateRect.intersects(boundingRect))
+						{
+							collision_pairs.emplace(std::minmax(candidate, node));
+						}
+					}
+				}
+			}
+		}
+
+		iFinish = false;
+		jFinish = false;
+		i = 0;
+		j = 0;
+		index++;
+	}
+
+	//m_scenegraph.CheckSceneCollision(m_scenegraph, collision_pairs);
 	for (SceneNode::Pair pair : collision_pairs)
 	{
 		if (MatchesCategories(pair, Category::Type::kTank, Category::Type::kPickup))
@@ -366,9 +484,9 @@ void World::HandleCollisions()
 			//Apply the m_pickup effect
 			pickup.Apply(player);
 			//Search for the pickup in your list and destroy it, the timer doesn't need to tick anymore for that pickup
-			for(int i = 0; i < m_pickups.size(); i++)
+			for (int i = 0; i < m_pickups.size(); i++)
 			{
-				if(m_pickups[i] == pair.second)
+				if (m_pickups[i] == pair.second)
 				{
 					m_pickups.erase(m_pickups.begin() + i);
 					m_pickup_lifetimes.erase(m_pickup_lifetimes.begin() + i);
@@ -453,7 +571,7 @@ void World::UpdateSounds()
 {
 	// Set listener's position to player position
 	m_sounds.SetListenerPosition(m_player_tank->GetWorldPosition());
-	
+
 	// Remove unused sounds
 	m_sounds.RemoveStoppedSounds();
 }

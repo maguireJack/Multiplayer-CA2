@@ -5,8 +5,8 @@
 #include "Command.hpp"
 
 
-EmitterNode::EmitterNode(ParticleType type)
-	: SceneNode()
+EmitterNode::EmitterNode(World* world, ParticleType type)
+	: SceneNode(world)
 	, m_accumulated_time(sf::Time::Zero)
 	, m_type(type)
 	, m_particle_system(nullptr)

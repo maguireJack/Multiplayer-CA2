@@ -9,7 +9,7 @@
 class TextNode : public SceneNode
 {
 public:
-	explicit TextNode(const FontHolder& fonts, const std::string& text);
+	explicit TextNode(World* world, const FontHolder& fonts, const std::string& text);
 	void SetString(const std::string& text);
 
 private:

@@ -2,8 +2,8 @@
 #include "PickupSpawner.hpp"
 #include "NetworkNode.hpp"
 
-PickupSpawner::PickupSpawner()
-	: m_life(sf::seconds(10))
+PickupSpawner::PickupSpawner(World* world)
+	: SceneNode(world), m_life(sf::seconds(10))
 {
 	is_static = true;
 }
@@ -40,7 +40,7 @@ void PickupSpawner::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 void PickupSpawner::SpawnPickup(PickupType type, const TextureHolder& textures)
 {
 	m_current_life = m_life;
-	auto p = std::make_unique<Pickup>(type, textures);
+	auto p = std::make_unique<Pickup>(m_world, type, textures);
 	AttachChild(std::move(p));
 	m_pickup = p.get();
 }
@@ -51,7 +51,7 @@ void PickupSpawner::SpawnPickupNetwork(PickupType type, const TextureHolder& tex
 	m_pickup_type = type;
 
 	m_current_life = m_life;
-	auto p = std::make_unique<Pickup>(type, textures);
+	auto p = std::make_unique<Pickup>(m_world, type, textures);
 	AttachChild(std::move(p));
 	m_pickup = p.get();
 }

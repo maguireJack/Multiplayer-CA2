@@ -11,7 +11,7 @@
 class ParticleNode : public SceneNode
 {
 public:
-	ParticleNode(ParticleType type, const TextureHolder& textures);
+	ParticleNode(World* world, ParticleType type, const TextureHolder& textures);
 
 	void AddParticle(sf::Vector2f position);
 	ParticleType GetParticleType() const;

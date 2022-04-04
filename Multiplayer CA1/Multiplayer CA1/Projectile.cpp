@@ -13,8 +13,8 @@ namespace
 	const std::vector<ProjectileData> Table = InitializeProjectileData();
 }
 
-Projectile::Projectile(ProjectileType type, const TextureHolder& textures, bool is_ghost)
-	: Entity(1)
+Projectile::Projectile(World* world, ProjectileType type, const TextureHolder& textures, bool is_ghost)
+	: Entity(world, 1)
 	  , m_type(type)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_explosion(textures.Get(Textures::kExplosion))

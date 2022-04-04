@@ -6,8 +6,8 @@
 class SpriteNode : public SceneNode
 {
 public:
-	explicit SpriteNode(const sf::Texture& texture);
-	SpriteNode(const sf::Texture& texture, const sf::IntRect& textureRect);
+	explicit SpriteNode(World* world, const sf::Texture& texture);
+	SpriteNode(World* world, const sf::Texture& texture, const sf::IntRect& textureRect);
 
 private:
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;

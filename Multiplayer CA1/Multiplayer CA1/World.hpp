@@ -52,13 +52,14 @@ public:
 	sf::FloatRect GetViewBounds() const;
 	sf::FloatRect GetBattlefieldBounds() const;
 
-
 	bool IsGameOver() const;
 	std::string GetWinner() const;
 	bool AllowPlayerInput();
 	Tank* AddTank(int identifier, TankType type, sf::Vector2f position);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
+	void RegisterCollidableSceneNode(SceneNode* node);
+	void UnregisterCollidableSceneNode(SceneNode* node);
 
 private:
 	void LoadTextures();
@@ -122,5 +123,8 @@ private:
 	std::vector<Pickup*> m_pickups;
 	std::vector<float> m_pickup_lifetimes;
 	std::map<Pickup, int> m_pickup_map;
+
+	std::vector<SceneNode*> m_non_static_coll;
+	std::vector<SceneNode*> m_static_coll;
 };
 

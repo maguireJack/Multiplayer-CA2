@@ -14,8 +14,8 @@ namespace
 	const std::vector<ParticleData> Table = InitializeParticleData();
 }
 
-ParticleNode::ParticleNode(ParticleType type, const TextureHolder& textures)
-	: SceneNode()
+ParticleNode::ParticleNode(World* world, ParticleType type, const TextureHolder& textures)
+	: SceneNode(world)
 	, m_texture(textures.Get(Textures::kParticle))
 	, m_type(type)
 	, m_vertex_array(sf::TriangleStrip)

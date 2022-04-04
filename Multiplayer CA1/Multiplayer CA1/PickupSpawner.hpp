@@ -8,7 +8,7 @@
 class PickupSpawner : public SceneNode
 {
 public:
-	PickupSpawner();
+	PickupSpawner(World* world);
 	void SpawnPickup(PickupType type, const TextureHolder& textures);
 	void SpawnPickupNetwork(PickupType type, const TextureHolder& textures);
 	bool HasPickup() const;

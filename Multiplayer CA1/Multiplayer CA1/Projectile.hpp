@@ -11,7 +11,7 @@
 class Projectile : public Entity
 {
 public:
-	Projectile(ProjectileType type, const TextureHolder& textures, bool is_ghost);
+	Projectile(World* world, ProjectileType type, const TextureHolder& textures, bool is_ghost);
 
 	virtual unsigned int GetCategory() const override;
 	sf::FloatRect GetBoundingRect() const override;

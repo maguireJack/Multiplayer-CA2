@@ -8,9 +8,22 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "Utility.hpp"
+#include "World.hpp"
 
-SceneNode::SceneNode(bool collidable, Category::Type category):m_children(), m_parent(nullptr), m_category(category), is_collidable(collidable), is_static(true)
+SceneNode::SceneNode(World* world, bool collidable, Category::Type category) : m_world(world), m_children(), m_parent(nullptr), m_category(category), is_collidable(collidable), is_static(true)
 {
+	if(collidable)
+	{
+		m_world->RegisterCollidableSceneNode(this);
+	}
+}
+
+SceneNode::~SceneNode()
+{
+	if (is_collidable)
+	{
+		m_world->UnregisterCollidableSceneNode(this);
+	}
 }
 
 void SceneNode::AttachChild(Ptr child)
@@ -191,4 +204,9 @@ void SceneNode::RemoveWrecks()
 	auto wreck_field_begin = std::remove_if(m_children.begin(), m_children.end(), std::mem_fn(&SceneNode::IsMarkedForRemoval));
 	m_children.erase(wreck_field_begin, m_children.end());
 	std::for_each(m_children.begin(), m_children.end(), std::mem_fn(&SceneNode::RemoveWrecks));
+}
+
+bool SceneNode::IsStatic()
+{
+	return is_static;
 }

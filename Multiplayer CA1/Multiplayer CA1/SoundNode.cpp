@@ -5,8 +5,8 @@
 #include "SoundPlayer.hpp"
 
 
-SoundNode::SoundNode(SoundPlayer& player)
-	: m_sounds(player)
+SoundNode::SoundNode(World* world, SoundPlayer& player)
+	: SceneNode(world), m_sounds(player)
 {
 }
 

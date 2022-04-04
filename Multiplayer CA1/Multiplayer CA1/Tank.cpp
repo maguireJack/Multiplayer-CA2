@@ -16,8 +16,8 @@ namespace
 	const std::vector<TankData> Table = InitializeTankData();
 }
 
-Tank::Tank(TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world)
-	: Entity(Table[static_cast<int>(type)].m_hitpoints)
+Tank::Tank(World* world, TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world)
+	: Entity(world, Table[static_cast<int>(type)].m_hitpoints)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
 	  , m_fire_interval(Table[static_cast<int>(type)].m_fire_interval)
@@ -153,7 +153,7 @@ void Tank::Fire()
 
 void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureHolder& textures, bool isExplosive)
 {
-	std::unique_ptr<Projectile> projectile(new Projectile(type, textures, IsGhost()));
+	std::unique_ptr<Projectile> projectile(new Projectile(m_world, type, textures, IsGhost()));
 	projectile->SetBounds(m_bounds);
 	sf::Vector2f offset = GetWorldTransform().transformPoint(8.f, -1.f);
 	if (type == ProjectileType::kPlayerMissile)
@@ -308,7 +308,8 @@ bool Tank::HasFireRateUpgrade() const
 
 sf::FloatRect Tank::GetBoundingRect() const
 {
-	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
+	sf::FloatRect rect = GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
+	return rect;
 }
 
 void Tank::ResetToLastPos()

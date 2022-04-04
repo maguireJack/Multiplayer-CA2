@@ -6,8 +6,8 @@
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"
 
-TextNode::TextNode(const FontHolder& fonts, const std::string& text)
-	: m_text(text, fonts.Get(Fonts::Main), 20)
+TextNode::TextNode(World* world, const FontHolder& fonts, const std::string& text)
+	: SceneNode(world), m_text(text, fonts.Get(Fonts::Main), 20)
 {
 }
 

@@ -14,7 +14,7 @@
 class Aircraft : public Entity
 {
 public:
-	Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts);
+	Aircraft(World* world, AircraftType type, const TextureHolder& textures, const FontHolder& fonts);
 	unsigned int GetCategory() const override;
 
 	void IncreaseFireRate();

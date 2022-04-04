@@ -12,8 +12,8 @@ namespace
 	const std::vector<PickupData> Table = InitializePickupData();
 }
 
-Pickup::Pickup(PickupType type, const TextureHolder& textures)
-	: Entity(1)
+Pickup::Pickup(World* world, PickupType type, const TextureHolder& textures)
+	: Entity(world, 1)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 {

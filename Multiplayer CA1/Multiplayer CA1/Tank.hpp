@@ -25,7 +25,7 @@ enum TankActions
 class Tank : public Entity
 {
 public:
-	Tank(TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world);
+	Tank(World* world, TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world);
 	void SetSpawnPos(sf::Vector2f position);
 	bool IsLocalTank() const;
 	unsigned int GetCategory() const override;

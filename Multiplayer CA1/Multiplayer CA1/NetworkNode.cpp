@@ -1,7 +1,7 @@
 #include "NetworkNode.hpp"
 
-NetworkNode::NetworkNode()
-: SceneNode()
+NetworkNode::NetworkNode(World* world)
+: SceneNode(world)
 , m_pending_actions()
 {
 }

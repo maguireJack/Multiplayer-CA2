@@ -3,11 +3,11 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-SpriteNode::SpriteNode(const sf::Texture& texture):m_sprite(texture)
+SpriteNode::SpriteNode(World* world, const sf::Texture& texture) : SceneNode(world), m_sprite(texture)
 {
 }
 
-SpriteNode::SpriteNode(const sf::Texture& texture, const sf::IntRect& textureRect):m_sprite(texture, textureRect)
+SpriteNode::SpriteNode(World* world, const sf::Texture& texture, const sf::IntRect& textureRect) : SceneNode(world), m_sprite(texture, textureRect)
 {
 }
 

@@ -7,7 +7,7 @@
 class EmitterNode : public SceneNode
 {
 public:
-	explicit EmitterNode(ParticleType type);
+	explicit EmitterNode(World* world, ParticleType type);
 
 
 private:

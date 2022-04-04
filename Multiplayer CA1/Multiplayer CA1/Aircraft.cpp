@@ -33,8 +33,8 @@ Textures ToTextureID(AircraftType type)
 	return Textures::kEagle;
 }
 
-Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts)
-	: Entity(Table[static_cast<int>(type)].m_hitpoints)
+Aircraft::Aircraft(World* world, AircraftType type, const TextureHolder& textures, const FontHolder& fonts)
+	: Entity(world, Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	, m_is_firing(false)
@@ -62,13 +62,13 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 		CreateProjectile(node, ProjectileType::kPlayerMissile, 0.f, 0.5f, textures);
 	};
 	
-	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
+	std::unique_ptr<TextNode> healthDisplay(new TextNode(m_world, fonts, ""));
 	m_health_display = healthDisplay.get();
 	AttachChild(std::move(healthDisplay));
 
 	if (GetCategory() == static_cast<int>(Category::kPlayerAircraft))
 	{
-		std::unique_ptr<TextNode> missileDisplay(new TextNode(fonts, ""));
+		std::unique_ptr<TextNode> missileDisplay(new TextNode(m_world, fonts, ""));
 		missileDisplay->setPosition(0, 70);
 		m_missile_display = missileDisplay.get();
 		AttachChild(std::move(missileDisplay));
@@ -255,7 +255,7 @@ void Aircraft::CreateProjectile(SceneNode& node, ProjectileType type, float x_of
 	const TextureHolder& textures) const
 {
 	std::cout << "Creating projectile " << static_cast<int>(type) << std::endl;
-	std::unique_ptr<Projectile> projectile(new Projectile(type, textures, false));
+	std::unique_ptr<Projectile> projectile(new Projectile(m_world, type, textures, false));
 	sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().width, y_offset * m_sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
 

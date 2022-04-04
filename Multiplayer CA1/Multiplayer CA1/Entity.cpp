@@ -1,8 +1,8 @@
 //Alex Nogueira / D00242564 
 #include "Entity.hpp"
 
-Entity::Entity(int hitpoints)
-: SceneNode(true)
+Entity::Entity(World* world, int hitpoints)
+: SceneNode(world, true)
 , m_hitpoints(hitpoints)
 {
 }

@@ -12,6 +12,8 @@
 #include "Command.hpp"
 #include "CommandQueue.hpp"
 
+class World;
+
 class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
 public:
@@ -19,7 +21,8 @@ public:
 	typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 public:
-	explicit SceneNode(bool collidable = false, Category::Type category = Category::kNone);
+	explicit SceneNode(World* world, bool collidable = false, Category::Type category = Category::kNone);
+	virtual ~SceneNode();
 	void AttachChild(Ptr child);
 	Ptr DetachChild(const SceneNode& node);
 
@@ -34,6 +37,8 @@ public:
 
 	void CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collision_pairs);
 	void RemoveWrecks();
+
+	bool IsStatic();
 
 protected:
 	void ClearChildren();
@@ -60,6 +65,7 @@ protected:
 	bool is_collidable;
 	bool is_static;
 	Category::Type m_category;
+	World* m_world;
 private:
 	std::vector<Ptr> m_children;
 	SceneNode* m_parent;

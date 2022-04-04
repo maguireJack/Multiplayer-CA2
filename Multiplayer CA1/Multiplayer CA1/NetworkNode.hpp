@@ -7,7 +7,7 @@
 class NetworkNode : public SceneNode
 {
 public:
-	NetworkNode();
+	NetworkNode(World* world);
 	void NotifyGameAction(GameActions::Action action);
 	bool PollGameAction(GameActions::Action& out);
 	virtual unsigned int GetCategory() const override;

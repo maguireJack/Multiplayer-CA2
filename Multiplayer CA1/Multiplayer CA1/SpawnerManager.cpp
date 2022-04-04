@@ -6,8 +6,8 @@
 #include <ctime>
 #include <iostream>
 
-SpawnerManager::SpawnerManager(const TextureHolder& textures, sf::Time interval, std::vector<sf::Vector2f> spawn_positions, float base_chance, bool networked)
-	: m_interval(interval), m_chance(base_chance), m_cooldown(interval), m_networked(networked)
+SpawnerManager::SpawnerManager(World* world, const TextureHolder& textures, sf::Time interval, std::vector<sf::Vector2f> spawn_positions, float base_chance, bool networked)
+	: SceneNode(world), m_interval(interval), m_chance(base_chance), m_cooldown(interval), m_networked(networked)
 {
 	srand(time(NULL));
 	auto m_spawn_health = [&textures, networked](PickupSpawner* pickup_spawner)
@@ -46,7 +46,7 @@ void SpawnerManager::SetupSpawners(std::vector<sf::Vector2f> spawn_positions)
 {
 	for(auto pos : spawn_positions)
 	{
-		std::unique_ptr<PickupSpawner> spawner(new PickupSpawner());
+		std::unique_ptr<PickupSpawner> spawner(new PickupSpawner(m_world));
 		spawner->setPosition(pos);
 		AttachChild(std::move(spawner));
 	}

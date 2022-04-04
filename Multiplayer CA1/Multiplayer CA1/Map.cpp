@@ -8,8 +8,9 @@
 #include "Tile.hpp"
 #include "Utility.hpp"
 
-Map::Map(std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns,
+Map::Map(World* world, std::string path, std::string textureAtlas, int tilesX, std::map<int, sf::Vector2f>& tank_spawns,
          std::vector<sf::Vector2f>& pickup_spawners, sf::Vector2f world_center, float spawn_offset, bool load_map)
+	         :SceneNode(world)
 {
 	//LoadLayer(path, "_BG.csv", textureAtlas, tilesX, Category::kFloorTile);
 	if (load_map)
@@ -33,7 +34,7 @@ void Map::LoadTextureAtPos(int xPos, int yPos, int elem, std::string textureAtla
 {
 	if (texture_map.find(elem) == texture_map.end())
 		LoadTextureAt(texture_map[elem], textureAtlas, elem, tilesX);
-	std::unique_ptr<Tile> tile(new Tile(texture_map[elem], tileCategory));
+	std::unique_ptr<Tile> tile(new Tile(m_world, texture_map[elem], tileCategory));
 	tile->setPosition(xPos, yPos);
 	AttachChild(std::move(tile));
 }
