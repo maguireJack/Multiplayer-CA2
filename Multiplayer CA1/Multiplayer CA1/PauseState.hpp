@@ -9,7 +9,7 @@
 class PauseState : public State
 {
 public:
-	PauseState(StateStack& stack, Context context, bool lets_updates_through = false);
+	PauseState(StateStack& stack, Context context, bool lets_updates_through = true);
 	~PauseState();
 
 	virtual void		Draw();
