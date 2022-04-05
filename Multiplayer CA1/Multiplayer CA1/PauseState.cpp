@@ -27,18 +27,18 @@ PauseState::PauseState(StateStack& stack, Context context, bool let_updates_thro
 	returnButton->setPosition(0.5f * window_size.x - 100, 0.4f * window_size.y + 75);
 	returnButton->SetText("Return");
 	returnButton->SetCallback([this]()
-	{
-		RequestStackPop();
-	});
+		{
+			RequestStackPop();
+		});
 
 	auto backToMenuButton = std::make_shared<GUI::Button>(context);
 	backToMenuButton->setPosition(0.5f * window_size.x - 100, 0.4f * window_size.y + 125);
 	backToMenuButton->SetText("Back to menu");
 	backToMenuButton->SetCallback([this]()
-	{
-		RequestStackClear();
-		RequestStackPush(StateID::kMenu);
-	});
+		{
+			RequestStackClear();
+			RequestStackPush(StateID::kMenu);
+		});
 
 	m_gui_container.Pack(returnButton);
 	m_gui_container.Pack(backToMenuButton);
@@ -67,26 +67,11 @@ void PauseState::Draw()
 
 bool PauseState::Update(sf::Time)
 {
-	return false;
+	return m_let_updates_through;
 }
 
 bool PauseState::HandleEvent(const sf::Event& event)
 {
-	if (event.type != sf::Event::KeyPressed)
-		return false;
-
-	if (event.key.code == sf::Keyboard::Escape)
-	{
-		// Escape pressed, remove itself to return to the game
-		RequestStackPop();
-	}
-
-	if (event.key.code == sf::Keyboard::BackSpace)
-	{
-		// Escape pressed, remove itself to return to the game
-		RequestStackClear();
-		RequestStackPush(StateID::kMenu);
-	}
-
+	m_gui_container.HandleEvent(event);
 	return false;
 }
