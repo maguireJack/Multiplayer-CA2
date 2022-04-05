@@ -1,11 +1,13 @@
 //Alex Nogueira / D00242564 
 #include "Pickup.hpp"
 
+#include <iostream>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "DataTables.hpp"
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"
+#include "World.hpp"
 
 namespace
 {
@@ -39,4 +41,14 @@ void Pickup::Apply(Tank& player) const
 void Pickup::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_sprite, states);
+}
+
+void Pickup::UpdateCurrent(sf::Time dt, CommandQueue& commands)
+{
+	Entity::UpdateCurrent(dt, commands);
+	if (!m_collider_registered)
+	{
+		m_world->RegisterCollidableSceneNode(this);
+		m_collider_registered = true;
+	}
 }

@@ -52,7 +52,7 @@ void PickupSpawner::SpawnPickupNetwork(PickupType type, const TextureHolder& tex
 
 	m_current_life = m_life;
 	auto p = std::make_unique<Pickup>(m_world, type, textures);
-	AttachChild(std::move(p));
+	AttachChild(std::move(p), false);
 	m_pickup = p.get();
 }
 

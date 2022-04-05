@@ -7,7 +7,7 @@
 class Entity : public SceneNode
 {
 public:
-	Entity(World* world, int hitpoints);
+	Entity(World* world, int hitpoints, bool is_static = true);
 	void SetVelocity(sf::Vector2f velocity);
 	void SetVelocity(float vx, float vy);
 	void Accelerate(sf::Vector2f velocity);

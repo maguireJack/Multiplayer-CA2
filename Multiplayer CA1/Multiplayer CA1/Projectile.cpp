@@ -14,7 +14,7 @@ namespace
 }
 
 Projectile::Projectile(World* world, ProjectileType type, const TextureHolder& textures, bool is_ghost)
-	: Entity(world, 1)
+	: Entity(world, 1, false)
 	  , m_type(type)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_explosion(textures.Get(Textures::kExplosion))

@@ -165,6 +165,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 				m_connected = false;
 				m_failed_connection_text.setString("Lost connection to the server");
 				Utility::CentreOrigin(m_failed_connection_text);
+				m_world.ConnectionLost();
 
 				m_failed_connection_clock.restart();
 			}

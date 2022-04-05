@@ -17,7 +17,7 @@ namespace
 }
 
 Tank::Tank(World* world, TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world)
-	: Entity(world, Table[static_cast<int>(type)].m_hitpoints)
+	: Entity(world, Table[static_cast<int>(type)].m_hitpoints, false)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
 	  , m_fire_interval(Table[static_cast<int>(type)].m_fire_interval)
@@ -27,8 +27,6 @@ Tank::Tank(World* world, TankType type, const TextureHolder& textures, const Fon
 	  , m_is_ghost_world(is_ghost_world)
 	  , m_playerName("Player " + std::to_string(m_identifier), fonts.Get(Fonts::Main), 12)
 {
-	is_static = false;
-
 	if (type == TankType::kLocalTank)
 	{
 		m_has_listener = true;
@@ -168,6 +166,7 @@ void Tank::CreateProjectile(SceneNode& node, ProjectileType type, const TextureH
 	projectile->setPosition(getPosition() + offset);
 	projectile->SetVelocity(velocity);
 	projectile->setRotation(getRotation() + 90);
+	std::cout << "CRAETED PROJECTILE : " << projectile.get() << std::endl;
 	node.AttachChild(std::move(projectile));
 }
 

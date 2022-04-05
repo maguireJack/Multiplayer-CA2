@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
-
+#include <algorithm>
 #include "Pickup.hpp"
 #include "Projectile.hpp"
 #include "SoundNode.hpp"
@@ -71,12 +71,14 @@ void World::Update(sf::Time dt)
 
 	if (m_player_spawned) m_camera.setCenter(GetPlayer()->getPosition());
 
-	HandleCollisions();
+	//Apply movement
+	m_scenegraph.Update(dt, m_command_queue);
 
 	m_scenegraph.RemoveWrecks();
 
-	//Apply movement
-	m_scenegraph.Update(dt, m_command_queue);
+	ProcessNewCollidableSceneNodes();
+
+	HandleCollisions();
 
 	if (m_player_tank != nullptr && m_player_tank->GetHitPoints() > 0)
 	{
@@ -108,39 +110,93 @@ bool World::PollGameAction(GameActions::Action& out)
 
 void World::RegisterCollidableSceneNode(SceneNode* node)
 {
-	m_non_static_coll.emplace_back(node);
-	return;
-	//If it's static we can add it to our collection of non moving stuff -> already sorted
-	if (node->IsStatic())
-	{
-		float xMin = node->GetBoundingRect().left;
-		int index = 0;
-		for (auto staticNode : m_static_coll)
-		{
-			if (staticNode->GetBoundingRect().left > xMin) break;
-			index++;
-		}
-		m_static_coll.insert(m_static_coll.begin() + index, node);
+	//If doesn't exist already
+	if (std::find(m_colliders_to_register.begin(), m_colliders_to_register.end(), node) == m_colliders_to_register.end() 
+		&& std::find(m_colliders.begin(), m_colliders.end(), node) == m_colliders.end()
+		) {
+		m_colliders_to_register.emplace_back(node);
 	}
-		//If not, we add it to the dynamic objects
 	else
 	{
-		m_non_static_coll.emplace_back(node);
+		std::cout << "Collider already registered!" << std::endl;
 	}
+}
+
+void World::ProcessNewCollidableSceneNodes()
+{
+	for (auto node : m_colliders_to_register) {
+		//Insert at the right place
+		float xMin = node->GetBoundingRect().left;
+		int index = 0;
+		for (auto coll : m_colliders)
+		{
+			if (coll->GetBoundingRect().left > xMin) break;
+			index++;
+		}
+
+		m_colliders.insert(m_colliders.begin() + index, node);
+
+		int size = m_dynamic_colliders.size();
+		//If dynamic we need to maintain indices
+		if (!node->IsStatic())
+		{
+			node->m_dynamic_coll_index = index;
+			bool added = false;
+			bool found = false;
+			for (int i = 0; i < m_dynamic_colliders.size(); i++)
+			{
+				SceneNode* currNode = m_dynamic_colliders[i];
+				int id = currNode->m_dynamic_coll_index;
+				//All lower indexes are skipped
+				if (id < index) {
+					continue;
+				}
+				//The first valid place we find is going to have the id
+				if (!found)
+				{
+					m_dynamic_colliders.insert(m_dynamic_colliders.begin() + i, node);
+					added = true;
+					found = true;
+				}
+				else
+				{
+					currNode->m_dynamic_coll_index++;
+				}
+			}
+
+			if (!added) 
+			{
+				m_dynamic_colliders.emplace_back(node);
+			}
+		}
+		else
+		{
+			for (SceneNode* node : m_dynamic_colliders)
+			{
+				if(node->m_dynamic_coll_index >= index) node->m_dynamic_coll_index++;
+			}
+		}
+	}
+
+	m_colliders_to_register.clear();
 }
 
 void World::UnregisterCollidableSceneNode(SceneNode* node)
 {
-	m_non_static_coll.erase(std::find(m_non_static_coll.begin(), m_non_static_coll.end(), node));
-	return;
-	if (node->IsStatic())
+	if (m_connection_lost) return;
+ 	auto iter = std::find(m_colliders.begin(), m_colliders.end(), node);
+	int index = iter - m_colliders.begin();
+	m_colliders.erase(iter);
+	if(!node->IsStatic()) m_dynamic_colliders.erase(std::find(m_dynamic_colliders.begin(), m_dynamic_colliders.end(), node));
+	for (auto node : m_dynamic_colliders)
 	{
-		m_static_coll.erase(std::find(m_static_coll.begin(), m_static_coll.end(), node));
+		if (node->m_dynamic_coll_index > index) node->m_dynamic_coll_index--;
 	}
-	else
-	{
-		m_non_static_coll.erase(std::find(m_non_static_coll.begin(), m_non_static_coll.end(), node));
-	}
+}
+
+void World::ConnectionLost()
+{
+	m_connection_lost = true;
 }
 
 void World::Draw()
@@ -192,7 +248,7 @@ void World::BuildScene()
 		Category::Type category = (i == static_cast<int>(Layers::kBattlefield))
 			                          ? Category::Type::kScene
 			                          : Category::Type::kNone;
-		SceneNode::Ptr layer(new SceneNode(this, false, category));
+		SceneNode::Ptr layer(new SceneNode(this, false, true, category));
 		m_scene_layers[i] = layer.get();
 		m_scenegraph.AttachChild(std::move(layer));
 	}
@@ -397,27 +453,92 @@ Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 
 void World::HandleCollisions()
 {
-	std::sort(m_non_static_coll.begin(), m_non_static_coll.end(), [](SceneNode* a, SceneNode* b)
+	//Sorting
+
+	//Pre-allocation
+	int candidateIndex, swapIndex;
+	bool done = false;
+	int sign;
+	float xDiff;
+	SceneNode* node;
+	
+	//Algorithm
+	for(SceneNode* candidate : m_dynamic_colliders)
 	{
-		return a->GetBoundingRect().left < b->GetBoundingRect().left;
-	});
+		if(candidate->HasMoved())
+		{
+			//Figure out direction in which he moved
+			sign = 1;
+			if(candidate->GetXDelta() < 0)
+			{
+				sign = -1;
+			}
+
+			while(!done)
+			{
+				candidateIndex = candidate->m_dynamic_coll_index;
+				swapIndex = candidateIndex + sign;
+				if(swapIndex < 0 || swapIndex >= m_colliders.size())
+				{
+					done = true;
+					continue;
+				}
+				xDiff = 0;
+				//We are moving left
+				if(sign < 0)
+				{
+					xDiff = candidate->GetBoundingRect().left - m_colliders[swapIndex]->GetBoundingRect().left - m_colliders[swapIndex]->GetBoundingRect().width;
+				}
+				//We are moving right
+				else
+				{
+					xDiff = m_colliders[swapIndex]->GetBoundingRect().left - candidate->GetBoundingRect().left - candidate->GetBoundingRect().width;
+				}
+				//We need to exchange positions
+				if (xDiff < 0)
+				{
+					node = m_colliders[swapIndex];
+					//Dynamic object is at that place
+					if(!node->IsStatic())
+					{
+						node->m_dynamic_coll_index -= sign;
+					}
+					candidate->m_dynamic_coll_index += sign;
+					//Swap the two elements
+					std::iter_swap(m_colliders.begin() + candidateIndex, m_colliders.begin() + swapIndex);
+				}
+				else
+				{
+					done = true;
+				}
+			}
+		}
+	}
+
+	//Collision Checks
+	float xMin = 0;
+	float xMax = 0;
+	bool iFinish = false, jFinish = false;
+	int size = m_colliders.size();
+	int index;
+
+	int i = 0, j = 0;
 
 	std::set<SceneNode::Pair> collision_pairs;
 	std::vector<SceneNode*> candidates;
-	float xMin = 0;
-	float xMax = 0;
-	int size = m_non_static_coll.size();
 
-	int i = 0, j = 0;
-	bool iFinish = false, jFinish = false;
-	int index = 0;
-	for (auto candidate : m_non_static_coll)
+	std::cout << "--------------------------------------------------" << std::endl;
+	for (SceneNode* candidate : m_dynamic_colliders)
 	{
-		if (candidate->IsStatic())
+		/*if (candidate->IsMarkedForRemoval())
 		{
-			index++;
+			m_colliders.erase(m_colliders.begin() + index);
+			size--;
 			continue;
-		}
+		}*/
+		index = candidate->m_dynamic_coll_index;
+
+		std::cout << candidate << std::endl;
 
 		sf::FloatRect candidateRect = candidate->GetBoundingRect();
 		xMin = candidateRect.left;
@@ -430,7 +551,7 @@ void World::HandleCollisions()
 				if ((index - i) < 0) iFinish = true;
 				else
 				{
-					SceneNode* node = m_non_static_coll[index - i];
+					SceneNode* node = m_colliders[index - i];
 					sf::FloatRect boundingRect = node->GetBoundingRect();
 					if (boundingRect.left + boundingRect.width < xMin)
 					{
@@ -450,7 +571,7 @@ void World::HandleCollisions()
 				j++;
 				if ((index + j) >= size) jFinish = true;
 				else {
-					SceneNode* node = m_non_static_coll[index + j];
+					SceneNode* node = m_colliders[index + j];
 					sf::FloatRect boundingRect = node->GetBoundingRect();
 					if (boundingRect.left > xMax)
 					{

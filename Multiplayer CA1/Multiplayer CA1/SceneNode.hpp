@@ -21,9 +21,9 @@ public:
 	typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 public:
-	explicit SceneNode(World* world, bool collidable = false, Category::Type category = Category::kNone);
+	explicit SceneNode(World* world, bool collidable = false, bool is_static = true, Category::Type category = Category::kNone);
 	virtual ~SceneNode();
-	void AttachChild(Ptr child);
+	void AttachChild(Ptr child, bool registerCollidable = true);
 	Ptr DetachChild(const SceneNode& node);
 
 	void Update(sf::Time dt, CommandQueue& commands);
@@ -38,7 +38,11 @@ public:
 	void CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collision_pairs);
 	void RemoveWrecks();
 
-	bool IsStatic();
+	bool IsStatic() const;
+	bool HasMoved() const;
+	float GetXDelta() const;
+
+	bool IsMarkedForRemoval() const;
 
 protected:
 	void ClearChildren();
@@ -57,10 +61,11 @@ private:
 	void DrawBoundingRect(sf::RenderTarget& target, sf::RenderStates states, sf::FloatRect& bounding_rect) const;
 
 	virtual bool IsDestroyed() const;
-	bool IsMarkedForRemoval() const;
 	
 	void CheckNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs);
 
+public:
+	int m_dynamic_coll_index;
 protected:
 	bool is_collidable;
 	bool is_static;
@@ -69,5 +74,7 @@ protected:
 private:
 	std::vector<Ptr> m_children;
 	SceneNode* m_parent;
+	bool m_has_moved;
+	sf::Vector2f m_lastPos;
 };
 float distance(const SceneNode& lhs, const SceneNode& rhs);

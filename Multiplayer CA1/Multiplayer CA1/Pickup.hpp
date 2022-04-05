@@ -16,9 +16,11 @@ public:
 	virtual sf::FloatRect GetBoundingRect() const;
 	void Apply(Tank& player) const;
 	virtual void DrawCurrent(sf::RenderTarget&, sf::RenderStates states) const override;
-
+protected:
+	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 private:
 	PickupType m_type;
 	sf::Sprite m_sprite;
+	bool m_collider_registered;
 };
 

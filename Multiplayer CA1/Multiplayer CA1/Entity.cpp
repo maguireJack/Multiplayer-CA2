@@ -1,8 +1,8 @@
 //Alex Nogueira / D00242564 
 #include "Entity.hpp"
 
-Entity::Entity(World* world, int hitpoints)
-: SceneNode(world, true)
+Entity::Entity(World* world, int hitpoints, bool is_static)
+: SceneNode(world, true, is_static)
 , m_hitpoints(hitpoints)
 {
 }

@@ -59,7 +59,9 @@ public:
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
 	void RegisterCollidableSceneNode(SceneNode* node);
+	void ProcessNewCollidableSceneNodes();
 	void UnregisterCollidableSceneNode(SceneNode* node);
+	void ConnectionLost();
 
 private:
 	void LoadTextures();
@@ -116,6 +118,7 @@ private:
 	BloomEffect m_bloom_effect;
 	ShakeEffect m_shake_effect;
 	bool m_networked_world;
+	bool m_connection_lost;
 	bool m_is_host;
 	bool m_ghost_world;
 	SpriteNode* m_finish_sprite;
@@ -124,7 +127,8 @@ private:
 	std::vector<float> m_pickup_lifetimes;
 	std::map<Pickup, int> m_pickup_map;
 
-	std::vector<SceneNode*> m_non_static_coll;
-	std::vector<SceneNode*> m_static_coll;
+	std::vector<SceneNode*> m_dynamic_colliders;
+	std::vector<SceneNode*> m_colliders;
+	std::vector<SceneNode*> m_colliders_to_register;
 };
 
