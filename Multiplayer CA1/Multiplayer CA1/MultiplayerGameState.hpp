@@ -58,6 +58,8 @@ private:
 	bool m_game_started;
 	sf::Time m_client_timeout;
 	sf::Time m_time_since_last_packet;
+	sf::Time m_lobby_timer;
+	sf::Text m_lobby_text;
 
 	//GUI
 	Image::Ptr m_player_fire_rate_upgrade_image;
