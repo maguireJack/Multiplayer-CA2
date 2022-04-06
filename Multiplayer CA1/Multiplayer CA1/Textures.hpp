@@ -20,5 +20,7 @@ enum class Textures
 	kButtonSelected,
 	kButtonPressed,
 	kParticle,
-	kExplosion
+	kExplosion,
+	kHowToPlay,
+	kHowToPlayBlink
 };
