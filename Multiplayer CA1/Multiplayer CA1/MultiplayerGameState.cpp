@@ -47,6 +47,8 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	  , m_time_since_last_packet(sf::seconds(0.f))
 	  , m_gui_area(0, 600, 900, 200)
 	  , m_gui_center(m_gui_area.left + m_gui_area.width / 2.f, m_gui_area.top + m_gui_area.height / 2.f)
+      , m_lobby_timer(sf::seconds(30))
+      , m_lobby_text("Lobby Timer: " + std::to_string(m_lobby_timer.asSeconds()), context.fonts->Get(Fonts::Main), 12)
 
 {
 	m_player_explosion_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kExplosiveShots);
@@ -108,6 +110,7 @@ void MultiplayerGameState::Draw()
 		m_window.setView(m_window.getDefaultView());
 
 		GetContext().window->draw(m_container);
+		
 
 		if (!m_broadcasts.empty())
 		{
@@ -122,10 +125,19 @@ void MultiplayerGameState::Draw()
 
 bool MultiplayerGameState::Update(sf::Time dt)
 {
+	
 	//Connected to the Server: Handle all the network logic
 	if (m_connected)
 	{
-		m_world.Update(dt);
+		if (m_lobby_timer.asSeconds() >= 0)
+		{
+			m_lobby_timer -= dt;
+
+		}
+		
+		if (m_players.size() > 10 || m_lobby_timer.asSeconds() <= 1) {
+			m_world.Update(dt);
+		}
 
 		UpdateLabels();
 		UpdateIcons();

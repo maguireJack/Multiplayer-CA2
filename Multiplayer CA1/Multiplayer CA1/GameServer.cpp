@@ -21,18 +21,19 @@ GameServer::RemotePeer::RemotePeer(): m_ready(false), m_timed_out(false)
 
 GameServer::GameServer(sf::Vector2f battlefield_size, World& world)
 	: m_thread(&GameServer::ExecutionThread, this)
-	  , m_listening_state(false)
-	  , m_client_timeout(sf::seconds(1.f))
-	  , m_max_connected_players(15)
-	  , m_connected_players(0)
-	  , m_battlefield_rect(0.f, 0.f, 900, 600)
-	  , m_tank_count(0)
-	  , m_peers(1)
-	  , m_tank_identifier_counter(1)
-	  , m_waiting_thread_end(false)
-	  , m_last_spawn_time(sf::Time::Zero)
-	  , m_time_for_next_spawn(sf::seconds(5.f))
-	  , m_world(&world)
+	, m_listening_state(false)
+	, m_client_timeout(sf::seconds(1.f))
+	, m_max_connected_players(15)
+	, m_connected_players(0)
+	, m_battlefield_rect(0.f, 0.f, 900, 600)
+	, m_tank_count(0)
+	, m_peers(1)
+	, m_tank_identifier_counter(1)
+	, m_waiting_thread_end(false)
+	, m_last_spawn_time(sf::Time::Zero)
+	, m_time_for_next_spawn(sf::seconds(5.f))
+	, m_world(&world)
+
 {
 	m_listener_socket.setBlocking(false);
 	m_peers[0].reset(new RemotePeer());
@@ -136,6 +137,7 @@ void GameServer::ExecutionThread()
 		HandleIncomingConnections();
 		HandleIncomingPackets();
 
+
 		frame_time += frame_clock.getElapsedTime();
 		frame_clock.restart();
 
@@ -157,6 +159,7 @@ void GameServer::ExecutionThread()
 
 		//sleep
 		sf::sleep(sf::milliseconds(100));
+		
 	}
 }
 
@@ -178,6 +181,7 @@ void GameServer::Tick()
 
 	//TODO do we really need this ?
 	//Remove tanks that have been destroyed
+
 }
 
 sf::Time GameServer::Now() const

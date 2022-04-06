@@ -375,13 +375,13 @@ Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 	{
 		m_player_tank = player.get();
 		m_player_spawned = true;
-		std::cout << "Added NETWORK tank to game with Identifier : " << identifier << " at spawn pos : " << position.x
-			<< " , " << position.y << std::endl;
+		/*std::cout << "Added NETWORK tank to game with Identifier : " << identifier << " at spawn pos : " << position.x
+			<< " , " << position.y << std::endl;*/
 	}
 	else
 	{
-		std::cout << "Added LOCAL tank to game with Identifier : " << identifier << " at spawn pos : " << position.x <<
-			" , " << position.y << std::endl;
+		/*std::cout << "Added LOCAL tank to game with Identifier : " << identifier << " at spawn pos : " << position.x <<
+			" , " << position.y << std::endl;*/
 	}
 
 	if (m_ghost_world)
