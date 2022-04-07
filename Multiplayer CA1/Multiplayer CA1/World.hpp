@@ -59,6 +59,7 @@ public:
 	Tank* AddTank(int identifier, TankType type, sf::Vector2f position);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
+	void TankToGhost(Tank* tank);
 
 private:
 	void LoadTextures();

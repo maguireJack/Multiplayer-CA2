@@ -33,6 +33,7 @@ public:
 		MusicPlayer* music;
 		SoundPlayer* sounds;
 		KeyBinding* keys1;
+		std::string winner;
 	};
 
 public:
@@ -50,8 +51,8 @@ protected:
 	void RequestStackClear();
 
 	Context GetContext() const;
+	StateStack* m_stack;
 
 private:
-	StateStack* m_stack;
 	Context m_context;
 };

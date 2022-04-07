@@ -19,7 +19,7 @@ namespace Server
 		SpawnPickup,
 		SpawnSelf,
 		UpdateClientState,
-		MissionSuccess
+		GameOver
 	};
 }
 

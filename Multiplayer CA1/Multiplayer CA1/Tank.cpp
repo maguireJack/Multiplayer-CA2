@@ -10,13 +10,14 @@
 #include "ProjectileType.hpp"
 #include "ResourceHolder.hpp"
 #include "SoundNode.hpp"
+#include "World.hpp"
 
 namespace
 {
 	const std::vector<TankData> Table = InitializeTankData();
 }
 
-Tank::Tank(TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world)
+Tank::Tank(World* world, TankType type, const TextureHolder& textures, const FontHolder& fonts, bool* is_ghost_world)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	  , m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	  , m_type(type)
@@ -26,6 +27,7 @@ Tank::Tank(TankType type, const TextureHolder& textures, const FontHolder& fonts
 	  , m_identifier(0)
 	  , m_is_ghost_world(is_ghost_world)
 	  , m_playerName("Player " + std::to_string(m_identifier), fonts.Get(Fonts::Main), 12)
+	  , m_world(world)
 {
 	is_static = false;
 
@@ -215,6 +217,7 @@ void Tank::TurnToGhost()
 {
 	m_is_ghost = true;
 	m_sprite.setColor(sf::Color(255, 255, 255, 100));
+	m_world->TankToGhost(this);
 }
 
 void Tank::SetMapBounds(sf::FloatRect bounds)

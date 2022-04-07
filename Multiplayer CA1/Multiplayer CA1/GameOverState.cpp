@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "Category.hpp"
+#include "Globals.hpp"
 #include "Player.hpp"
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"

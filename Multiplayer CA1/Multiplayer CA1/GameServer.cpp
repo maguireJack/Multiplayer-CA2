@@ -46,7 +46,7 @@ GameServer::~GameServer()
 	m_thread.wait();
 }
 
-//This is the same as SpawnSelf but indicate that an aircraft from a different client is entering the world
+//This is the same as SpawnSelf but indicate that an aircraft from a different client is entering the m_world
 
 void GameServer::NotifyPlayerSpawn(sf::Int32 aircraft_identifier)
 {
@@ -167,16 +167,15 @@ void GameServer::Tick()
 {
 	UpdateClientState();
 
-	//Check if the game is over = all planes position.y < offset
-	bool all_aircraft_done = false;
-
 	//TODO Win condition
 
-	if (all_aircraft_done)
+	if (m_world->IsGameOver())
 	{
-		sf::Packet mission_success_packet;
-		mission_success_packet << static_cast<sf::Int32>(Server::PacketType::MissionSuccess);
-		SendToAll(mission_success_packet);
+		sf::Packet game_over_packet;
+		game_over_packet << static_cast<sf::Int32>(Server::PacketType::GameOver);
+		std::string winner = m_world->GetWinner();
+		game_over_packet << winner;
+		SendToAll(game_over_packet);
 	}
 
 	//TODO do we really need this ?

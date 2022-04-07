@@ -105,6 +105,17 @@ bool World::PollGameAction(GameActions::Action& out)
 	return m_network_node->PollGameAction(out);
 }
 
+void World::TankToGhost(Tank* tank)
+{
+	m_player_tanks.erase(std::find(m_player_tanks.begin(), m_player_tanks.end(), tank));
+	m_ghost_tanks.emplace_back(tank);
+	if(m_player_tanks.size() == 1)
+	{
+		m_game_over = true;
+		m_winner = "Tank " + std::to_string(m_player_tanks[0]->GetIdentifier());
+	}
+}
+
 void World::Draw()
 {
 	if (PostEffect::IsSupported())
@@ -163,7 +174,7 @@ void World::BuildScene()
 	//Prepare the background
 	sf::Texture& texture = m_textures.Get(Textures::kBackground);
 	sf::IntRect textureRect(m_world_bounds);
-	//Tile the texture to cover our world
+	//Tile the texture to cover our m_world
 	texture.setRepeated(true);
 
 	//Add the background sprite to our scene
@@ -324,7 +335,7 @@ void World::RemoveTank(int identifier)
 
 Tank* World::AddTank(int identifier, TankType type, sf::Vector2f position)
 {
-	std::unique_ptr<Tank> player(new Tank(type, m_textures, m_fonts, &m_ghost_world));
+	std::unique_ptr<Tank> player(new Tank(this, type, m_textures, m_fonts, &m_ghost_world));
 	player->setPosition(position);
 	player->SetSpawnPos(position);
 	player->SetMapBounds(m_world_bounds);

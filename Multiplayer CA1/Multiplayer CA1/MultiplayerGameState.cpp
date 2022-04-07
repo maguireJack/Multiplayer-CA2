@@ -11,6 +11,8 @@
 #include <SFML/Network/Packet.hpp>
 
 #include "BoundLabel.hpp"
+#include "GameOverState.hpp"
+#include "Globals.hpp"
 #include "PickupType.hpp"
 
 sf::IpAddress GetAddressFromFile()
@@ -414,9 +416,13 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 
 
 		//Mission Successfully completed
-	case Server::PacketType::MissionSuccess:
+	case Server::PacketType::GameOver:
 		{
-			RequestStackPush(StateID::kMissionSuccess);
+			std::string winnerName;
+			packet >> winnerName;
+			winner = winnerName;
+			m_stack->RegisterState<GameOverState>(StateID::kMissionSuccess, winnerName + " Won!");
+			m_stack->PushState(StateID::kMissionSuccess);
 		}
 		break;
 

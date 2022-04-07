@@ -220,6 +220,7 @@
     <ClInclude Include="GameOverState.hpp" />
     <ClInclude Include="GameServer.hpp" />
     <ClInclude Include="GameState.hpp" />
+    <ClInclude Include="Globals.hpp" />
     <ClInclude Include="Image.hpp" />
     <ClInclude Include="KeyBinding.hpp" />
     <ClInclude Include="Label.hpp" />
