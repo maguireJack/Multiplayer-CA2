@@ -217,7 +217,7 @@ void Tank::TurnToGhost()
 {
 	m_is_ghost = true;
 	m_sprite.setColor(sf::Color(255, 255, 255, 100));
-	m_world->TankToGhost(this);
+	m_world->TankToGhost();
 }
 
 void Tank::SetMapBounds(sf::FloatRect bounds)

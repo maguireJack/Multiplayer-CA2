@@ -33,6 +33,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	  , m_is_host(is_host)
 	  , m_network_node(nullptr)
 	  , m_finish_sprite(nullptr)
+	  , m_ghost_tank_counter(0)
 {
 	m_scene_texture.create(m_target.getSize().x, m_target.getSize().y);
 	LoadTextures();
@@ -105,14 +106,22 @@ bool World::PollGameAction(GameActions::Action& out)
 	return m_network_node->PollGameAction(out);
 }
 
-void World::TankToGhost(Tank* tank)
+void World::TankToGhost()
 {
-	m_player_tanks.erase(std::find(m_player_tanks.begin(), m_player_tanks.end(), tank));
-	m_ghost_tanks.emplace_back(tank);
-	if(m_player_tanks.size() == 1)
+	m_ghost_tank_counter++;
+	if(m_ghost_tank_counter == m_player_tanks.size() - 1)
 	{
 		m_game_over = true;
-		m_winner = "Tank " + std::to_string(m_player_tanks[0]->GetIdentifier());
+		Tank* winnerTank = nullptr;
+		for(auto tank : m_player_tanks)
+		{
+			if(!tank->IsGhost())
+			{
+				winnerTank = tank;
+				break;
+			}
+		}
+		m_winner = "Tank " + std::to_string(winnerTank->GetIdentifier());
 	}
 }
 

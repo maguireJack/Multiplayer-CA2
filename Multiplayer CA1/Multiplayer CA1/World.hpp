@@ -59,7 +59,7 @@ public:
 	Tank* AddTank(int identifier, TankType type, sf::Vector2f position);
 	void RemoveTank(int identifier);
 	bool PollGameAction(GameActions::Action& out);
-	void TankToGhost(Tank* tank);
+	void TankToGhost();
 
 private:
 	void LoadTextures();
@@ -123,5 +123,6 @@ private:
 	std::vector<Pickup*> m_pickups;
 	std::vector<float> m_pickup_lifetimes;
 	std::map<Pickup, int> m_pickup_map;
+	int m_ghost_tank_counter;
 };
 
