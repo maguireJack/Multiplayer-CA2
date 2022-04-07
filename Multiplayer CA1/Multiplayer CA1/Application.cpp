@@ -14,7 +14,7 @@
 const sf::Time Application::kTimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
- :m_window(sf::VideoMode(800, 600), "Network", sf::Style::Close)
+ :m_window(sf::VideoMode(900, 800), "Network", sf::Style::Close)
 , m_key_binding_1(1)
 , m_stack(State::Context(m_window, m_textures, m_fonts, m_music, m_sounds, m_key_binding_1))
 , m_statistics_numframes(0)

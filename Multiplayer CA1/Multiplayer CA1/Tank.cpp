@@ -46,6 +46,8 @@ Tank::Tank(World* world, TankType type, const TextureHolder& textures, const Fon
 	//Setup Sprite
 	setScale(5, 5);
 	Utility::CentreOrigin(m_sprite);
+	m_playerName.setScale(0.35f, 0.35f);
+	m_playerName.setPosition(-3,4);
 
 	FaceDirection(Utility::Down);
 

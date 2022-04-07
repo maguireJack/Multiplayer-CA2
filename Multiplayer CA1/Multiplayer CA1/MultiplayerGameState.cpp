@@ -142,7 +142,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 			if (m_lobby_timer.asSeconds() >= 0)
 			{
 				m_lobby_timer -= dt;
-				m_timer_text.setString("Time Left : " + std::to_string(m_lobby_timer.asSeconds()));
+				m_timer_text.setString("Time Left : " + std::to_string(static_cast<int>(m_lobby_timer.asSeconds())));
 			}
 		}
 		if(m_lobby_timer.asSeconds() <= 0)
