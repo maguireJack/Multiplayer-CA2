@@ -69,5 +69,6 @@ private:
 	GUI::Container m_container;
 	sf::FloatRect m_gui_area;
 	sf::Vector2f m_gui_center;
+	sf::Text m_timer_text;
 };
 

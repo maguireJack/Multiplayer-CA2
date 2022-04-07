@@ -52,13 +52,15 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
       , m_lobby_timer(sf::seconds(10))
       , m_lobby_text("Lobby Timer: " + std::to_string(m_lobby_timer.asSeconds()), context.fonts->Get(Fonts::Main), 12)
       , m_start_counter(false)
-
+	  , m_timer_text("Waiting", context.fonts->Get(Fonts::Main), 30)
 {
 	m_player_explosion_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kExplosiveShots);
 	m_player_fire_rate_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kFireRate);
 	
 	m_broadcast_text.setFont(context.fonts->Get(Fonts::Main));
 	m_broadcast_text.setPosition(1024.f / 2, 100.f);
+	m_timer_text.setPosition(400, 300);
+	Utility::CentreOrigin(m_timer_text);
 
 	//We reuse this text for "Attempt to connect" and "Failed to connect" messages
 	m_failed_connection_text.setFont(context.fonts->Get(Fonts::Main));
@@ -107,13 +109,17 @@ void MultiplayerGameState::Draw()
 {
 	if (m_connected)
 	{
-		m_world.Draw();
+		if(m_lobby_timer.asSeconds() <= 0) m_world.Draw();
 
 		//Show broadcast messages in default view
 		m_window.setView(m_window.getDefaultView());
 
 		GetContext().window->draw(m_container);
-		
+
+		if (m_lobby_timer.asSeconds() >= 0)
+		{
+			m_window.draw(m_timer_text);
+		}
 
 		if (!m_broadcasts.empty())
 		{
@@ -136,7 +142,7 @@ bool MultiplayerGameState::Update(sf::Time dt)
 			if (m_lobby_timer.asSeconds() >= 0)
 			{
 				m_lobby_timer -= dt;
-
+				m_timer_text.setString("Time Left : " + std::to_string(m_lobby_timer.asSeconds()));
 			}
 		}
 		if(m_lobby_timer.asSeconds() <= 0)
