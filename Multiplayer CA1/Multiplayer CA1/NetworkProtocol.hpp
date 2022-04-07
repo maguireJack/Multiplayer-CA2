@@ -20,6 +20,8 @@ namespace Server
 		SpawnSelf,
 		UpdateClientState,
 		GameOver
+		MissionSuccess,
+		StartTimer
 	};
 }
 
