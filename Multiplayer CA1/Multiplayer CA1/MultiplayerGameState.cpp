@@ -47,8 +47,9 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	  , m_time_since_last_packet(sf::seconds(0.f))
 	  , m_gui_area(0, 600, 900, 200)
 	  , m_gui_center(m_gui_area.left + m_gui_area.width / 2.f, m_gui_area.top + m_gui_area.height / 2.f)
-      , m_lobby_timer(sf::seconds(30))
+      , m_lobby_timer(sf::seconds(10))
       , m_lobby_text("Lobby Timer: " + std::to_string(m_lobby_timer.asSeconds()), context.fonts->Get(Fonts::Main), 12)
+      , m_start_counter(false)
 
 {
 	m_player_explosion_upgrade_image = std::make_shared<Image>(*context.fonts, *context.textures, Textures::kExplosiveShots);
@@ -129,13 +130,15 @@ bool MultiplayerGameState::Update(sf::Time dt)
 	//Connected to the Server: Handle all the network logic
 	if (m_connected)
 	{
-		if (m_lobby_timer.asSeconds() >= 0)
-		{
-			m_lobby_timer -= dt;
+		if (m_start_counter) {
+			if (m_lobby_timer.asSeconds() >= 0)
+			{
+				m_lobby_timer -= dt;
 
+			}
 		}
-		
-		if (m_players.size() > 10 || m_lobby_timer.asSeconds() <= 1) {
+		if(m_lobby_timer.asSeconds() <= 0)
+		{
 			m_world.Update(dt);
 		}
 
@@ -412,6 +415,11 @@ void MultiplayerGameState::HandlePacket(sf::Int32 packet_type, sf::Packet& packe
 		}
 		break;
 
+	case Server::PacketType::StartTimer:
+		{
+			m_start_counter = true;
+		}
+		break;
 
 		//Mission Successfully completed
 	case Server::PacketType::MissionSuccess:

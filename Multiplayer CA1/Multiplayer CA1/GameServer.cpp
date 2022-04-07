@@ -178,6 +178,13 @@ void GameServer::Tick()
 		mission_success_packet << static_cast<sf::Int32>(Server::PacketType::MissionSuccess);
 		SendToAll(mission_success_packet);
 	}
+	if (m_connected_players > 12 || m_clock.getElapsedTime().asSeconds() > 20 && has_sent_timer)
+	{
+		has_sent_timer = true;
+		sf::Packet start_counter_packet;
+		start_counter_packet << static_cast<sf::Int32>(Server::PacketType::StartTimer);
+		SendToAll(start_counter_packet);
+	}
 
 	//TODO do we really need this ?
 	//Remove tanks that have been destroyed

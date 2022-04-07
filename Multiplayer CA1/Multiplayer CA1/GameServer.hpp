@@ -81,6 +81,7 @@ private:
 
 	sf::Time m_last_spawn_time;
 	sf::Time m_time_for_next_spawn;
+	bool has_sent_timer = false;
 
 	World* m_world;
 };
